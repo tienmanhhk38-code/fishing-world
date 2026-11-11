@@ -1,0 +1,189 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Guest {
+  id             String         @id @default(uuid())
+  token          String         @unique
+  name           String
+  appearanceId   String         @default("sailor")
+  chatMutedUntil DateTime?
+  bannedUntil    DateTime?
+  xp             Int            @default(0)
+  coins          Int            @default(0)
+  revision       Int            @default(0)
+  catalogVersion Int            @default(0)
+  equippedRod    String         @default("wood")
+  equippedBait   String         @default("dough")
+  activeRoundId  String?
+  tutorialMoved  Boolean        @default(false)
+  tutorialSold   Boolean        @default(false)
+  tutorialShop   Boolean        @default(false)
+  questJumped    Boolean        @default(false)
+  fish           Fish[]
+  rounds         FishingRound[]
+}
+
+model FishingRound {
+  id        String   @id
+  guestId   String
+  guest     Guest    @relation(fields: [guestId], references: [id])
+  status    String   @default("ACTIVE")
+  area      String   @default("beach")
+  baitId    String   @default("dough")
+  createdAt DateTime @default(now())
+  fish      Fish?
+  selected  Json?
+  plan      Json?
+  hookedAt  DateTime?
+  reelEndsAt DateTime?
+}
+
+model Fish {
+  id        String       @id @default(uuid())
+  guestId   String
+  guest     Guest        @relation(fields: [guestId], references: [id])
+  roundId   String       @unique
+  round     FishingRound @relation(fields: [roundId], references: [id])
+  species   String
+  speciesId String?
+  saleValue Int?
+  xp        Int          @default(20)
+  soldAt    DateTime?
+  area      String       @default("beach")
+  grams     Int
+  caughtAt  DateTime     @default(now())
+
+  @@index([guestId, soldAt])
+  @@index([guestId, caughtAt])
+}
+
+model QuestProgress {
+  guestId String
+  metric String
+  period String
+  value Int @default(0)
+  @@id([guestId, metric, period])
+}
+
+model QuestClaim {
+  guestId String
+  questId String
+  period String
+  requestId String
+  createdAt DateTime @default(now())
+  @@id([guestId, questId, period])
+  @@unique([guestId, requestId])
+}
+
+model OwnedRod {
+  guestId String
+  rodId   String
+
+  @@id([guestId, rodId])
+}
+
+model BaitStock {
+  guestId  String
+  baitId   String
+  quantity Int    @default(0)
+
+  @@id([guestId, baitId])
+}
+
+model Album {
+  guestId     String
+  speciesId   String
+  count       Int    @default(0)
+  recordGrams Int    @default(0)
+
+  @@id([guestId, speciesId])
+}
+
+model SaleQuote {
+  id        String   @id @default(uuid())
+  guestId   String
+  fishIds   String[]
+  total     Int
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([guestId])
+}
+
+model EconomyOperation {
+  id          String   @id
+  guestId     String
+  requestId   String
+  fingerprint String
+  message     String
+  success     Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  @@unique([guestId, requestId])
+}
+
+model CoinLedger {
+  id          String   @id @default(uuid())
+  guestId     String
+  delta       Int
+  reason      String
+  operationId String   @unique
+  createdAt   DateTime @default(now())
+
+  @@index([guestId])
+}
+
+model ChatMessage {
+  id           String   @id @default(uuid())
+  roomId       String
+  guestId      String
+  requestId    String
+  name         String
+  appearanceId String
+  text         String
+  createdAt    DateTime @default(now())
+
+  @@unique([guestId, requestId])
+  @@index([roomId, createdAt])
+  @@index([guestId, createdAt])
+}
+
+model PlayerMute {
+  guestId   String
+  targetId  String
+  createdAt DateTime @default(now())
+
+  @@id([guestId, targetId])
+}
+
+model PlayerReport {
+  id        String   @id @default(uuid())
+  guestId   String
+  targetId  String
+  requestId String
+  roomId    String
+  reason    String
+  detail    String
+  evidence  Json
+  createdAt DateTime @default(now())
+  status    String   @default("OPEN")
+
+  @@unique([guestId, requestId])
+  @@index([status, createdAt])
+  @@index([guestId, targetId, createdAt])
+}
+
+model ModerationLog {
+  id        String    @id @default(uuid())
+  targetId  String
+  action    String
+  reason    String
+  until     DateTime?
+  createdAt DateTime  @default(now())
+}

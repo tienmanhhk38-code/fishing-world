@@ -1,0 +1,33 @@
+{
+  "name": "fishing-world",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.18.0",
+  "engines": {
+    "node": "22.x"
+  },
+  "scripts": {
+    "dev": "concurrently -k -n server,client \"pnpm --filter @fishing/server dev\" \"pnpm --filter @fishing/client dev\"",
+    "build": "pnpm -r build",
+    "test": "vitest run",
+    "db:generate": "pnpm --filter @fishing/server exec prisma generate",
+    "db:push": "pnpm --filter @fishing/server exec prisma db push",
+    "db:backup": "node scripts/backup.mjs",
+    "db:restore-verify": "node scripts/restore-verify.mjs",
+    "test:browser": "playwright test",
+    "test:cross-browser": "playwright test -c playwright.cross.config.ts",
+    "test:latency": "node scripts/check-latency.mjs",
+    "test:release": "node scripts/check-release.mjs",
+    "test:render": "node scripts/benchmark-render.mjs",
+    "test:soak:beta": "node scripts/soak-beta.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.51.1",
+    "colyseus.js": "0.16.22",
+    "concurrently": "^9.1.2",
+    "esbuild": "0.25.12",
+    "prettier": "3.5.3",
+    "typescript": "~5.8.3",
+    "vitest": "4.1.12"
+  }
+}

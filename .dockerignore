@@ -1,0 +1,9 @@
+**/node_modules
+**/dist
+**/.env
+.git
+.local
+test-results
+playwright-report
+design
+**/*.log

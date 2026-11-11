@@ -1,0 +1,12 @@
+{
+  "at": "2026-11-11T05:19:43.809Z",
+  "url": "https://localhost:8443",
+  "health": true,
+  "indexSHA256": "617ed8906a1943b750190115e9b535ababc78f3fbd481462403e8321b84aacc0",
+  "bundleFiles": [
+    "/assets/index-DImz81ve.js",
+    "/assets/index-DmfxVuce.css"
+  ],
+  "hashesMatch": true,
+  "embeddedTexturesAllowed": true
+}

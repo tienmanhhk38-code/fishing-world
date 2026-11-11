@@ -1,0 +1,395 @@
+{
+  "recordedAt": "2026-11-11T02:09:41.867Z",
+  "releaseStatus": "Prepared and validated locally; public deployment, mobile-device QA and human playtest pending.",
+  "tests": {
+    "unit": 24,
+    "chromiumBrowserAndIntegration": 20,
+    "firefoxAndWebkitGameplay": 2,
+    "ciExecutedOnGithub": false
+  },
+  "audit": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 0,
+    "critical": 0
+  },
+  "soak": {
+    "status": "passed",
+    "targetMinutes": 60,
+    "durationSeconds": 3607.1826227,
+    "players": 20,
+    "serverUrl": "https://localhost:8443",
+    "transport": "HTTPS/WSS",
+    "stats": {
+      "casts": 5066,
+      "catchEvents": 3790,
+      "duplicateCatchEvents": 0,
+      "chats": 2400,
+      "emotes": 878,
+      "inputs": 117597,
+      "sales": 1402,
+      "purchases": 523,
+      "reconnects": 19,
+      "unexpectedDisconnects": 0,
+      "errors": []
+    },
+    "integrity": {
+      "guests": 20,
+      "fish": 3790,
+      "rounds": 5066,
+      "ledgerRows": 1925,
+      "albumEntries": 168,
+      "failures": []
+    },
+    "measurements": {
+      "samples": 361,
+      "maxRssMiB": 133.75,
+      "firstRssMiB": 118.65234375,
+      "lastRssMiB": 131.4609375,
+      "maxCpuPercent": 110.67051203915976,
+      "maxEventLoopP99Ms": 24.477695,
+      "lastTimings": {
+        "rtt_ms": {
+          "samples": 1000,
+          "p50": 6.993550000246614,
+          "p95": 14.911952000111341,
+          "max": 19.490395999979228
+        },
+        "hook_reaction_ms": {
+          "samples": 1000,
+          "p50": 308.6761679998599,
+          "p95": 462.2024050001055,
+          "max": 469.1862370003946
+        }
+      }
+    },
+    "completedAt": "2026-11-10T16:22:25.536Z"
+  },
+  "render": {
+    "at": "2026-11-10T15:02:24.762Z",
+    "scope": "Desktop Chromium, low quality, 60 FPS cap, 20 real network guests, eight camera angles; headless browser measurement, not mobile-device certification.",
+    "url": "https://localhost:8443",
+    "readyMs": 4745.0612,
+    "renderer": {
+      "vendor": "Google Inc. (Google)",
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/158.0.8127.18 Safari/537.36",
+      "pixelRatio": 1,
+      "width": 1280,
+      "height": 800,
+      "geometries": 96,
+      "textures": 20
+    },
+    "encodedResourceBytes": 3389148,
+    "views": [
+      {
+        "angleDegrees": 0,
+        "frames": 23,
+        "fpsMean": 7.839394662139942,
+        "frameP95Ms": 142.39999997615814,
+        "maxDrawCalls": 170,
+        "maxTriangles": 158248
+      },
+      {
+        "angleDegrees": 45,
+        "frames": 38,
+        "fpsMean": 12.7838519764508,
+        "frameP95Ms": 119.60000002384186,
+        "maxDrawCalls": 149,
+        "maxTriangles": 155487
+      },
+      {
+        "angleDegrees": 90,
+        "frames": 29,
+        "fpsMean": 9.556134049719414,
+        "frameP95Ms": 113.40000009536743,
+        "maxDrawCalls": 124,
+        "maxTriangles": 148451
+      },
+      {
+        "angleDegrees": 135,
+        "frames": 28,
+        "fpsMean": 9.335822885954533,
+        "frameP95Ms": 121.20000004768372,
+        "maxDrawCalls": 135,
+        "maxTriangles": 150096
+      },
+      {
+        "angleDegrees": 180,
+        "frames": 25,
+        "fpsMean": 8.528348229584271,
+        "frameP95Ms": 130.60000002384186,
+        "maxDrawCalls": 113,
+        "maxTriangles": 142032
+      },
+      {
+        "angleDegrees": 225,
+        "frames": 40,
+        "fpsMean": 12.427763624304108,
+        "frameP95Ms": 124.79999995231628,
+        "maxDrawCalls": 88,
+        "maxTriangles": 132234
+      },
+      {
+        "angleDegrees": 270,
+        "frames": 22,
+        "fpsMean": 7.341163908285522,
+        "frameP95Ms": 148.60000002384186,
+        "maxDrawCalls": 114,
+        "maxTriangles": 145105
+      },
+      {
+        "angleDegrees": 315,
+        "frames": 27,
+        "fpsMean": 9.027986759168666,
+        "frameP95Ms": 117.59999990463257,
+        "maxDrawCalls": 123,
+        "maxTriangles": 145347
+      }
+    ],
+    "errors": [],
+    "baselineMaxDrawCalls": 530,
+    "maxDrawCalls": 170
+  },
+  "hardwareRender": {
+    "at": "2026-11-10T15:38:34.928Z",
+    "scope": "Desktop Chromium, low quality, 60 FPS cap, reduced motion, 20 real network guests, eight camera angles; headless browser measurement, not mobile-device certification.",
+    "hardwareRequested": true,
+    "url": "http://127.0.0.1:2567",
+    "readyMs": 3015.5240999999996,
+    "renderer": {
+      "vendor": "Google Inc. (Intel)",
+      "renderer": "ANGLE (Intel, Intel(R) UHD Graphics 730 (0x00004692) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/158.0.8127.18 Safari/537.36",
+      "pixelRatio": 1,
+      "width": 1280,
+      "height": 800,
+      "geometries": 97,
+      "textures": 20
+    },
+    "encodedResourceBytes": 4472500,
+    "views": [
+      {
+        "angleDegrees": 0,
+        "frames": 181,
+        "fpsMean": 60.039141541212835,
+        "frameP95Ms": 18.200000047683716,
+        "maxDrawCalls": 171,
+        "maxTriangles": 158384
+      },
+      {
+        "angleDegrees": 45,
+        "frames": 179,
+        "fpsMean": 59.662689153108154,
+        "frameP95Ms": 18.100000023841858,
+        "maxDrawCalls": 162,
+        "maxTriangles": 157039
+      },
+      {
+        "angleDegrees": 90,
+        "frames": 180,
+        "fpsMean": 59.962024051910326,
+        "frameP95Ms": 18.40000009536743,
+        "maxDrawCalls": 121,
+        "maxTriangles": 147471
+      },
+      {
+        "angleDegrees": 135,
+        "frames": 179,
+        "fpsMean": 60.00469310400904,
+        "frameP95Ms": 18.399999976158142,
+        "maxDrawCalls": 121,
+        "maxTriangles": 146088
+      },
+      {
+        "angleDegrees": 180,
+        "frames": 180,
+        "fpsMean": 60.01200240095712,
+        "frameP95Ms": 19.299999952316284,
+        "maxDrawCalls": 126,
+        "maxTriangles": 144928
+      },
+      {
+        "angleDegrees": 225,
+        "frames": 178,
+        "fpsMean": 59.6514745308311,
+        "frameP95Ms": 18.899999976158142,
+        "maxDrawCalls": 99,
+        "maxTriangles": 134514
+      },
+      {
+        "angleDegrees": 270,
+        "frames": 179,
+        "fpsMean": 59.688552467340585,
+        "frameP95Ms": 18.600000023841858,
+        "maxDrawCalls": 102,
+        "maxTriangles": 141217
+      },
+      {
+        "angleDegrees": 315,
+        "frames": 180,
+        "fpsMean": 59.998000066187636,
+        "frameP95Ms": 18.600000023841858,
+        "maxDrawCalls": 132,
+        "maxTriangles": 148215
+      }
+    ],
+    "errors": []
+  },
+  "latency": {
+    "at": "2026-11-10T14:54:08.659Z",
+    "scope": "Real bidirectional TCP delay, loopback development backend; ordered deterministic jitter, not Internet packet-loss certification.",
+    "results": [
+      {
+        "rttMs": 50,
+        "jitterOneWayMs": 10,
+        "reactionMs": 900,
+        "catch": "passed",
+        "earlyHook": "rejected"
+      },
+      {
+        "rttMs": 150,
+        "jitterOneWayMs": 10,
+        "reactionMs": 900,
+        "catch": "passed",
+        "earlyHook": "rejected"
+      },
+      {
+        "rttMs": 300,
+        "jitterOneWayMs": 10,
+        "reactionMs": 900,
+        "catch": "passed",
+        "earlyHook": "rejected"
+      }
+    ]
+  },
+  "release": {
+    "status": "passed",
+    "at": "2026-11-10T14:50:50.855Z",
+    "scope": "Local Docker Linux production image with Caddy HTTPS local CA; no public deployment.",
+    "checks": [
+      "HTTPS, CSP, HttpOnly/Secure cookie, private metrics, nonroot container and restricted application database role",
+      "SIGKILL after commit preserves fish/XP and consumed bait; interrupted round refunds bait once; cookie restores inventory",
+      "Graceful shutdown refunds active bait; second startup does not duplicate fish, XP or refunds"
+    ],
+    "snapshots": {
+      "committed": {
+        "xp": 20,
+        "active": null,
+        "stock": 1,
+        "fish": 1,
+        "statuses": [
+          "COMMITTED"
+        ]
+      },
+      "interrupted": {
+        "xp": 0,
+        "active": null,
+        "stock": 2,
+        "fish": 0,
+        "statuses": [
+          "INTERRUPTED"
+        ]
+      },
+      "graceful": {
+        "xp": 0,
+        "active": null,
+        "stock": 2,
+        "fish": 0,
+        "statuses": [
+          "INTERRUPTED"
+        ]
+      }
+    }
+  },
+  "bridge": {
+    "status": "passed",
+    "at": "2026-11-10T15:21:30.656Z",
+    "scope": "Browser on isolated HTTPS frontend origin, actual HTTP proxy handler and production Vite build, real cross-origin CORS matchmaking/WSS backend. Frontend hosting intercepted locally; not deployed to Vercel.",
+    "checks": [
+      "Frontend-only HttpOnly/Secure guest cookie",
+      "No backend cookie required",
+      "Cross-origin credentialed matchmaking and WSS",
+      "Catch saved and inventory restored after reload",
+      "Cookie-authenticated profile and same-origin POST sale through the real proxy handler"
+    ],
+    "calls": [
+      {
+        "path": "/api/guest",
+        "status": 200
+      },
+      {
+        "path": "/api/profile",
+        "status": 200
+      },
+      {
+        "path": "/api/sale-quote",
+        "status": 200
+      },
+      {
+        "path": "/api/economy",
+        "status": 200
+      }
+    ],
+    "errors": []
+  },
+  "backup": {
+    "status": "passed",
+    "tables": 14,
+    "sourceSha256": "d13bbb7e3988a454491bda03623bb191dbc8823310f73c42a8862f41a1342043"
+  },
+  "restoredApplication": {
+    "status": "passed",
+    "at": "2026-11-11T02:06:10.461Z",
+    "database": "fishing_restore_linux_application",
+    "role": "fishing_app",
+    "restoredFish": 209,
+    "profileUnsoldFish": 1,
+    "profileXp": 20,
+    "checks": [
+      "Application-role startup recovery completed",
+      "Restored fish count preserved",
+      "Actual getProfile service reads persisted fish, XP and coins",
+      "No active rounds after recovery"
+    ]
+  },
+  "priorAbortedWindowsRun": {
+    "status": "failed",
+    "reason": "Soak aborted after an unexpected transport or operation failure.",
+    "stats": {
+      "casts": 3719,
+      "catchEvents": 2775,
+      "duplicateCatchEvents": 0,
+      "chats": 1789,
+      "emotes": 652,
+      "inputs": 77517,
+      "sales": 1031,
+      "purchases": 384,
+      "reconnects": 14,
+      "unexpectedDisconnects": 0,
+      "errors": [
+        "/api/sale-quote: 503 Không thể lưu dữ liệu. Hãy thử lại cùng thao tác."
+      ]
+    },
+    "integrity": {
+      "status": "passed",
+      "at": "2026-11-10T15:14:02.838Z",
+      "scope": "Data integrity after aborted native Windows soak; this does not mark the 60-minute soak as passed.",
+      "totals": {
+        "guests": 80,
+        "fish": 2847,
+        "rounds": 3922
+      },
+      "accountFailures": 0,
+      "albumFailures": 0,
+      "activeRounds": 0
+    }
+  },
+  "remaining": [
+    "Public Vercel/backend deployment and environment-specific soak",
+    "Midrange Android / Safari iOS FPS and input; desktop manual visual QA and additional resolutions/quality modes",
+    "Five new-player playtests and economy pacing",
+    "Previously recorded M1 camera occlusion and local movement prediction/reconciliation"
+  ]
+}

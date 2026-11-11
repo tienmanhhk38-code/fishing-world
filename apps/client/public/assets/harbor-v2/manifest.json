@@ -1,0 +1,129 @@
+{
+  "version": 2,
+  "author": "Fishing World Online",
+  "source": "apps/client/src/art/harbor-author.ts",
+  "assets": [
+    {
+      "id": "fisher_sailor",
+      "bytes": 382768,
+      "triangles": 7096,
+      "animations": [
+        "Idle",
+        "Walk",
+        "Cast",
+        "Wait",
+        "Hook",
+        "Reel",
+        "Celebrate",
+        "Run",
+        "Jump",
+        "ShowFish"
+      ]
+    },
+    {
+      "id": "fisher_sunny",
+      "bytes": 397164,
+      "triangles": 7432,
+      "animations": [
+        "Idle",
+        "Walk",
+        "Cast",
+        "Wait",
+        "Hook",
+        "Reel",
+        "Celebrate",
+        "Run",
+        "Jump",
+        "ShowFish"
+      ]
+    },
+    {
+      "id": "fisher_coral",
+      "bytes": 397164,
+      "triangles": 7432,
+      "animations": [
+        "Idle",
+        "Walk",
+        "Cast",
+        "Wait",
+        "Hook",
+        "Reel",
+        "Celebrate",
+        "Run",
+        "Jump",
+        "ShowFish"
+      ]
+    },
+    {
+      "id": "fisher_ocean",
+      "bytes": 398008,
+      "triangles": 7428,
+      "animations": [
+        "Idle",
+        "Walk",
+        "Cast",
+        "Wait",
+        "Hook",
+        "Reel",
+        "Celebrate",
+        "Run",
+        "Jump",
+        "ShowFish"
+      ]
+    },
+    {
+      "id": "dock",
+      "bytes": 124092,
+      "triangles": 1836,
+      "animations": []
+    },
+    {
+      "id": "dock_post",
+      "bytes": 28428,
+      "triangles": 1008,
+      "animations": []
+    },
+    {
+      "id": "palm",
+      "bytes": 150188,
+      "triangles": 3864,
+      "animations": []
+    },
+    {
+      "id": "house",
+      "bytes": 95920,
+      "triangles": 2644,
+      "animations": []
+    },
+    {
+      "id": "bush",
+      "bytes": 27988,
+      "triangles": 1296,
+      "animations": []
+    },
+    {
+      "id": "rocks",
+      "bytes": 83684,
+      "triangles": 720,
+      "animations": []
+    },
+    {
+      "id": "crate",
+      "bytes": 20076,
+      "triangles": 312,
+      "animations": []
+    },
+    {
+      "id": "lighthouse",
+      "bytes": 75560,
+      "triangles": 2076,
+      "animations": []
+    },
+    {
+      "id": "island",
+      "bytes": 19424,
+      "triangles": 672,
+      "animations": []
+    }
+  ]
+}

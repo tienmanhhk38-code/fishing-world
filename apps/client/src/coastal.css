@@ -1,0 +1,224 @@
+/* A quieter frame for the tropical world. Touch layouts retain their larger targets. */
+.vignette {
+  background: linear-gradient(
+    0deg,
+    #063b5940,
+    transparent 22%,
+    transparent 78%,
+    #0965a014
+  );
+}
+.nameplate {
+  font-size: 10px;
+  padding: 4px 9px;
+  background: #134c65c9;
+  border: 1px solid #d5f8ef99;
+  box-shadow: 0 2px 6px #07485c30;
+  backdrop-filter: blur(5px);
+}
+.nameplate i {
+  width: 17px;
+  height: 17px;
+  font-size: 10px;
+}
+.panel {
+  box-shadow:
+    0 24px 80px #042f6080,
+    inset 0 1px #ffffff55;
+}
+@media (min-width: 701px) and (min-height: 551px) {
+  main:not(.lobby) header {
+    top: 22px;
+    left: 24px;
+    right: 24px;
+  }
+  .profile {
+    border-radius: 22px;
+    background: linear-gradient(135deg, #174d70ed, #123b5cdb);
+    border: 1px solid #c1eafa99;
+    box-shadow:
+      0 5px 18px #06395225,
+      inset 0 1px #ffffff30;
+    padding: 6px 17px 6px 6px;
+  }
+  .profile .avatar {
+    width: 44px;
+    height: 44px;
+    border-width: 2px;
+  }
+  .profile b {
+    font-size: 13px;
+    letter-spacing: 0.2px;
+  }
+  .profile i {
+    width: 65px;
+    height: 5px;
+  }
+  main:not(.lobby) .icon {
+    background: linear-gradient(145deg, #287fa4e8, #155477e8);
+    box-shadow:
+      inset 0 1px #ffffff50,
+      0 4px 10px #08466720;
+    border-color: #b6e8f0a8;
+  }
+  .location {
+    top: 98px;
+    left: 24px;
+    padding: 8px 13px 8px 8px;
+    border: 1px solid #c8f0f177;
+    border-radius: 18px;
+    background: #134d70c9;
+    box-shadow: 0 4px 15px #053e5718;
+    backdrop-filter: blur(8px);
+  }
+  .location b {
+    font-size: 14px;
+  }
+  .location small {
+    font-size: 9px;
+    color: #d7f3f4;
+  }
+  .location-icon {
+    width: 31px;
+    height: 31px;
+    background: #3c9db599;
+  }
+  .side {
+    top: 180px;
+    left: 24px;
+    gap: 7px;
+  }
+  .side button {
+    min-height: 42px;
+    width: 139px;
+    padding: 4px 12px 4px 5px;
+    gap: 10px;
+    font-size: 12px;
+    border: 1px solid #bceaf25e;
+    border-radius: 15px;
+    background: linear-gradient(110deg, #154d70df, #164e6cbf);
+    box-shadow:
+      0 3px 12px #063b511a,
+      inset 0 1px #ffffff20;
+    text-shadow: none;
+    backdrop-filter: blur(8px);
+    transition:
+      background 0.18s,
+      transform 0.18s;
+  }
+  .side button:hover {
+    background: #226b8ee8;
+    transform: translateX(3px);
+  }
+  .side button > span {
+    width: 32px;
+    height: 32px;
+    background: #3893ac70;
+    border: 0;
+    box-shadow: none;
+  }
+  .side button svg {
+    width: 19px;
+    height: 19px;
+    color: #d7faf5;
+  }
+  .room {
+    top: 88px;
+    right: 24px;
+    padding: 7px 12px;
+    border: 1px solid #b5e5eb66;
+    border-radius: 13px;
+    background: #124a68bc;
+    font-size: 10px;
+    backdrop-filter: blur(8px);
+  }
+  .tutorial {
+    top: 132px;
+    left: auto;
+    right: 24px;
+    width: 222px;
+    padding: 12px 14px;
+    border-radius: 17px;
+    background: linear-gradient(135deg, #164768e8, #143854dc);
+    border: 1px solid #b8e4eb77;
+    box-shadow: 0 7px 22px #07365320;
+    backdrop-filter: blur(10px);
+  }
+  .tutorial h3 {
+    font-size: 14px;
+    margin: 6px 0;
+  }
+  .tutorial p {
+    font-size: 10px;
+    line-height: 1.6;
+  }
+  .tutorial small {
+    font-size: 7px;
+    letter-spacing: 0.6px;
+    color: #ffdc83;
+  }
+  .tutorial-toggle {
+    top: 132px;
+    left: auto;
+    right: 24px;
+  }
+  .equipment {
+    left: 24px;
+    bottom: 28px;
+    padding: 9px 13px;
+    background: #123f5cdd;
+    border-radius: 16px;
+    border-color: #bfe8e266;
+    box-shadow: 0 4px 12px #07354b22;
+  }
+  .equipment > span {
+    font-size: 21px;
+  }
+  .hint:not(.bite) {
+    border-radius: 17px;
+    background: #123f5ed9;
+    border-color: #bce6e966;
+    box-shadow: 0 6px 20px #083d5420;
+    backdrop-filter: blur(8px);
+  }
+  .hint b {
+    font-size: 12px;
+  }
+  .hint small {
+    font-size: 10px;
+  }
+  .action-area {
+    right: 28px;
+    bottom: 28px;
+  }
+  .cast {
+    width: 112px;
+    height: 112px;
+    border-width: 2px;
+    box-shadow:
+      0 4px 0 #b77820,
+      0 9px 25px #093f5538,
+      inset 0 0 0 5px #fff6a970;
+  }
+  .cast b {
+    font-size: 17px;
+  }
+  .cast > span svg {
+    width: 32px;
+    height: 32px;
+  }
+  .hud-emotes {
+    right: 28px;
+  }
+}
+@media (max-width: 700px) {
+  .nameplate {
+    font-size: 9px;
+    padding: 3px 6px;
+  }
+  .nameplate i {
+    width: 15px;
+    height: 15px;
+    font-size: 9px;
+  }
+}

@@ -1,0 +1,246 @@
+{
+  "checks": "GLB round-trip Blender import, non-empty meshes, materials, finite vertices",
+  "browser_runtime_tested": false,
+  "results": [
+    {
+      "file": "bait_dough.glb",
+      "mesh_objects": 1,
+      "triangles": 80,
+      "import": "pass"
+    },
+    {
+      "file": "bait_shrimp.glb",
+      "mesh_objects": 1,
+      "triangles": 168,
+      "import": "pass"
+    },
+    {
+      "file": "bait_worm.glb",
+      "mesh_objects": 1,
+      "triangles": 180,
+      "import": "pass"
+    },
+    {
+      "file": "beach_bench.glb",
+      "mesh_objects": 1,
+      "triangles": 72,
+      "import": "pass"
+    },
+    {
+      "file": "bite_exclamation.glb",
+      "mesh_objects": 1,
+      "triangles": 108,
+      "import": "pass"
+    },
+    {
+      "file": "bobber_ripples.glb",
+      "mesh_objects": 1,
+      "triangles": 768,
+      "import": "pass"
+    },
+    {
+      "file": "chibi_fisher_blockout.glb",
+      "mesh_objects": 1,
+      "triangles": 1128,
+      "import": "pass"
+    },
+    {
+      "file": "dock_corner_3x3m.glb",
+      "mesh_objects": 1,
+      "triangles": 188,
+      "import": "pass"
+    },
+    {
+      "file": "dock_post.glb",
+      "mesh_objects": 1,
+      "triangles": 88,
+      "import": "pass"
+    },
+    {
+      "file": "dock_straight_2x3m.glb",
+      "mesh_objects": 1,
+      "triangles": 376,
+      "import": "pass"
+    },
+    {
+      "file": "fish_concept_01.glb",
+      "mesh_objects": 1,
+      "triangles": 312,
+      "import": "pass"
+    },
+    {
+      "file": "fish_concept_02.glb",
+      "mesh_objects": 1,
+      "triangles": 312,
+      "import": "pass"
+    },
+    {
+      "file": "fish_concept_03.glb",
+      "mesh_objects": 1,
+      "triangles": 312,
+      "import": "pass"
+    },
+    {
+      "file": "fish_concept_04.glb",
+      "mesh_objects": 1,
+      "triangles": 472,
+      "import": "pass"
+    },
+    {
+      "file": "fish_concept_05.glb",
+      "mesh_objects": 1,
+      "triangles": 312,
+      "import": "pass"
+    },
+    {
+      "file": "fish_concept_06.glb",
+      "mesh_objects": 1,
+      "triangles": 312,
+      "import": "pass"
+    },
+    {
+      "file": "fish_concept_07.glb",
+      "mesh_objects": 1,
+      "triangles": 312,
+      "import": "pass"
+    },
+    {
+      "file": "fish_concept_08.glb",
+      "mesh_objects": 1,
+      "triangles": 312,
+      "import": "pass"
+    },
+    {
+      "file": "fish_concept_09.glb",
+      "mesh_objects": 1,
+      "triangles": 472,
+      "import": "pass"
+    },
+    {
+      "file": "fish_concept_10.glb",
+      "mesh_objects": 1,
+      "triangles": 312,
+      "import": "pass"
+    },
+    {
+      "file": "fish_concept_11.glb",
+      "mesh_objects": 1,
+      "triangles": 312,
+      "import": "pass"
+    },
+    {
+      "file": "fish_concept_12.glb",
+      "mesh_objects": 1,
+      "triangles": 312,
+      "import": "pass"
+    },
+    {
+      "file": "fish_concept_13.glb",
+      "mesh_objects": 1,
+      "triangles": 312,
+      "import": "pass"
+    },
+    {
+      "file": "fish_concept_14.glb",
+      "mesh_objects": 1,
+      "triangles": 472,
+      "import": "pass"
+    },
+    {
+      "file": "fish_concept_15.glb",
+      "mesh_objects": 1,
+      "triangles": 312,
+      "import": "pass"
+    },
+    {
+      "file": "fish_market_stall.glb",
+      "mesh_objects": 1,
+      "triangles": 260,
+      "import": "pass"
+    },
+    {
+      "file": "fish_shadow_uniform.glb",
+      "mesh_objects": 1,
+      "triangles": 80,
+      "import": "pass"
+    },
+    {
+      "file": "fishing_bobber.glb",
+      "mesh_objects": 1,
+      "triangles": 188,
+      "import": "pass"
+    },
+    {
+      "file": "island_base.glb",
+      "mesh_objects": 1,
+      "triangles": 160,
+      "import": "pass"
+    },
+    {
+      "file": "lighthouse.glb",
+      "mesh_objects": 1,
+      "triangles": 622,
+      "import": "pass"
+    },
+    {
+      "file": "palm_tree.glb",
+      "mesh_objects": 1,
+      "triangles": 256,
+      "import": "pass"
+    },
+    {
+      "file": "rock_cluster.glb",
+      "mesh_objects": 1,
+      "triangles": 60,
+      "import": "pass"
+    },
+    {
+      "file": "rod_bamboo.glb",
+      "mesh_objects": 1,
+      "triangles": 264,
+      "import": "pass"
+    },
+    {
+      "file": "rod_carbon.glb",
+      "mesh_objects": 1,
+      "triangles": 264,
+      "import": "pass"
+    },
+    {
+      "file": "rod_wood.glb",
+      "mesh_objects": 1,
+      "triangles": 264,
+      "import": "pass"
+    },
+    {
+      "file": "tropical_bush.glb",
+      "mesh_objects": 1,
+      "triangles": 240,
+      "import": "pass"
+    },
+    {
+      "file": "village_house.glb",
+      "mesh_objects": 1,
+      "triangles": 78,
+      "import": "pass"
+    },
+    {
+      "file": "water_tile_10m.glb",
+      "mesh_objects": 1,
+      "triangles": 12,
+      "import": "pass"
+    },
+    {
+      "file": "wooden_crate.glb",
+      "mesh_objects": 1,
+      "triangles": 60,
+      "import": "pass"
+    },
+    {
+      "file": "island_layout_example.glb",
+      "mesh_objects": 32,
+      "triangles": 6572,
+      "import": "pass"
+    }
+  ]
+}

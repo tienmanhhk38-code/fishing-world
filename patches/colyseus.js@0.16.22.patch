@@ -1,0 +1,62 @@
+diff --git a/build/cjs/transport/WebSocketTransport.js b/build/cjs/transport/WebSocketTransport.js
+index 3ad18e1ff41a565abfd629a791250f600bbfe261..9d5b414bf4cca63b414fd31b06eeeb84e05bf0a2 100644
+--- a/build/cjs/transport/WebSocketTransport.js
++++ b/build/cjs/transport/WebSocketTransport.js	
+@@ -3,7 +3,7 @@
+ 
+ var NodeWebSocket = require('ws');
+ 
+-const WebSocket = globalThis.WebSocket || NodeWebSocket;
++const WebSocket = typeof window !== 'undefined' ? globalThis.WebSocket : NodeWebSocket;
+ class WebSocketTransport {
+     constructor(events) {
+         this.events = events;
+@@ -19,14 +19,9 @@ class WebSocketTransport {
+      * @param headers custom headers to send with the connection (only supported in Node.js. Web Browsers do not allow setting custom headers)
+      */
+     connect(url, headers) {
+-        try {
+-            // Node or Bun environments (supports custom headers)
+-            this.ws = new WebSocket(url, { headers, protocols: this.protocols });
+-        }
+-        catch (e) {
+-            // browser environment (custom headers not supported)
+-            this.ws = new WebSocket(url, this.protocols);
+-        }
++        this.ws = typeof window !== 'undefined'
++            ? new WebSocket(url, this.protocols)
++            : new WebSocket(url, this.protocols, { headers });
+         this.ws.binaryType = 'arraybuffer';
+         this.ws.onopen = this.events.onopen;
+         this.ws.onmessage = this.events.onmessage;
+diff --git a/build/esm/transport/WebSocketTransport.mjs b/build/esm/transport/WebSocketTransport.mjs
+index 3f6f726067d7c04c118aac5cbda6b8324d434cff..9266225dc6cde6097f5c77ec9f4ab1b796fd38d8 100644
+--- a/build/esm/transport/WebSocketTransport.mjs
++++ b/build/esm/transport/WebSocketTransport.mjs	
+@@ -1,7 +1,7 @@
+ // colyseus.js@0.16.22
+ import NodeWebSocket from 'ws';
+ 
+-const WebSocket = globalThis.WebSocket || NodeWebSocket;
++const WebSocket = typeof window !== 'undefined' ? globalThis.WebSocket : NodeWebSocket;
+ class WebSocketTransport {
+     events;
+     ws;
+@@ -20,14 +20,9 @@ class WebSocketTransport {
+      * @param headers custom headers to send with the connection (only supported in Node.js. Web Browsers do not allow setting custom headers)
+      */
+     connect(url, headers) {
+-        try {
+-            // Node or Bun environments (supports custom headers)
+-            this.ws = new WebSocket(url, { headers, protocols: this.protocols });
+-        }
+-        catch (e) {
+-            // browser environment (custom headers not supported)
+-            this.ws = new WebSocket(url, this.protocols);
+-        }
++        this.ws = typeof window !== 'undefined'
++            ? new WebSocket(url, this.protocols)
++            : new WebSocket(url, this.protocols, { headers });
+         this.ws.binaryType = 'arraybuffer';
+         this.ws.onopen = this.events.onopen;
+         this.ws.onmessage = this.events.onmessage;

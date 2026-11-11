@@ -1,0 +1,89 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: fishing_admin
+      POSTGRES_DB: fishing
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_admin_password
+      POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256
+    secrets: [db_password, db_admin_password]
+    volumes:
+      - beta-postgres:/var/lib/postgresql/data
+      - ./deploy/init-database.sh:/docker-entrypoint-initdb.d/10-app-role.sh:ro
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U fishing_admin -d fishing"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+  migrate:
+    build: .
+    environment:
+      APP_MODE: migrate
+      DATABASE_USER: fishing_admin
+      DATABASE_PASSWORD_FILE: /run/secrets/db_admin_password
+    secrets: [db_admin_password]
+    depends_on:
+      postgres: { condition: service_healthy }
+    read_only: true
+    tmpfs: [/tmp:size=64m]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: "no"
+  app:
+    build: .
+    environment:
+      NODE_ENV: production
+      APP_ORIGINS: ${APP_ORIGINS:-https://localhost:8443}
+      TRUST_PROXY: uniquelocal
+      DATABASE_USER: fishing_app
+      DATABASE_PASSWORD_FILE: /run/secrets/db_password
+      METRICS_TOKEN_FILE: /run/secrets/metrics_token
+      MAX_ROOMS: 20
+    secrets: [db_password, metrics_token]
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+    read_only: true
+    tmpfs: [/tmp:size=64m]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    stop_grace_period: 35s
+    mem_limit: 768m
+    cpus: 2
+    healthcheck:
+      test:
+        [
+          CMD,
+          node,
+          -e,
+          "fetch('http://127.0.0.1:2567/readyz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 3s
+      start_period: 30s
+      retries: 5
+    restart: unless-stopped
+  proxy:
+    image: caddy:2-alpine
+    ports:
+      [
+        "${BIND_ADDRESS:-127.0.0.1}:${HTTPS_PORT:-8443}:443",
+        "${BIND_ADDRESS:-127.0.0.1}:${HTTP_PORT:-8080}:80",
+      ]
+    environment:
+      GAME_HOST: ${GAME_HOST:-localhost}
+    volumes:
+      - ${CADDY_CONFIG:-./deploy/Caddyfile.local}:/etc/caddy/Caddyfile:ro
+      - beta-caddy:/data
+      - beta-caddy-config:/config
+    depends_on:
+      app: { condition: service_healthy }
+    restart: unless-stopped
+volumes:
+  beta-postgres:
+  beta-caddy:
+  beta-caddy-config:
+secrets:
+  db_admin_password: { file: ./.local/beta/db-admin-password.txt }
+  db_password: { file: ./.local/beta/db-password.txt }
+  metrics_token: { file: ./.local/beta/metrics-token.txt }

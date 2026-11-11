@@ -1,0 +1,85 @@
+{
+  "at": "2026-11-11T04:15:30.513Z",
+  "scope": "Desktop Chromium, low quality, 60 FPS cap, reduced motion, 20 real network guests, eight camera angles; headless browser measurement, not mobile-device certification.",
+  "hardwareRequested": true,
+  "url": "http://127.0.0.1:2567",
+  "readyMs": 2963.9549000000006,
+  "renderer": {
+    "vendor": "Google Inc. (Intel)",
+    "renderer": "ANGLE (Intel, Intel(R) UHD Graphics 730 (0x00004692) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/158.0.8127.18 Safari/537.36",
+    "pixelRatio": 1,
+    "width": 1280,
+    "height": 800,
+    "geometries": 83,
+    "textures": 23
+  },
+  "encodedResourceBytes": 5266788,
+  "views": [
+    {
+      "angleDegrees": 0,
+      "frames": 166,
+      "fpsMean": 55.64681036461174,
+      "frameP95Ms": 32.799999952316284,
+      "maxDrawCalls": 175,
+      "maxTriangles": 582414
+    },
+    {
+      "angleDegrees": 45,
+      "frames": 167,
+      "fpsMean": 55.68708526282612,
+      "frameP95Ms": 33.200000047683716,
+      "maxDrawCalls": 164,
+      "maxTriangles": 580619
+    },
+    {
+      "angleDegrees": 90,
+      "frames": 165,
+      "fpsMean": 56.58824336235424,
+      "frameP95Ms": 24.100000023841858,
+      "maxDrawCalls": 131,
+      "maxTriangles": 573205
+    },
+    {
+      "angleDegrees": 135,
+      "frames": 168,
+      "fpsMean": 56.23807451634641,
+      "frameP95Ms": 28.800000071525574,
+      "maxDrawCalls": 119,
+      "maxTriangles": 546848
+    },
+    {
+      "angleDegrees": 180,
+      "frames": 170,
+      "fpsMean": 56.983876915736666,
+      "frameP95Ms": 22.799999952316284,
+      "maxDrawCalls": 137,
+      "maxTriangles": 550596
+    },
+    {
+      "angleDegrees": 225,
+      "frames": 168,
+      "fpsMean": 56.29083598592729,
+      "frameP95Ms": 23.100000023841858,
+      "maxDrawCalls": 120,
+      "maxTriangles": 545412
+    },
+    {
+      "angleDegrees": 270,
+      "frames": 163,
+      "fpsMean": 54.40769051079715,
+      "frameP95Ms": 31.899999976158142,
+      "maxDrawCalls": 117,
+      "maxTriangles": 546891
+    },
+    {
+      "angleDegrees": 315,
+      "frames": 162,
+      "fpsMean": 54.296822629945524,
+      "frameP95Ms": 33.799999952316284,
+      "maxDrawCalls": 141,
+      "maxTriangles": 553687
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,41 @@
+# Single-instance beta. The disk deliberately disables overlapping deployments.
+# Game data remains in Neon, not on this disk. Do not remove it until the
+# server supports overlapping instances / distributed room ownership.
+services:
+  - type: web
+    name: fishing-world-server
+    runtime: docker
+    plan: 0.5c-512mb
+    region: singapore
+    numInstances: 1
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /readyz
+    preDeployCommand: node scripts/container-entry.mjs --migrate
+    autoDeployTrigger: off
+    maxShutdownDelaySeconds: 60
+    disk:
+      name: deployment-serialization
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: HOST
+        value: 0.0.0.0
+      - key: PORT
+        value: 10000
+      - key: TRUST_PROXY
+        value: "1"
+      - key: MAX_ROOMS
+        value: "20"
+      - key: APP_ORIGINS
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: DIRECT_DATABASE_URL
+        sync: false
+      - key: MIGRATION_DATABASE_URL
+        sync: false
+      - key: METRICS_TOKEN
+        generateValue: true

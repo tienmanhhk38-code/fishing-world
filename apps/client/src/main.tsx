@@ -1,0 +1,831 @@
+import React, { useEffect, useState, useRef, Suspense } from "react";
+import { createRoot } from "react-dom/client";
+import { Canvas } from "@react-three/fiber";
+import { useProgress } from "@react-three/drei";
+import { AssetBoundary, fishModelId } from "./assets";
+import { AssetImage, InventoryPanel } from "./InventoryPanel";
+import {
+  Fish,
+  Backpack,
+  Volume2,
+  VolumeX,
+  Anchor,
+  Users,
+  X,
+  ArrowRight,
+  RotateCcw,
+  Check,
+  MousePointer2,
+  Settings,
+  MapPin,
+  Coins,
+  ShoppingBasket,
+  BookOpen,
+  Flag,
+  Footprints,
+  ArrowUp,
+} from "lucide-react";
+import { Scene } from "./scene";
+import {
+  action,
+  jump,
+  leaveToLobby,
+  connect,
+  controls,
+  enableAudio,
+  send,
+  useGame,
+  type JoinOptions,
+} from "./network";
+import "@fontsource-variable/nunito";
+import "./style.css";
+import "./social.css";
+import "./coastal.css";
+import "./experience.css";
+import { QuestPanel } from "./QuestPanel";
+import { useSettings } from "./settings";
+import { ShopPanel, AlbumPanel } from "./CollectionPanels";
+import { Tutorial, EconomyNotice } from "./ProgressPanels";
+import { AREAS, RODS, BAITS, RARITIES, levelProgress } from "@fishing/shared";
+import { RoomPicker } from "./RoomPicker";
+import { MapPanel } from "./MapPanel";
+import { SettingsPanel } from "./SettingsPanel";
+import {
+  CommunityPanel,
+  ChatDock,
+  EmoteTray,
+  SocialNotice,
+  Avatar,
+} from "./CommunityPanel";
+import { AppearancePanel } from "./AppearancePanel";
+import { focusAudio, playSound } from "./audio";
+import {
+  GraphicsBoundary,
+  GraphicsNotice,
+  GraphicsLifecycle,
+} from "./GraphicsSupport";
+
+function Logo() {
+  return (
+    <div className="logo image-logo">
+      <img src="/assets/ui/fishing-world-logo-20261111.png" alt="Fishing World Online" width={1536} height={1024} draggable={false} fetchPriority="high" />
+    </div>
+  );
+}
+function FishArtwork({ species }: { species?: string }) {
+  return <AssetImage id={fishModelId(species)} className="fish-art" />;
+}
+
+function AssetLoading() {
+  const { active } = useProgress();
+  return active ? (
+    <div className="asset-loading-screen">
+      <div className="asset-loading" role="status">
+        Đang tải hòn đảo…
+      </div>
+    </div>
+  ) : null;
+}
+function App() {
+  const game = useGame();
+  const settings = useSettings();
+  const drag = useRef<{ id: number; x: number; y: number } | null>(null);
+  const [shopOpen, setShopOpen] = useState(false),
+    [albumOpen, setAlbumOpen] = useState(false);
+  const [configOpen, setConfigOpen] = useState(false);
+  const [communityOpen, setCommunityOpen] = useState(false),
+    [appearanceOpen, setAppearanceOpen] = useState(false),
+    [chatFocused, setChatFocused] = useState(false);
+  const [roomsOpen, setRoomsOpen] = useState(false),
+    [mapOpen, setMapOpen] = useState(false);
+  const [started, setStarted] = useState(false),
+    [loading, setLoading] = useState(false),
+    [bag, setBag] = useState(false),
+    [help, setHelp] = useState(false);
+  const [questsOpen, setQuestsOpen] = useState(false),
+    [sprinting, setSprinting] = useState(false);
+  const fishing = [
+    "CASTING",
+    "WAITING",
+    "APPROACHING",
+    "NIBBLING",
+    "BITE_WINDOW",
+    "REELING",
+  ].includes(game.phase);
+  useEffect(() => {
+    if (game.leftLobby) {
+      setStarted(false);
+      setConfigOpen(false);
+      setBag(false);
+      setMapOpen(false);
+      setQuestsOpen(false);
+      setShopOpen(false);
+      setAlbumOpen(false);
+      setCommunityOpen(false);
+      setHelp(false);
+      setSprinting(false);
+      controls.sprint = false;
+    }
+  }, [game.leftLobby]);
+  const modalOpen =
+    questsOpen ||
+    bag ||
+    help ||
+    configOpen ||
+    roomsOpen ||
+    mapOpen ||
+    shopOpen ||
+    albumOpen ||
+    communityOpen ||
+    appearanceOpen;
+  useEffect(() => {
+    const click = (e: MouseEvent) => {
+      const button = (e.target as HTMLElement).closest<HTMLButtonElement>(
+        "button",
+      );
+      if (button && !button.disabled) {
+        enableAudio();
+        playSound("click");
+      }
+    };
+    document.addEventListener("click", click);
+    return () => document.removeEventListener("click", click);
+  }, []);
+  useEffect(
+    () => focusAudio(game.phase === "BITE_WINDOW" || game.phase === "REELING"),
+    [game.phase],
+  );
+  useEffect(() => {
+    if (fishing) {
+      setShopOpen(false);
+      setAlbumOpen(false);
+      setBag(false);
+      setMapOpen(false);
+      setHelp(false);
+      setConfigOpen(false);
+      setCommunityOpen(false);
+      setAppearanceOpen(false);
+    }
+  }, [fishing]);
+  const progress = levelProgress(game.profile?.xp ?? 0);
+  useEffect(() => {
+    if (!game.announcement) return;
+    const timer = setTimeout(
+      () => useGame.setState({ announcement: "" }),
+      6000,
+    );
+    return () => clearTimeout(timer);
+  }, [game.announcement]);
+  async function play(options: JoinOptions = {}) {
+    enableAudio();
+    setLoading(true);
+    try {
+      await connect(options);
+      setRoomsOpen(false);
+      setStarted(true);
+    } catch {
+    } finally {
+      setLoading(false);
+    }
+  }
+  useEffect(() => {
+    controls.keys.clear();
+    controls.x = 0;
+    controls.z = 0;
+    controls.sprint = false;
+    setSprinting(false);
+    drag.current = null;
+    const down = (e: KeyboardEvent) => {
+      if (
+        !started ||
+        questsOpen ||
+        bag ||
+        help ||
+        configOpen ||
+        roomsOpen ||
+        mapOpen ||
+        shopOpen ||
+        albumOpen ||
+        communityOpen ||
+        appearanceOpen ||
+        chatFocused ||
+        (e.target as HTMLElement).matches("input,textarea,select") ||
+        ((e.target as HTMLElement).matches('button')&&['Space','Enter'].includes(e.code)&&!(e.target as HTMLElement).closest('.action-area,.movement-buttons'))
+      )
+        return;
+      if (e.code === "Enter") {
+        e.preventDefault();
+        window.dispatchEvent(new Event("fishing:chat"));
+        return;
+      }
+      if (
+        [
+          "Space",
+          "KeyF",
+          "ArrowUp",
+          "ArrowDown",
+          "ArrowLeft",
+          "ArrowRight",
+        ].includes(e.code)
+      )
+        e.preventDefault();
+      controls.keys.add(e.code);
+      if (e.code === "Space" && !e.repeat) jump();
+      if (e.code === "KeyF" && !e.repeat) action();
+    };
+    const up = (e: KeyboardEvent) => controls.keys.delete(e.code);
+    const clear = () => {
+      controls.keys.clear();
+      controls.x = 0;
+      controls.z = 0;
+    };
+    window.addEventListener("keydown", down);
+    window.addEventListener("keyup", up);
+    window.addEventListener("blur", clear);
+    return () => {
+      window.removeEventListener("keydown", down);
+      window.removeEventListener("keyup", up);
+      window.removeEventListener("blur", clear);
+    };
+  }, [
+    questsOpen,
+    bag,
+    help,
+    configOpen,
+    started,
+    roomsOpen,
+    mapOpen,
+    shopOpen,
+    albumOpen,
+    communityOpen,
+    appearanceOpen,
+    chatFocused,
+  ]);
+  const captions: Record<string, string> = {
+    IDLE:
+      game.area === "village"
+        ? "Ra bờ ao, thử một loài cá nước ngọt."
+        : "Một chiếc cần. Cả đại dương.",
+    CASTING: "Mồi đã xuống nước…",
+    WAITING: "Thư thả một chút, cá đang đến.",
+    APPROACHING: "Có bóng cá! Chờ phao chìm nhé.",
+    NIBBLING: "Cá đang nhấp mồi… hãy chờ!",
+    BITE_WINDOW: "Cá cắn! Giật cần ngay!",
+    REELING: "Được rồi! Đang kéo cá lên…",
+    RESULT: "Một món quà từ đại dương!",
+    SHOWCASING: "Đi khoe chiến lợi phẩm nào! Cất cá để câu tiếp.",
+  };
+  return (
+    <main
+      className={`${fishing ? "fishing" : ""} ${!started ? "lobby" : ""} ${settings.reducedMotion ? "reduce-motion" : ""} ${chatFocused ? "chat-typing" : ""}`}
+    >
+      <div
+        className="world"
+        onPointerDown={(e) => {
+          if (e.button !== 0) return;
+          e.currentTarget.setPointerCapture(e.pointerId);
+          drag.current = {
+            id: e.pointerId,
+            x: e.clientX,
+            y: e.clientY,
+          };
+        }}
+        onPointerMove={(e) => {
+          const d = drag.current;
+          if (d?.id !== e.pointerId) return;
+          controls.yaw -= (e.clientX - d.x) * 0.006 * settings.sensitivity;
+          controls.pitch = Math.max(
+            0.18,
+            Math.min(
+              1,
+              controls.pitch +
+                (e.clientY - d.y) *
+                  0.004 *
+                  settings.sensitivity *
+                  (settings.invertY ? -1 : 1),
+            ),
+          );
+          d.x = e.clientX;
+          d.y = e.clientY;
+        }}
+        onPointerUp={(e) => {
+          drag.current = null;
+        }}
+        onPointerCancel={(e) => {
+          drag.current = null;
+        }}
+      >
+        <GraphicsBoundary>
+          <Canvas
+            shadows={settings.quality === "high" ? "percentage" : false}
+            frameloop="never"
+            camera={{ position: [10, 13, 22], fov: 50 }}
+            dpr={
+              settings.quality === "high" ? Math.min(devicePixelRatio, 1.5) : 1
+            }
+            gl={{ antialias: true }}
+          >
+            <GraphicsLifecycle />
+            <AssetBoundary>
+              <Suspense fallback={null}>
+                <Scene />
+              </Suspense>
+            </AssetBoundary>
+          </Canvas>
+        </GraphicsBoundary>
+      </div>
+      <AssetLoading />
+      <GraphicsNotice />
+      <div className="vignette" />
+      <header>
+        <Logo />
+        {started && (
+          <div className="top-right">
+            <button
+              className="profile hide-fishing"
+              aria-label="Chỉnh sửa nhân vật"
+              onClick={() => setAppearanceOpen(true)}
+            >
+              <span className="avatar">
+                <Avatar appearanceId={game.profile?.appearanceId} />
+              </span>
+              <div>
+                <b>{game.profile?.name}</b>
+                <small>
+                  Cấp {progress.level}{" "}
+                  <i
+                    style={{
+                      background: `linear-gradient(90deg,#ffd772 ${progress.needed ? (progress.current / progress.needed) * 100 : 100}%,#2b5674 0)`,
+                    }}
+                  />{" "}
+                  {game.profile?.xp ?? 0} XP
+                </small>
+              </div>
+            </button>
+            <button
+              className="icon"
+              aria-label="Âm thanh"
+              onClick={() => {
+                enableAudio();
+                settings.update({ soundMuted: !settings.soundMuted });
+              }}
+            >
+              {settings.soundMuted ? <VolumeX /> : <Volume2 />}
+            </button>
+          </div>
+        )}
+        {started && (
+          <button
+            className="coin-counter hide-fishing"
+            aria-label="Mở cửa hàng"
+            onClick={() => setShopOpen(true)}
+          >
+            <Coins size={23} />
+            <b>{(game.profile?.coins ?? 0).toLocaleString("vi-VN")}</b>
+            <span>Xu</span>
+          </button>
+        )}
+        <button
+          className="lobby-settings icon"
+          aria-label="Cài đặt game"
+          onClick={() => setConfigOpen(true)}
+        >
+          <Settings />
+        </button>
+      </header>
+      {!started ? (
+        <section className="landing">
+          <Logo />
+          <button
+            className="play"
+            onClick={() => void play()}
+            disabled={loading}
+          >
+            {loading ? "Đang ra bến…" : "Chơi khách"}
+            <ArrowRight size={22} />
+          </button>
+          <button
+            className="choose-room"
+            onClick={() => {
+              useGame.setState({ notice: "" });
+              setRoomsOpen(true);
+            }}
+          >
+            <Users size={18} /> Chọn phòng
+          </button>
+          <button
+            className="choose-room character-entry"
+            onClick={() => setAppearanceOpen(true)}
+          >
+            <Avatar appearanceId={game.profile?.appearanceId} />
+            Nhân vật
+          </button>
+          <small>Tiến trình lưu tự động trên trình duyệt</small>
+          {game.notice && (
+            <p role="alert" className="login-error">
+              {game.notice}
+            </p>
+          )}
+        </section>
+      ) : (
+        <>
+          <div className="location hide-fishing">
+            <span className="location-icon">
+              <Anchor size={20} />
+            </span>
+            <div>
+              <b>{AREAS[game.area].name}</b>
+              <small>
+                <span className="live-dot" />{" "}
+                {game.area === "beach" ? "Bến bình yên" : "Ao làng"} ·{" "}
+                {game.count} người chơi
+              </small>
+            </div>
+          </div>
+          <nav className="side hide-fishing">
+            <button
+              onClick={() => {
+                useGame.setState({ teleportError: "" });
+                setMapOpen(true);
+              }}
+            >
+              <span>
+                <MapPin />
+              </span>
+              Bản đồ
+            </button>
+            <button onClick={() => setBag(true)}>
+              <span>
+                <Backpack />
+              </span>
+              Túi đồ
+              {(game.profile?.fish.length ?? 0) > 0 && (
+                <b className="badge">{game.profile?.fish.length}</b>
+              )}
+            </button>
+            <button onClick={() => setShopOpen(true)}>
+              <span>
+                <ShoppingBasket />
+              </span>
+              Cửa hàng
+            </button>
+            <button onClick={() => setAlbumOpen(true)}>
+              <span>
+                <BookOpen />
+              </span>
+              Album
+            </button>
+            <button onClick={() => setQuestsOpen(true)}>
+              <span>
+                <Flag />
+              </span>
+              Nhiệm vụ
+              {game.profile?.quests?.some(
+                (q) => !q.claimed && q.available && q.progress >= q.goal,
+              ) && <b className="badge">!</b>}
+            </button>
+            <button onClick={() => setHelp(true)}>
+              <span>
+                <MousePointer2 />
+              </span>
+              Cách chơi
+            </button>
+            <button
+              onClick={() => {
+                controls.yaw = 0.35;
+                controls.pitch = 0.3;
+              }}
+            >
+              <span>
+                <RotateCcw />
+              </span>
+              Góc nhìn
+            </button>
+          </nav>
+          <div className="room hide-fishing">
+            <Users size={15} />
+            <span>Mã phòng {game.roomId}</span>
+            <span className="live-dot" />
+          </div>
+          <div
+            className={"hint " + (game.phase === "BITE_WINDOW" ? "bite" : "")}
+          >
+            <span>{game.phase === "BITE_WINDOW" ? "!" : "✦"}</span>
+            <div>
+              <b>{captions[game.phase]}</b>
+              <small>
+                {game.phase === "BITE_WINDOW"
+                  ? `${(game.hookWindowMs / 1000).toLocaleString("vi-VN")} giây để giật!`
+                  : game.notice}
+              </small>
+            </div>
+          </div>
+          {game.rtt > 300 && (
+            <div className="connection">
+              Kết nối yếu · {Math.round(game.rtt)} ms
+            </div>
+          )}
+          {!game.connected && (
+            <button
+              className="reconnect"
+              disabled={game.reconnecting}
+              onClick={() => void play()}
+            >
+              {game.reconnecting ? "Đang kết nối lại…" : "Kết nối lại"}
+            </button>
+          )}
+          <div className="equipment">
+            <span>🎣</span>
+            <div>
+              <b>{RODS[game.profile?.equippedRod ?? "wood"].name}</b>
+              <small>
+                {BAITS[game.profile?.equippedBait ?? "dough"].name} ·{" "}
+                {game.profile?.equippedBait === "dough"
+                  ? "∞"
+                  : (game.profile?.baitCounts[game.profile.equippedBait] ??
+                    "∞")}
+              </small>
+            </div>
+            <Check size={14} />
+          </div>
+          <div className="action-area">
+            {fishing && (
+              <button
+                className="cancel"
+                disabled={["CASTING", "REELING", "RESULT"].includes(game.phase)}
+                onClick={() => send("FISH_CANCEL")}
+              >
+                Thu cần
+              </button>
+            )}
+            <button
+              className={
+                "cast " + (game.phase === "BITE_WINDOW" ? "ready" : "")
+              }
+              disabled={
+                !game.connected ||
+                ["CASTING", "REELING", "RESULT"].includes(game.phase) ||
+                bag ||
+                help ||
+                mapOpen ||
+                shopOpen ||
+                albumOpen ||
+                configOpen ||
+                communityOpen ||
+                appearanceOpen
+              }
+              onClick={() => {
+                enableAudio();
+                if (game.phase === "SHOWCASING") send("FISH_STOW");
+                else action();
+              }}
+            >
+              <span>
+                {game.phase === "BITE_WINDOW" ? "!" : <Fish size={40} />}
+              </span>
+              <b>
+                {game.phase === "SHOWCASING"
+                  ? "Cất cá"
+                  : game.phase === "REELING"
+                    ? "Đang kéo"
+                    : fishing
+                      ? "Giật cần"
+                      : "Thả câu"}
+              </b>
+              <small>{game.phase === "SHOWCASING" ? "CẤT CÁ" : "F"}</small>
+            </button>
+          </div>
+          {!fishing && !modalOpen && game.phase !== "RESULT" && (
+            <div className="movement-buttons">
+              <button
+                aria-label="Chạy"
+                aria-pressed={sprinting}
+                onClick={() => {
+                  controls.sprint = !sprinting;
+                  setSprinting(!sprinting);
+                }}
+              >
+                <Footprints />
+                Chạy
+              </button>
+              <button
+                aria-label="Nhảy"
+                onPointerDown={(e) => {
+                  e.preventDefault();
+                  jump();
+                }}
+              >
+                <ArrowUp />
+                Nhảy
+              </button>
+            </div>
+          )}
+          <Joystick
+            hidden={
+              fishing ||
+              questsOpen ||
+              game.phase === "RESULT" ||
+              bag ||
+              help ||
+              configOpen ||
+              mapOpen ||
+              shopOpen ||
+              albumOpen ||
+              communityOpen ||
+              appearanceOpen ||
+              chatFocused
+            }
+          />
+          <div className="desktop-help hide-fishing">
+            <kbd>W A S D</kbd> Đi <span /> <kbd>Shift</kbd> Chạy <span />{" "}
+            <kbd>Space</kbd> Nhảy <span /> <kbd>F</kbd> Câu
+          </div>
+          {!modalOpen && (
+            <ChatDock
+              onCommunity={() => setCommunityOpen(true)}
+              onFocusChange={setChatFocused}
+            />
+          )}
+          {!modalOpen && (
+            <div className="hud-emotes hide-fishing">
+              <EmoteTray />
+            </div>
+          )}
+          <Tutorial
+            onBag={() => {
+              useGame.setState({ result: null });
+              setBag(true);
+            }}
+            onShop={() => setShopOpen(true)}
+          />
+          {game.announcement && (
+            <div className="rare-announcement" role="status">
+              {game.announcement}
+            </div>
+          )}
+          {game.result && (
+            <div className="result">
+              <button
+                aria-label="Đóng kết quả"
+                onClick={() => send("FISH_STOW")}
+              >
+                <X size={18} />
+              </button>
+              <div className="result-star">✦ BẮT ĐƯỢC RỒI! ✦</div>
+              <div className="fish-illustration">
+                <FishArtwork species={game.result.species} />
+              </div>
+              <h2>{game.result.species}</h2>
+              <p>
+                {(game.result.grams / 1000).toFixed(2)} kg <span>•</span>{" "}
+                {AREAS[game.result.area ?? "beach"].name}
+              </p>
+              <span className={`rarity ${game.result.rarity ?? "common"}`}>
+                {RARITIES[game.result.rarity ?? "common"]}
+              </span>
+              <b>+{game.result.xp ?? 20} XP</b>
+              <p>Giá bán dự kiến · {game.result.saleValue ?? 0} Xu</p>
+              {game.result.newSpecies ? (
+                <small className="record-label">Loài mới trong album!</small>
+              ) : (
+                game.result.newRecord && (
+                  <small className="record-label">
+                    Kỷ lục trọng lượng mới!
+                  </small>
+                )
+              )}
+              <small>Đã cất vào túi đồ</small>
+              <div className="result-actions">
+                <button className="play" onClick={() => send("FISH_CONTINUE")}>
+                  Câu tiếp
+                </button>
+                <button
+                  className="play"
+                  onClick={() => send("FISH_SHOWCASE_REQUEST")}
+                >
+                  Khoe cá
+                </button>
+                <button
+                  disabled={fishing}
+                  onClick={() => {
+                    send("FISH_STOW");
+                    setBag(true);
+                  }}
+                >
+                  Xem túi
+                </button>
+              </div>
+            </div>
+          )}
+        </>
+      )}
+      {!started && (
+        <div className="landing-bottom">
+          <span>
+            <span className="live-dot" /> Một hòn đảo, những cuộc gặp mới
+          </span>
+          <span>© Fishing World Online</span>
+        </div>
+      )}
+      {roomsOpen && (
+        <RoomPicker onClose={() => setRoomsOpen(false)} onJoin={play} />
+      )}
+      {questsOpen && <QuestPanel onClose={() => setQuestsOpen(false)} />}
+      {mapOpen && <MapPanel onClose={() => setMapOpen(false)} />}
+      {configOpen && (
+        <SettingsPanel
+          onClose={() => setConfigOpen(false)}
+          onExit={started ? () => void leaveToLobby() : undefined}
+        />
+      )}
+      {communityOpen && (
+        <CommunityPanel onClose={() => setCommunityOpen(false)} />
+      )}
+      {appearanceOpen && (
+        <AppearancePanel onClose={() => setAppearanceOpen(false)} />
+      )}
+      {shopOpen && game.profile && (
+        <ShopPanel onClose={() => setShopOpen(false)} />
+      )}
+      {albumOpen && game.profile && (
+        <AlbumPanel onClose={() => setAlbumOpen(false)} />
+      )}
+      <EconomyNotice />
+      <SocialNotice />
+      {bag && game.profile && (
+        <InventoryPanel profile={game.profile} onClose={() => setBag(false)} />
+      )}
+      {help && (
+        <div className="overlay" onClick={() => setHelp(false)}>
+          <section className="panel help" onClick={(e) => e.stopPropagation()}>
+            <button
+              className="close icon"
+              onClick={() => setHelp(false)}
+              aria-label="Đóng hướng dẫn"
+            >
+              <X />
+            </button>
+            <small>CHẬM MỘT CHÚT, VUI MỘT NGÀY</small>
+            <h2>Cùng ra bến câu</h2>
+            <p>
+              Tới gần bờ biển, bờ hồ hoặc bến rồi bấm <b>Thả câu</b> hoặc F.
+              Shift để chạy, Space để nhảy.
+            </p>
+            <p>Bóng cá xuất hiện và phao nhấp nhẹ? Hãy kiên nhẫn.</p>
+            <p>
+              Khi phao chìm và hiện <b className="gold">!</b>, bạn có{" "}
+              <b>0,4–0,9 giây tùy độ hiếm</b> để bấm Giật cần. Cá sẽ tự được kéo
+              lên!
+            </p>
+            <button className="play" onClick={() => setHelp(false)}>
+              Ra bến thôi <ArrowRight />
+            </button>
+          </section>
+        </div>
+      )}
+    </main>
+  );
+}
+function Joystick({ hidden }: { hidden: boolean }) {
+  const [knob, setKnob] = useState({ x: 0, y: 0 });
+  useEffect(() => {
+    if (hidden) {
+      setKnob({ x: 0, y: 0 });
+      controls.x = 0;
+      controls.z = 0;
+    }
+  }, [hidden]);
+  function move(e: React.PointerEvent<HTMLDivElement>) {
+    if (!e.currentTarget.hasPointerCapture(e.pointerId)) return;
+    const r = e.currentTarget.getBoundingClientRect(),
+      x = e.clientX - r.left - r.width / 2,
+      y = e.clientY - r.top - r.height / 2,
+      l = Math.max(1, Math.hypot(x, y) / 35);
+    setKnob({ x: x / l, y: y / l });
+    controls.x = x / l / 35;
+    controls.z = y / l / 35;
+  }
+  return (
+    <div
+      className={"joystick " + (hidden ? "invisible" : "")}
+      onPointerDown={(e) => {
+        e.currentTarget.setPointerCapture(e.pointerId);
+        move(e);
+      }}
+      onPointerMove={move}
+      onPointerUp={() => {
+        setKnob({ x: 0, y: 0 });
+        controls.x = 0;
+        controls.z = 0;
+      }}
+      onPointerCancel={() => {
+        setKnob({ x: 0, y: 0 });
+        controls.x = 0;
+        controls.z = 0;
+      }}
+    >
+      <div style={{ transform: `translate(${knob.x}px,${knob.y}px)` }} />
+    </div>
+  );
+}
+createRoot(document.getElementById("root")!).render(<App />);

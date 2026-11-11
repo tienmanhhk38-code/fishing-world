@@ -1,0 +1,155 @@
+{
+  "date": "2026-11-11",
+  "scope": "Local upgrade; no public deployment or Vercel hosting changes",
+  "build": "passed",
+  "unitTests": 31,
+  "browser": {
+    "chromiumCasesValidatedAcrossRuns": 28,
+    "chromiumFinalAudioCases": 2,
+    "firefoxCases": 3,
+    "webkitCasesValidatedAcrossRuns": 3,
+    "note": "WebGL cold-start wait corrected and retested; manual-show ACK awaited before tab switching; legitimate missed hooks can be retried. Windows WebKit has no Web Audio and uses media fallback."
+  },
+  "release": {
+    "at": "2026-11-11T10:36:05.680Z",
+    "url": "https://localhost:8443",
+    "health": true,
+    "indexSHA256": "e6f7d8dcba014f8c0c5605c983743258f6b2a9a5c1532bf1f6a54dd789f7821a",
+    "bundleFiles": [
+      "/assets/index-DO0lTU-Z.js",
+      "/assets/index-1OmPoLQE.css"
+    ],
+    "hashesMatch": true,
+    "embeddedTexturesAllowed": true
+  },
+  "restart": [
+    "HTTPS, CSP, HttpOnly/Secure cookie, private metrics, nonroot container and restricted application database role",
+    "SIGKILL during reel restores persisted win/escape without reroll; only successful reel saves fish/XP; pre-hook interruption refunds once; cookie restores inventory",
+    "Graceful shutdown refunds active bait; second startup does not duplicate fish, XP or refunds"
+  ],
+  "load": {
+    "status": "passed",
+    "targetMinutes": 3,
+    "durationSeconds": 187.3260489,
+    "players": 20,
+    "serverUrl": "https://localhost:8443",
+    "transport": "HTTPS/WSS",
+    "stats": {
+      "casts": 264,
+      "catchEvents": 170,
+      "escaped": 9,
+      "duplicateCatchEvents": 0,
+      "chats": 120,
+      "emotes": 44,
+      "inputs": 5754,
+      "sales": 60,
+      "purchases": 25,
+      "reconnects": 0,
+      "unexpectedDisconnects": 0,
+      "errors": []
+    },
+    "integrity": {
+      "guests": 20,
+      "fish": 170,
+      "rounds": 264,
+      "ledgerRows": 85,
+      "albumEntries": 88,
+      "failures": []
+    },
+    "measurements": {
+      "samples": 19,
+      "maxRssMiB": 129.3515625,
+      "firstRssMiB": 117.359375,
+      "lastRssMiB": 129.3515625,
+      "maxCpuPercent": 23.025650544108572,
+      "maxEventLoopP99Ms": 29.736959,
+      "lastTimings": {
+        "rtt_ms": {
+          "samples": 1000,
+          "p50": 4.41380000000936,
+          "p95": 20.718484999990324,
+          "max": 350.4186550000013
+        },
+        "hook_reaction_ms": {
+          "samples": 185,
+          "p50": 312.9537110000092,
+          "p95": 468.06964099998004,
+          "max": 823.9152410000097
+        }
+      }
+    },
+    "completedAt": "2026-11-11T10:09:32.209Z"
+  },
+  "motion": {
+    "at": "2026-11-11T10:04:03.751Z",
+    "scope": "Desktop Chromium hardware, local connection, straight dock movement; diagnostic render and authoritative snapshots",
+    "results": [
+      {
+        "fps": 60,
+        "walkDistance1s": 4.4924,
+        "frames": 79,
+        "maxBackwardStep": -0.002639514618689276,
+        "maxStep": 0.1711873488903719,
+        "maxCameraBackward": 0.01672758983309075,
+        "maxReconciliationError": 0.34180565302065835
+      },
+      {
+        "fps": 30,
+        "walkDistance1s": 4.298800000000001,
+        "frames": 40,
+        "maxBackwardStep": 0.12674856855574146,
+        "maxStep": 0.1800750278389176,
+        "maxCameraBackward": 0.12284000705819098,
+        "maxReconciliationError": 0.35945310813289977
+      }
+    ],
+    "jumpHeight": 0.8724187500000007,
+    "sprintDistance700ms": 5.067999999999999
+  },
+  "touch": {
+    "scope": "Chromium mobile emulation with two simultaneous CDP touch pointers; not physical-device certification",
+    "distance": 2.6513142857142866,
+    "yawChange": 0.4182508245659643,
+    "jumpHeight": 0.90073275,
+    "runToggle": true
+  },
+  "reconnectJump": {
+    "sameAvatar": true,
+    "jumpBefore": 1,
+    "jumpAfter": 2,
+    "airborne": true
+  },
+  "render": {
+    "low": {
+      "scope": "Desktop Chromium, low quality, 60 FPS cap, reduced motion, 20 real network guests, eight camera angles; headless browser measurement, not mobile-device certification.",
+      "gpu": "ANGLE (Intel, Intel(R) UHD Graphics 730 (0x00004692) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "resolution": [
+        1280,
+        800
+      ],
+      "fpsMin": 54.46110401573113,
+      "fpsMax": 58.866813834640105,
+      "maxFrameP95Ms": 26.40000009536743,
+      "maxDrawCalls": 181,
+      "errors": []
+    },
+    "high": {
+      "scope": "Desktop Chromium, high quality, 60 FPS cap, reduced motion, 20 real network guests, eight camera angles; headless browser measurement, not mobile-device certification.",
+      "gpu": "ANGLE (Intel, Intel(R) UHD Graphics 730 (0x00004692) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+      "resolution": [
+        1280,
+        800
+      ],
+      "fpsMin": 50.28305028305029,
+      "fpsMax": 58.673640449807394,
+      "maxFrameP95Ms": 29.600000143051147,
+      "maxDrawCalls": 182,
+      "errors": []
+    }
+  },
+  "pending": [
+    "Physical Android/iOS tests",
+    "Five new-player playtest",
+    "Human listening and visual approval"
+  ]
+}

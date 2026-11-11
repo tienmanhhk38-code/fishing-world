@@ -1,0 +1,592 @@
+{
+  "pack": "Fishing World 3D prototype v1",
+  "source": "Original procedural meshes, generated with Blender; no third-party models or textures",
+  "asset_count": 39,
+  "assets": [
+    {
+      "id": "island_base",
+      "category": "environment",
+      "file": "models/island_base.glb",
+      "triangles": 160,
+      "materials": 2,
+      "status": "prototype_static",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        13.315,
+        10.0,
+        1.8
+      ]
+    },
+    {
+      "id": "dock_straight_2x3m",
+      "category": "environment",
+      "file": "models/dock_straight_2x3m.glb",
+      "triangles": 376,
+      "materials": 2,
+      "status": "prototype_static",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        2.0,
+        3.01,
+        1.25
+      ]
+    },
+    {
+      "id": "dock_corner_3x3m",
+      "category": "environment",
+      "file": "models/dock_corner_3x3m.glb",
+      "triangles": 188,
+      "materials": 2,
+      "status": "prototype_static",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        3.0,
+        3.0,
+        1.25
+      ]
+    },
+    {
+      "id": "dock_post",
+      "category": "environment",
+      "file": "models/dock_post.glb",
+      "triangles": 88,
+      "materials": 2,
+      "status": "prototype_static",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        0.36,
+        0.36,
+        1.38
+      ]
+    },
+    {
+      "id": "palm_tree",
+      "category": "environment",
+      "file": "models/palm_tree.glb",
+      "triangles": 256,
+      "materials": 3,
+      "status": "prototype_static",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        3.137,
+        3.217,
+        2.959
+      ]
+    },
+    {
+      "id": "rock_cluster",
+      "category": "environment",
+      "file": "models/rock_cluster.glb",
+      "triangles": 60,
+      "materials": 1,
+      "status": "prototype_static",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        1.626,
+        0.946,
+        1.04
+      ]
+    },
+    {
+      "id": "tropical_bush",
+      "category": "environment",
+      "file": "models/tropical_bush.glb",
+      "triangles": 240,
+      "materials": 2,
+      "status": "prototype_static",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        1.513,
+        1.0,
+        0.9
+      ]
+    },
+    {
+      "id": "village_house",
+      "category": "environment",
+      "file": "models/village_house.glb",
+      "triangles": 78,
+      "materials": 5,
+      "status": "prototype_static",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        3.0,
+        2.6,
+        3.0
+      ]
+    },
+    {
+      "id": "lighthouse",
+      "category": "environment",
+      "file": "models/lighthouse.glb",
+      "triangles": 622,
+      "materials": 5,
+      "status": "prototype_static",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        1.7,
+        1.7,
+        5.31
+      ]
+    },
+    {
+      "id": "fish_market_stall",
+      "category": "environment",
+      "file": "models/fish_market_stall.glb",
+      "triangles": 260,
+      "materials": 5,
+      "status": "prototype_static",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        2.195,
+        1.65,
+        2.5
+      ]
+    },
+    {
+      "id": "wooden_crate",
+      "category": "environment",
+      "file": "models/wooden_crate.glb",
+      "triangles": 60,
+      "materials": 2,
+      "status": "prototype_static",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        0.65,
+        0.65,
+        0.65
+      ]
+    },
+    {
+      "id": "beach_bench",
+      "category": "environment",
+      "file": "models/beach_bench.glb",
+      "triangles": 72,
+      "materials": 2,
+      "status": "prototype_static",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        1.5,
+        0.52,
+        1.05
+      ]
+    },
+    {
+      "id": "rod_wood",
+      "category": "fishing",
+      "file": "models/rod_wood.glb",
+      "triangles": 264,
+      "materials": 3,
+      "status": "prototype_static",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        0.211,
+        0.18,
+        2.021
+      ]
+    },
+    {
+      "id": "rod_bamboo",
+      "category": "fishing",
+      "file": "models/rod_bamboo.glb",
+      "triangles": 264,
+      "materials": 4,
+      "status": "prototype_static",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        0.211,
+        0.18,
+        2.021
+      ]
+    },
+    {
+      "id": "rod_carbon",
+      "category": "fishing",
+      "file": "models/rod_carbon.glb",
+      "triangles": 264,
+      "materials": 4,
+      "status": "prototype_static",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        0.211,
+        0.18,
+        2.021
+      ]
+    },
+    {
+      "id": "bait_dough",
+      "category": "fishing",
+      "file": "models/bait_dough.glb",
+      "triangles": 80,
+      "materials": 1,
+      "status": "prototype_static",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        0.247,
+        0.22,
+        0.18
+      ]
+    },
+    {
+      "id": "bait_worm",
+      "category": "fishing",
+      "file": "models/bait_worm.glb",
+      "triangles": 180,
+      "materials": 1,
+      "status": "prototype_static",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        0.352,
+        0.166,
+        0.08
+      ]
+    },
+    {
+      "id": "bait_shrimp",
+      "category": "fishing",
+      "file": "models/bait_shrimp.glb",
+      "triangles": 168,
+      "materials": 2,
+      "status": "prototype_static",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        0.452,
+        0.303,
+        0.136
+      ]
+    },
+    {
+      "id": "fishing_bobber",
+      "category": "fishing",
+      "file": "models/fishing_bobber.glb",
+      "triangles": 188,
+      "materials": 3,
+      "status": "prototype_static",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        0.162,
+        0.17,
+        0.42
+      ]
+    },
+    {
+      "id": "fish_shadow_uniform",
+      "category": "fishing",
+      "file": "models/fish_shadow_uniform.glb",
+      "triangles": 80,
+      "materials": 1,
+      "status": "prototype_static",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        0.856,
+        0.3,
+        0.012
+      ]
+    },
+    {
+      "id": "fish_concept_01",
+      "category": "fish",
+      "file": "models/fish_concept_01.glb",
+      "triangles": 312,
+      "materials": 4,
+      "status": "concept_species_unassigned",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        0.987,
+        0.6,
+        0.371
+      ]
+    },
+    {
+      "id": "fish_concept_02",
+      "category": "fish",
+      "file": "models/fish_concept_02.glb",
+      "triangles": 312,
+      "materials": 4,
+      "status": "concept_species_unassigned",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        1.293,
+        0.6,
+        0.609
+      ]
+    },
+    {
+      "id": "fish_concept_03",
+      "category": "fish",
+      "file": "models/fish_concept_03.glb",
+      "triangles": 312,
+      "materials": 4,
+      "status": "concept_species_unassigned",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        1.528,
+        0.6,
+        0.398
+      ]
+    },
+    {
+      "id": "fish_concept_04",
+      "category": "fish",
+      "file": "models/fish_concept_04.glb",
+      "triangles": 472,
+      "materials": 5,
+      "status": "concept_species_unassigned",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        0.893,
+        0.6,
+        0.663
+      ]
+    },
+    {
+      "id": "fish_concept_05",
+      "category": "fish",
+      "file": "models/fish_concept_05.glb",
+      "triangles": 312,
+      "materials": 4,
+      "status": "concept_species_unassigned",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        1.646,
+        0.6,
+        0.557
+      ]
+    },
+    {
+      "id": "fish_concept_06",
+      "category": "fish",
+      "file": "models/fish_concept_06.glb",
+      "triangles": 312,
+      "materials": 4,
+      "status": "concept_species_unassigned",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        0.987,
+        0.6,
+        0.371
+      ]
+    },
+    {
+      "id": "fish_concept_07",
+      "category": "fish",
+      "file": "models/fish_concept_07.glb",
+      "triangles": 312,
+      "materials": 4,
+      "status": "concept_species_unassigned",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        1.293,
+        0.6,
+        0.609
+      ]
+    },
+    {
+      "id": "fish_concept_08",
+      "category": "fish",
+      "file": "models/fish_concept_08.glb",
+      "triangles": 312,
+      "materials": 4,
+      "status": "concept_species_unassigned",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        1.528,
+        0.6,
+        0.398
+      ]
+    },
+    {
+      "id": "fish_concept_09",
+      "category": "fish",
+      "file": "models/fish_concept_09.glb",
+      "triangles": 472,
+      "materials": 5,
+      "status": "concept_species_unassigned",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        0.893,
+        0.6,
+        0.663
+      ]
+    },
+    {
+      "id": "fish_concept_10",
+      "category": "fish",
+      "file": "models/fish_concept_10.glb",
+      "triangles": 312,
+      "materials": 4,
+      "status": "concept_species_unassigned",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        1.646,
+        0.6,
+        0.557
+      ]
+    },
+    {
+      "id": "fish_concept_11",
+      "category": "fish",
+      "file": "models/fish_concept_11.glb",
+      "triangles": 312,
+      "materials": 4,
+      "status": "concept_species_unassigned",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        0.987,
+        0.6,
+        0.371
+      ]
+    },
+    {
+      "id": "fish_concept_12",
+      "category": "fish",
+      "file": "models/fish_concept_12.glb",
+      "triangles": 312,
+      "materials": 4,
+      "status": "concept_species_unassigned",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        1.293,
+        0.6,
+        0.609
+      ]
+    },
+    {
+      "id": "fish_concept_13",
+      "category": "fish",
+      "file": "models/fish_concept_13.glb",
+      "triangles": 312,
+      "materials": 4,
+      "status": "concept_species_unassigned",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        1.528,
+        0.6,
+        0.398
+      ]
+    },
+    {
+      "id": "fish_concept_14",
+      "category": "fish",
+      "file": "models/fish_concept_14.glb",
+      "triangles": 472,
+      "materials": 5,
+      "status": "concept_species_unassigned",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        0.893,
+        0.6,
+        0.663
+      ]
+    },
+    {
+      "id": "fish_concept_15",
+      "category": "fish",
+      "file": "models/fish_concept_15.glb",
+      "triangles": 312,
+      "materials": 4,
+      "status": "concept_species_unassigned",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        1.646,
+        0.6,
+        0.557
+      ]
+    },
+    {
+      "id": "chibi_fisher_blockout",
+      "category": "character",
+      "file": "models/chibi_fisher_blockout.glb",
+      "triangles": 1128,
+      "materials": 6,
+      "status": "static_unrigged_blockout",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        1.04,
+        1.04,
+        2.05
+      ]
+    },
+    {
+      "id": "water_tile_10m",
+      "category": "effects",
+      "file": "models/water_tile_10m.glb",
+      "triangles": 12,
+      "materials": 1,
+      "status": "static_shader_placeholder",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        10.0,
+        10.0,
+        0.05
+      ]
+    },
+    {
+      "id": "bobber_ripples",
+      "category": "effects",
+      "file": "models/bobber_ripples.glb",
+      "triangles": 768,
+      "materials": 1,
+      "status": "static_effect_mesh",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        1.418,
+        1.418,
+        0.018
+      ]
+    },
+    {
+      "id": "bite_exclamation",
+      "category": "effects",
+      "file": "models/bite_exclamation.glb",
+      "triangles": 108,
+      "materials": 1,
+      "status": "static_effect_mesh",
+      "gltf_up_axis": "Y",
+      "meters": true,
+      "dimensions_blender_xyz": [
+        0.17,
+        0.17,
+        0.765
+      ]
+    }
+  ]
+}

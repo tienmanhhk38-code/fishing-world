@@ -1,0 +1,6 @@
+# Local load/restore tooling only. Never publish these ports on a public interface.
+services:
+  postgres:
+    ports: ["127.0.0.1:55433:5432"]
+  app:
+    ports: ["127.0.0.1:2569:2567"]

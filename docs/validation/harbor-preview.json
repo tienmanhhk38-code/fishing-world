@@ -1,0 +1,13 @@
+{
+  "at": "2026-11-11T04:24:14.997Z",
+  "url": "https://localhost:8443",
+  "characterPreviewUrl": "http://127.0.0.1:5173",
+  "quality": "high, cached static shadows",
+  "errors": [],
+  "files": [
+    "dock.png",
+    "promenade.png",
+    "fishing.png",
+    "character.png"
+  ]
+}

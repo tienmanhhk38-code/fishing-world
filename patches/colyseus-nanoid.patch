@@ -1,0 +1,20 @@
+diff --git a/build/utils/Utils.mjs b/build/utils/Utils.mjs
+--- a/build/utils/Utils.mjs
++++ b/build/utils/Utils.mjs
+@@ -1,5 +1,5 @@
+ // packages/core/src/utils/Utils.ts
+-import nanoid from "nanoid";
++import { nanoid } from "nanoid";
+ import { EventEmitter } from "events";
+ import { debugAndPrintError } from "../Debug.mjs";
+ var REMOTE_ROOM_SHORT_TIMEOUT = Number(process.env.COLYSEUS_PRESENCE_SHORT_TIMEOUT || 2e3);
+diff --git a/build/utils/Utils.js b/build/utils/Utils.js
+--- a/build/utils/Utils.js
++++ b/build/utils/Utils.js
+@@ -46,5 +46,5 @@
+ const REMOTE_ROOM_SHORT_TIMEOUT = Number(process.env.COLYSEUS_PRESENCE_SHORT_TIMEOUT || 2e3);
+ const MAX_CONCURRENT_CREATE_ROOM_WAIT_TIME = Number(process.env.COLYSEUS_MAX_CONCURRENT_CREATE_ROOM_WAIT_TIME || 0.5);
+ function generateId(length = 9) {
+-  return (0, import_nanoid.default)(length);
++  return (0, import_nanoid.nanoid)(length);
+ }

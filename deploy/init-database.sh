@@ -1,0 +1,10 @@
+#!/bin/sh
+set -eu
+psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<'SQL'
+SELECT format('CREATE ROLE fishing_app LOGIN PASSWORD %L NOSUPERUSER NOCREATEDB NOCREATEROLE', trim(pg_read_file('/run/secrets/db_password'))) \gexec
+GRANT CONNECT ON DATABASE fishing TO fishing_app;
+REVOKE CREATE ON SCHEMA public FROM PUBLIC;
+GRANT USAGE ON SCHEMA public TO fishing_app;
+ALTER DEFAULT PRIVILEGES FOR ROLE fishing_admin IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO fishing_app;
+ALTER DEFAULT PRIVILEGES FOR ROLE fishing_admin IN SCHEMA public GRANT USAGE, SELECT ON SEQUENCES TO fishing_app;
+SQL

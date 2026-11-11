@@ -1,0 +1,14 @@
+import {chromium} from '@playwright/test';import {writeFile} from 'node:fs/promises';import assert from 'node:assert/strict';
+const b=await chromium.launch({args:['--use-angle=d3d11','--use-gl=angle','--disable-software-rasterizer']});
+try{
+ const c=await b.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true,ignoreHTTPSErrors:true});await c.addInitScript(()=>localStorage.setItem('fishing-player-settings',JSON.stringify({version:1,state:{quality:'low',fps:30,soundMuted:true}})));
+ const p=await c.newPage();await p.goto('https://localhost:8443/?diagnostics=1');await p.getByRole('button',{name:'Chọn phòng',exact:true}).click();await p.getByRole('button',{name:'Tạo phòng mới'}).click();await p.getByRole('button',{name:'Thả câu'}).waitFor();await p.locator('.asset-loading-screen').waitFor({state:'hidden',timeout:60000});await p.locator('.nameplate').first().waitFor();await p.evaluate(()=>window.__fishingDiagnostics.setCamera(0));await p.waitForTimeout(1000);
+ const guide=p.getByRole('button',{name:'Thu gọn hướng dẫn'});if(await guide.isVisible())await guide.click();
+ const joy=await p.locator('.joystick').boundingBox(),j={x:joy.x+joy.width/2,y:joy.y+joy.height/2,id:1};const cam={x:230,y:400,id:2};const cd=await c.newCDPSession(p),send=(type,points)=>cd.send('Input.dispatchTouchEvent',{type,touchPoints:points});
+ const pose=()=>p.evaluate(()=>window.__fishingDiagnostics.localPlayer().server),from=await pose(),angle=await p.evaluate(()=>window.__fishingDiagnostics.info.camera);
+ await send('touchStart',[j]);await send('touchStart',[j,cam]);await send('touchMove',[{...j,x:j.x+30},{...cam,x:cam.x+70}]);await p.waitForTimeout(700);await send('touchEnd',[]);await p.waitForTimeout(250);
+ const to=await pose(),endCamera=await p.evaluate(()=>window.__fishingDiagnostics.info.camera);const distance=Math.hypot(to.x-from.x,to.z-from.z),yawChange=Math.abs(Math.atan2(endCamera[0]-to.x,endCamera[2]-to.z)-Math.atan2(angle[0]-from.x,angle[2]-from.z));assert(distance>1);assert(yawChange>.15);
+ await p.getByRole('button',{name:'Nhảy',exact:true}).tap();await p.waitForTimeout(220);const jumped=await pose();assert(!jumped.grounded&&jumped.y-to.y>.5);await p.waitForTimeout(600);await p.getByRole('button',{name:'Chạy',exact:true}).tap();assert.equal(await p.getByRole('button',{name:'Chạy',exact:true}).getAttribute('aria-pressed'),'true');
+ await p.screenshot({path:'.local/experience-v4/touch-portrait.png'});await p.setViewportSize({width:844,height:390});await p.screenshot({path:'.local/experience-v4/touch-landscape.png'});
+ const report={scope:'Chromium mobile emulation with two simultaneous CDP touch pointers; not physical-device certification',distance,yawChange,jumpHeight:jumped.y-to.y,runToggle:true};await writeFile('.local/experience-v4/touch.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report));
+}finally{await b.close()}

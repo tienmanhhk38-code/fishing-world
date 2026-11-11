@@ -1,0 +1,13 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: fishing
+      POSTGRES_PASSWORD: fishing
+      POSTGRES_DB: fishing
+    ports:
+      - "55432:5432"
+    volumes:
+      - fishing-data:/var/lib/postgresql/data
+volumes:
+  fishing-data:

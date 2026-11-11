@@ -13,7 +13,6 @@ services:
     healthCheckPath: /readyz
     preDeployCommand: node scripts/container-entry.mjs --migrate
     autoDeployTrigger: off
-    maxShutdownDelaySeconds: 60
     disk:
       name: deployment-serialization
       mountPath: /var/data

@@ -11,8 +11,12 @@ if (process.env.DATABASE_PASSWORD_FILE) {
 }
 if (!process.env.DATABASE_URL)
   throw new Error("Missing DATABASE_URL or DATABASE_PASSWORD_FILE.");
-if (process.env.APP_MODE === "migrate" || process.argv.includes("--migrate")) {
-  process.env.DATABASE_URL =
+if (
+  process.env.AUTO_MIGRATE === "true" ||
+  process.env.APP_MODE === "migrate" ||
+  process.argv.includes("--migrate")
+) {
+  const migUrl =
     process.env.MIGRATION_DATABASE_URL ??
     process.env.DIRECT_DATABASE_URL ??
     process.env.DATABASE_URL;
@@ -25,9 +29,15 @@ if (process.env.APP_MODE === "migrate" || process.argv.includes("--migrate")) {
       "--schema",
       "apps/server/prisma/schema.prisma",
     ],
-    { stdio: "inherit", env: process.env },
+    { stdio: "inherit", env: { ...process.env, DATABASE_URL: migUrl } },
   );
-  process.exit(migration.status ?? 1);
+  if (process.env.APP_MODE === "migrate" || process.argv.includes("--migrate")) {
+    process.exit(migration.status ?? 1);
+  }
+  if (migration.status !== 0) {
+    console.error("Migration failed with code", migration.status);
+    process.exit(migration.status ?? 1);
+  }
 }
 if (process.env.METRICS_TOKEN_FILE) {
   process.env.METRICS_TOKEN = (

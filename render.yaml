@@ -5,7 +5,7 @@ services:
   - type: web
     name: fishing-world-server
     runtime: docker
-    plan: 0.5c-512mb
+    plan: free
     region: singapore
     numInstances: 1
     dockerfilePath: ./Dockerfile
@@ -13,10 +13,6 @@ services:
     healthCheckPath: /readyz
     preDeployCommand: node scripts/container-entry.mjs --migrate
     autoDeployTrigger: off
-    disk:
-      name: deployment-serialization
-      mountPath: /var/data
-      sizeGB: 1
     envVars:
       - key: NODE_ENV
         value: production

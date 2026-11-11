@@ -18,12 +18,38 @@ export async function acquireInstanceLock() {
     lost = true;
   });
   await client.connect();
-  const {
-    rows: [result],
-  } = await client.query(
-    "SELECT pg_try_advisory_lock(20261110,1) AS acquired, pg_backend_pid() AS pid",
-  );
-  if (!result.acquired) {
+
+  let acquired = false;
+  let pid = 0;
+  const maxAttempts = 15;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    const res = await client.query(
+      "SELECT pg_try_advisory_lock(20261110,1) AS acquired, pg_backend_pid() AS pid",
+    );
+    if (res.rows[0]?.acquired) {
+      acquired = true;
+      pid = res.rows[0].pid;
+      break;
+    }
+    if (attempt === 1 || attempt === 5) {
+      try {
+        await client.query(`
+          SELECT pg_terminate_backend(pid)
+          FROM pg_locks
+          WHERE locktype = 'advisory'
+            AND classid = 20261110
+            AND objid = 1
+            AND granted
+            AND pid <> pg_backend_pid()
+        `);
+      } catch (err) {
+        console.warn("Could not signal previous instance:", err);
+      }
+    }
+    await new Promise((r) => setTimeout(r, 1000));
+  }
+
+  if (!acquired) {
     await client.end();
     throw new Error("Database đang được một game-server khác sử dụng.");
   }
@@ -36,7 +62,7 @@ export async function acquireInstanceLock() {
       } = await client.query(
         "SELECT pg_backend_pid() AS pid, EXISTS (SELECT 1 FROM pg_locks WHERE locktype='advisory' AND classid=20261110 AND objid=1 AND pid=pg_backend_pid() AND granted) AS held",
       );
-      if (state.pid !== result.pid || !state.held)
+      if (state.pid !== pid || !state.held)
         throw new Error("Mất khóa game-server.");
     },
   };

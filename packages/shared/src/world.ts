@@ -161,6 +161,65 @@ export const SPAWNS: Record<OpenAreaId, Point> = {
   beach: { x: -1, z: 1.9 },
   village: { x: 13.2, z: -49.5 },
 };
+export const DESTINATIONS = {
+  beach: {
+    name: "Bãi Biển",
+    area: "beach",
+    open: true,
+    point: { x: -20, z: -20 },
+    left: "16%",
+    top: "73%",
+  },
+  dock: {
+    name: "Bến câu biển",
+    area: "beach",
+    open: true,
+    point: { x: -1, z: 1.9 },
+    left: "50%",
+    top: "90%",
+  },
+  village: {
+    name: "Làng Chài",
+    area: "village",
+    open: true,
+    point: { x: -24, z: -34 },
+    left: "45%",
+    top: "28%",
+  },
+  pond: {
+    name: "Hồ nước ngọt",
+    area: "village",
+    open: true,
+    point: { x: 13.2, z: -49.5 },
+    left: "66%",
+    top: "35%",
+  },
+  lighthouse: {
+    name: "Hải đăng",
+    area: "village",
+    open: true,
+    point: { x: -42, z: -73.5 },
+    left: "31%",
+    top: "14%",
+  },
+  coral: {
+    name: "Vùng San Hô",
+    area: "coral",
+    open: false,
+    point: null,
+    left: "89%",
+    top: "82%",
+  },
+  mystery: {
+    name: "Hòn Đảo Bí Ẩn",
+    area: "mystery",
+    open: false,
+    point: null,
+    left: "89%",
+    top: "59%",
+  },
+} as const;
+export type DestinationId = keyof typeof DESTINATIONS;
 export const WALKABLE = [BEACH_DECK, DOCK_STEM];
 export const OBSTACLES: Rect[] = [
   ...PALM_POSITIONS.map(({ x, z }) => ({

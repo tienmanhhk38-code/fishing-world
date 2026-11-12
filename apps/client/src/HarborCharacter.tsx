@@ -185,7 +185,12 @@ export function CharacterModel({
     <group scale={1.5}>
       <primitive object={rig.group} dispose={null} />
       {createPortal(
-        <group ref={rod} position={[0.14, -0.38, 0.03]} rotation={[1.25, 0, 0]}>
+        <group
+          ref={rod}
+          name="held-rod"
+          position={[0.14, -0.38, 0.03]}
+          rotation={[1.25, 0, 0]}
+        >
           <Model id={RODS[rodId].model} />
         </group>,
         rig.bones.get("rightArm")!,

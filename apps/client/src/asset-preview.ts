@@ -33,6 +33,7 @@ Object.assign(window, {
             : `/assets/starter/models/${id}.glb`,
       )
     ).scene;
+    current.traverse(o => { if(o.name === "fish-lod-low") o.visible = false; });
     const box = new THREE.Box3().setFromObject(current),
       center = box.getCenter(new THREE.Vector3()),
       size = box.getSize(new THREE.Vector3());

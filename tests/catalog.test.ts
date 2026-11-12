@@ -14,15 +14,15 @@ function randomGenerator() {
   };
 }
 describe("M3 catalog and progression", () => {
-  it("has fifteen unique species with the planned rarity split", () => {
-    expect(SPECIES).toHaveLength(15);
-    expect(new Set(SPECIES.map((item) => item.id)).size).toBe(15);
-    expect(new Set(SPECIES.map((item) => item.model)).size).toBe(15);
+  it("has thirty-five unique species with freshwater giants", () => {
+    expect(SPECIES).toHaveLength(35);
+    expect(new Set(SPECIES.map((item) => item.id)).size).toBe(35);
+    expect(new Set(SPECIES.map((item) => item.model)).size).toBe(35);
     expect(
-      ["common", "uncommon", "rare", "legendary"].map(
+      ["common", "uncommon", "rare", "legendary", "mythic"].map(
         (rarity) => SPECIES.filter((item) => item.rarity === rarity).length,
       ),
-    ).toEqual([7, 4, 3, 1]);
+    ).toEqual([10, 9, 7, 4, 5]);
   });
   it("uses cumulative XP thresholds and caps level ten", () => {
     expect(levelProgress(49).level).toBe(1);
@@ -54,7 +54,7 @@ describe("M3 catalog and progression", () => {
   it("allows the wooden rod to encounter the rarest fish", () => {
     expect(
       selectCatch("beach", "wood", "dough", () => 0.999999).species.rarity,
-    ).toBe("legendary");
+    ).toBe("mythic");
   });
   it("increases rare weight and bait affinity in repeated seeded draws", () => {
     const sample = (
@@ -68,7 +68,9 @@ describe("M3 catalog and progression", () => {
         const { species } = selectCatch(area, rod, bait, random);
         if (
           area === "beach"
-            ? species.rarity === "rare" || species.rarity === "legendary"
+            ? species.rarity === "rare" ||
+              species.rarity === "legendary" ||
+              species.rarity === "mythic"
             : species.affinity === "worm"
         )
           count++;

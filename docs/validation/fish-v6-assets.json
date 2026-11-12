@@ -1,0 +1,429 @@
+{
+  "species": 35,
+  "totalBytes": 7593184,
+  "maxModelBytes": 270640,
+  "maxHighTriangles": 4160,
+  "maxLowTriangles": 1424,
+  "models": [
+    {
+      "id": "fish_concept_01",
+      "bytes": 213448,
+      "high": {
+        "triangles": 3296,
+        "draws": 4
+      },
+      "low": {
+        "triangles": 1040,
+        "draws": 4
+      }
+    },
+    {
+      "id": "fish_concept_02",
+      "bytes": 213460,
+      "high": {
+        "triangles": 3296,
+        "draws": 4
+      },
+      "low": {
+        "triangles": 1040,
+        "draws": 4
+      }
+    },
+    {
+      "id": "fish_concept_03",
+      "bytes": 213444,
+      "high": {
+        "triangles": 3296,
+        "draws": 4
+      },
+      "low": {
+        "triangles": 1040,
+        "draws": 4
+      }
+    },
+    {
+      "id": "fish_concept_04",
+      "bytes": 213460,
+      "high": {
+        "triangles": 3296,
+        "draws": 4
+      },
+      "low": {
+        "triangles": 1040,
+        "draws": 4
+      }
+    },
+    {
+      "id": "fish_concept_05",
+      "bytes": 213856,
+      "high": {
+        "triangles": 3296,
+        "draws": 4
+      },
+      "low": {
+        "triangles": 1040,
+        "draws": 4
+      }
+    },
+    {
+      "id": "fish_concept_06",
+      "bytes": 213448,
+      "high": {
+        "triangles": 3296,
+        "draws": 4
+      },
+      "low": {
+        "triangles": 1040,
+        "draws": 4
+      }
+    },
+    {
+      "id": "fish_concept_07",
+      "bytes": 213464,
+      "high": {
+        "triangles": 3296,
+        "draws": 4
+      },
+      "low": {
+        "triangles": 1040,
+        "draws": 4
+      }
+    },
+    {
+      "id": "fish_concept_08",
+      "bytes": 213460,
+      "high": {
+        "triangles": 3296,
+        "draws": 4
+      },
+      "low": {
+        "triangles": 1040,
+        "draws": 4
+      }
+    },
+    {
+      "id": "fish_concept_09",
+      "bytes": 213464,
+      "high": {
+        "triangles": 3296,
+        "draws": 4
+      },
+      "low": {
+        "triangles": 1040,
+        "draws": 4
+      }
+    },
+    {
+      "id": "fish_concept_10",
+      "bytes": 213460,
+      "high": {
+        "triangles": 3296,
+        "draws": 4
+      },
+      "low": {
+        "triangles": 1040,
+        "draws": 4
+      }
+    },
+    {
+      "id": "fish_concept_11",
+      "bytes": 213448,
+      "high": {
+        "triangles": 3296,
+        "draws": 4
+      },
+      "low": {
+        "triangles": 1040,
+        "draws": 4
+      }
+    },
+    {
+      "id": "fish_concept_12",
+      "bytes": 225188,
+      "high": {
+        "triangles": 3488,
+        "draws": 4
+      },
+      "low": {
+        "triangles": 1136,
+        "draws": 4
+      }
+    },
+    {
+      "id": "fish_concept_13",
+      "bytes": 225188,
+      "high": {
+        "triangles": 3488,
+        "draws": 4
+      },
+      "low": {
+        "triangles": 1136,
+        "draws": 4
+      }
+    },
+    {
+      "id": "fish_concept_14",
+      "bytes": 209816,
+      "high": {
+        "triangles": 3268,
+        "draws": 4
+      },
+      "low": {
+        "triangles": 1020,
+        "draws": 4
+      }
+    },
+    {
+      "id": "fish_concept_15",
+      "bytes": 213444,
+      "high": {
+        "triangles": 3296,
+        "draws": 4
+      },
+      "low": {
+        "triangles": 1040,
+        "draws": 4
+      }
+    },
+    {
+      "id": "fish_extra_arapaima",
+      "bytes": 213864,
+      "high": {
+        "triangles": 3296,
+        "draws": 4
+      },
+      "low": {
+        "triangles": 1040,
+        "draws": 4
+      }
+    },
+    {
+      "id": "fish_extra_barracuda",
+      "bytes": 213860,
+      "high": {
+        "triangles": 3296,
+        "draws": 4
+      },
+      "low": {
+        "triangles": 1040,
+        "draws": 4
+      }
+    },
+    {
+      "id": "fish_extra_bigheadcarp",
+      "bytes": 213456,
+      "high": {
+        "triangles": 3296,
+        "draws": 4
+      },
+      "low": {
+        "triangles": 1040,
+        "draws": 4
+      }
+    },
+    {
+      "id": "fish_extra_blackcarp",
+      "bytes": 213448,
+      "high": {
+        "triangles": 3296,
+        "draws": 4
+      },
+      "low": {
+        "triangles": 1040,
+        "draws": 4
+      }
+    },
+    {
+      "id": "fish_extra_giantcatfish",
+      "bytes": 225184,
+      "high": {
+        "triangles": 3488,
+        "draws": 4
+      },
+      "low": {
+        "triangles": 1136,
+        "draws": 4
+      }
+    },
+    {
+      "id": "fish_extra_grasscarp",
+      "bytes": 213448,
+      "high": {
+        "triangles": 3296,
+        "draws": 4
+      },
+      "low": {
+        "triangles": 1040,
+        "draws": 4
+      }
+    },
+    {
+      "id": "fish_extra_great_white_shark",
+      "bytes": 270632,
+      "high": {
+        "triangles": 4160,
+        "draws": 4
+      },
+      "low": {
+        "triangles": 1424,
+        "draws": 4
+      }
+    },
+    {
+      "id": "fish_extra_grouper",
+      "bytes": 213464,
+      "high": {
+        "triangles": 3296,
+        "draws": 4
+      },
+      "low": {
+        "triangles": 1040,
+        "draws": 4
+      }
+    },
+    {
+      "id": "fish_extra_marlin",
+      "bytes": 217032,
+      "high": {
+        "triangles": 3320,
+        "draws": 4
+      },
+      "low": {
+        "triangles": 1056,
+        "draws": 4
+      }
+    },
+    {
+      "id": "fish_extra_megalodon",
+      "bytes": 270640,
+      "high": {
+        "triangles": 4160,
+        "draws": 4
+      },
+      "low": {
+        "triangles": 1424,
+        "draws": 4
+      }
+    },
+    {
+      "id": "fish_extra_orca",
+      "bytes": 202120,
+      "high": {
+        "triangles": 3104,
+        "draws": 4
+      },
+      "low": {
+        "triangles": 944,
+        "draws": 4
+      }
+    },
+    {
+      "id": "fish_extra_pink_dolphin",
+      "bytes": 202112,
+      "high": {
+        "triangles": 3104,
+        "draws": 4
+      },
+      "low": {
+        "triangles": 944,
+        "draws": 4
+      }
+    },
+    {
+      "id": "fish_extra_sardine",
+      "bytes": 213440,
+      "high": {
+        "triangles": 3296,
+        "draws": 4
+      },
+      "low": {
+        "triangles": 1040,
+        "draws": 4
+      }
+    },
+    {
+      "id": "fish_extra_snakehead",
+      "bytes": 213864,
+      "high": {
+        "triangles": 3296,
+        "draws": 4
+      },
+      "low": {
+        "triangles": 1040,
+        "draws": 4
+      }
+    },
+    {
+      "id": "fish_extra_snapper",
+      "bytes": 213456,
+      "high": {
+        "triangles": 3296,
+        "draws": 4
+      },
+      "low": {
+        "triangles": 1040,
+        "draws": 4
+      }
+    },
+    {
+      "id": "fish_extra_sperm_whale",
+      "bytes": 203732,
+      "high": {
+        "triangles": 3104,
+        "draws": 4
+      },
+      "low": {
+        "triangles": 944,
+        "draws": 4
+      }
+    },
+    {
+      "id": "fish_extra_swordfish",
+      "bytes": 217032,
+      "high": {
+        "triangles": 3320,
+        "draws": 4
+      },
+      "low": {
+        "triangles": 1056,
+        "draws": 4
+      }
+    },
+    {
+      "id": "fish_extra_tilapia",
+      "bytes": 213464,
+      "high": {
+        "triangles": 3296,
+        "draws": 4
+      },
+      "low": {
+        "triangles": 1040,
+        "draws": 4
+      }
+    },
+    {
+      "id": "fish_extra_wahoo",
+      "bytes": 213444,
+      "high": {
+        "triangles": 3296,
+        "draws": 4
+      },
+      "low": {
+        "triangles": 1040,
+        "draws": 4
+      }
+    },
+    {
+      "id": "fish_extra_whiting",
+      "bytes": 213444,
+      "high": {
+        "triangles": 3296,
+        "draws": 4
+      },
+      "low": {
+        "triangles": 1040,
+        "draws": 4
+      }
+    }
+  ]
+}

@@ -19,7 +19,7 @@ export const defaults: Settings = {
   fps: 30,
   volume: 0.7,
   ambienceVolume: 0.45,
-  musicVolume: 0.25,
+  musicVolume: 0.5,
   soundMuted: false,
   sensitivity: 1,
   invertY: false,

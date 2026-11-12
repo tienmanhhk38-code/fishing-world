@@ -43,6 +43,13 @@ import type { selectCatch } from "./catch-selection";
 import { z } from "zod";
 import { fishingSchedule } from "./fishing";
 import {
+  Residents,
+  canShop,
+  DESTINATIONS,
+  type DestinationId,
+  type FishingEndReason,
+} from "@fishing/shared";
+import {
   moveOnMap,
   areaAt,
   findFishingCast,
@@ -277,13 +284,17 @@ app.post("/api/economy", async (req, res) => {
     if (!parsed.success)
       throw new GameError("Yêu cầu hành trang không hợp lệ.");
     const id = await authenticated(req);
-    const current = sessions.get(id);
-    if (
-      current?.room.players.get(current.client.sessionId)?.phase ===
-      "SHOWCASING"
-    )
-      throw new GameError("Hãy cất cá trước khi thay đổi hành trang.");
-    const result = await economyOperation(id, parsed.data);
+    const result = await economyOperation(id, parsed.data, () => {
+      const session = sessions.get(id);
+      const player = session?.room.players.get(session.client.sessionId);
+      if (player?.phase === "SHOWCASING" && parsed.data.action !== "sell")
+        throw new GameError("Hãy cất cá trước khi thay đổi hành trang.");
+      if (
+        ["viewShop", "buyRod", "buyBait"].includes(parsed.data.action) &&
+        !canShop(player)
+      )
+        throw new GameError("Hãy đến gần Cô Sáu ở sạp hàng để mua đồ.");
+    });
     const session = sessions.get(id);
     session?.room.syncProfile(session.client, result.profile);
     if (!result.ok) {
@@ -307,7 +318,12 @@ app.post("/api/quests/claim", async (req, res) => {
       .safeParse(req.body);
     if (!data.success) throw new GameError("Yêu cầu nhận thưởng không hợp lệ.");
     const id = await authenticated(req),
-      result = await claimQuest(id, data.data.questId, data.data.period, data.data.requestId);
+      result = await claimQuest(
+        id,
+        data.data.questId,
+        data.data.period,
+        data.data.requestId,
+      );
     const session = sessions.get(id);
     session?.room.syncProfile(session.client, result.profile);
     res.json(result);
@@ -340,6 +356,7 @@ app.post("/api/character", async (req, res) => {
   }
 });
 class Beach extends Room {
+  residents = new Residents();
   maxClients = 20;
   players = new Map<string, Player>();
   rounds = new Map<string, Round>();
@@ -350,6 +367,7 @@ class Beach extends Room {
   jumpSequences = new Map<string, number>();
   jumpSaved = new Set<string>();
   leavingSessions = new Set<string>();
+  showcaseEpoch = new Map<string, number>();
   lastCatches = new Map<string, import("@fishing/shared").Fish>();
   rtt = new Map<string, number>();
   pings = new Map<string, { nonce: string; at: number }>();
@@ -436,6 +454,7 @@ class Beach extends Room {
       roomId: this.roomId,
       clients: this.clients,
       idle: (id) => this.players.get(id)?.phase === "IDLE",
+      position: (id) => this.players.get(id),
       members: () =>
         Array.from(this.players.values()).map((p) => ({
           id: p.id,
@@ -504,7 +523,7 @@ class Beach extends Room {
       )
         return;
       this.jumpSequences.set(c.sessionId, parsed.data.seq);
-      p.jumpSeq=parsed.data.seq;
+      p.jumpSeq = parsed.data.seq;
       p.grounded = false;
       p.vy = JUMP_SPEED;
       if (!this.jumpSaved.has(c.sessionId)) {
@@ -521,9 +540,15 @@ class Beach extends Room {
       this.stow(c);
       void this.track(this.startFishing(c)).catch((e) => this.error(c, e));
     });
-    this.onMessage("FISH_SHOWCASE_REQUEST", (c) => {
+    this.onMessage("FISH_SHOWCASE_REQUEST", (c, data) => {
       if (this.messagesGate.allow(c.sessionId))
-        void this.track(this.showFish(c)).catch((e) => this.error(c, e));
+        void this.track(this.showFish(c, data)).catch(() =>
+          c.send("SHOWCASE_ERROR", {
+            message: "Không thể lấy cá. Hãy thử lại.",
+          }),
+        );
+      else
+        c.send("SHOWCASE_ERROR", { message: "Hãy chờ một chút rồi thử lại." });
     });
     this.onMessage("FISH_STOW", (c) => {
       if (this.messagesGate.allow(c.sessionId)) this.stow(c);
@@ -603,7 +628,12 @@ class Beach extends Room {
         }
         p.snapshotAt = Date.now();
       }
-      this.broadcast("WORLD", Array.from(this.players.values()));
+      const actors = this.residents.update(
+        [...this.players.values()].filter((p) => p.connected).length,
+        Date.now(),
+        Math.min(0.1, deltaTime / 1000),
+      );
+      this.broadcast("WORLD", [...this.players.values(), ...actors]);
     }, 50);
     this.clock.setInterval(() => {
       for (const c of this.clients) {
@@ -660,12 +690,15 @@ class Beach extends Room {
     const p = this.players.get(c.sessionId);
     if (!p) return;
     p.phase = phase;
+    p.phaseStartedAt = Date.now();
     if (phase === "APPROACHING")
       p.shadowScale = this.rounds.get(c.sessionId)?.plan?.shadowScale;
     c.send("FISH_CUE", {
       phase,
       serverTime: Date.now(),
       windowMs: this.rounds.get(c.sessionId)?.plan?.hookMs ?? 900,
+      phaseStartedAt: p.phaseStartedAt,
+      durationMs: p.phaseDurationMs,
     });
   }
   async startFishing(c: Client) {
@@ -679,10 +712,15 @@ class Beach extends Room {
       return;
     const point = findFishingCast(p, p.yaw);
     if (!point) {
-      c.send("NOTICE", "Hãy đứng trong 2 m tới mép nước để thả cần.");
+      c.send(
+        "NOTICE",
+        "Cần đứng gần nước để thả cần (trong 2 m tới mép nước).",
+      );
       return;
     }
     p.phase = "CASTING";
+    p.phaseStartedAt = Date.now();
+    p.motionSeed = randomInt(1, 1000000);
     count("fishing_starts");
     p.moving = false;
     p.bobber = point.bobber;
@@ -700,14 +738,18 @@ class Beach extends Room {
     round.selected = accepted.selected;
     round.plan = accepted.plan;
     this.syncProfile(c, accepted.profile);
-    if (!this.players.has(c.sessionId) || this.rounds.get(c.sessionId) !== round) {
+    if (
+      !this.players.has(c.sessionId) ||
+      this.rounds.get(c.sessionId) !== round
+    ) {
       await finishFishing(c.auth, round.id);
       this.rounds.delete(c.sessionId);
       return;
     }
     round.busy = false;
     c.send("FISH_STARTED", { roundId: round.id });
-    for (const cue of fishingSchedule(accepted.selected.grams)) {
+    const schedule = fishingSchedule(accepted.selected.grams);
+    for (const [index, cue] of schedule.entries()) {
       round.timers.push(
         setTimeout(() => {
           if (cue.phase === "BITE_WINDOW") {
@@ -717,10 +759,13 @@ class Beach extends Room {
                 void this.end(
                   c,
                   "Cá đã bơi mất! Lần sau giật khi thấy dấu !",
+                  "late",
                 ).catch((error) => this.error(c, error));
               }, accepted.plan.hookMs + 151),
             );
           }
+          p.phaseDurationMs =
+            (schedule[index + 1]?.at ?? cue.at + accepted.plan.hookMs) - cue.at;
           this.cue(c, cue.phase);
         }, cue.at),
       );
@@ -751,14 +796,16 @@ class Beach extends Room {
       await this.end(
         c,
         early
-          ? "Giật sớm rồi! Chờ phao chìm và dấu ! nhé."
+          ? "Bạn giật sớm quá"
           : "Cá đã bơi mất! Lần sau giật khi thấy dấu !",
+        early ? "early" : "late",
       );
       return;
     }
     round.busy = true;
     round.timers.forEach(clearTimeout);
     p.phase = "REELING";
+    p.phaseStartedAt = Date.now();
     observe("hook_reaction_ms", performance.now() - round.opens);
     const timing = await startReel(c.auth, round.id);
     if (this.rounds.get(c.sessionId) !== round) return;
@@ -775,26 +822,33 @@ class Beach extends Room {
         p = this.players.get(c.sessionId);
       if (!p) return;
       this.rounds.delete(c.sessionId);
+      const escapeOrigin = p.reel ? reelPosition(p.reel, Date.now()) : p.bobber;
       delete p.reel;
-      delete p.shadowScale;
       this.syncProfile(c, result.profile);
       if (result.fish) {
+        delete p.shadowScale;
         count("catches");
         p.phase = "RESULT";
         this.lastCatches.set(c.sessionId, result.fish);
         if (p.connected) c.send("FISH_RESULT", result.fish);
-        if (result.fish.rarity === "legendary")
+        if (["legendary", "mythic"].includes(result.fish.rarity ?? ""))
           this.broadcast("ANNOUNCEMENT", {
             playerName: p.name,
             species: result.fish.species,
+            rarity: result.fish.rarity,
           });
       } else {
-        p.phase = "IDLE";p.escape={at:Date.now(),origin:p.bobber};setTimeout(()=>{delete p.escape;},950);
+        const origin = escapeOrigin;
+        p.phase = "IDLE";
+        p.escape = { at: Date.now(), origin, reason: "line_break" };
+        setTimeout(() => {
+          delete p.escape;
+        }, 950);
         this.cooldown.set(c.sessionId, performance.now() + 800);
         if (p.connected) {
-          c.send("FISH_ESCAPED", { position: p.bobber });
-          c.send("FISH_ENDED", {});
-          c.send("NOTICE", "Cá vùng ra và tuột mất! Thử lại nhé.");
+          c.send("FISH_ESCAPED", { position: origin, reason: "line_break" });
+          c.send("FISH_ENDED", { reason: "line_break" });
+          c.send("NOTICE", "Đứt dây rồi! Cá đã thoát.");
         }
       }
     } catch (error) {
@@ -806,6 +860,10 @@ class Beach extends Room {
     }
   }
   stow(c: Client) {
+    this.showcaseEpoch.set(
+      c.sessionId,
+      (this.showcaseEpoch.get(c.sessionId) ?? 0) + 1,
+    );
     const p = this.players.get(c.sessionId);
     if (!p || !["RESULT", "SHOWCASING"].includes(p.phase)) return;
     delete p.showcase;
@@ -813,21 +871,57 @@ class Beach extends Room {
     p.phase = "IDLE";
     c.send("FISH_ENDED", {});
   }
-  async showFish(c: Client) {
-    const p = this.players.get(c.sessionId),
-      fish = this.lastCatches.get(c.sessionId);
-    if (!p || p.phase !== "RESULT" || !fish) return;
-    p.phase = "SHOWCASING";
-    const profile = await getProfile(c.auth);
-    if (!profile.fish.some((f) => f.id === fish.id)) {
-      this.stow(c);
-      c.send("NOTICE", "Con cá này không còn trong túi.");
+  async showFish(c: Client, data?: unknown) {
+    const parsed = z
+      .object({ fishId: z.string().min(1).max(100).optional() })
+      .strict()
+      .safeParse(data ?? {});
+    const p = this.players.get(c.sessionId);
+    const reject = (message: string) => c.send("SHOWCASE_ERROR", { message });
+    if (
+      !parsed.success ||
+      !p ||
+      !p.connected ||
+      !["IDLE", "RESULT", "SHOWCASING"].includes(p.phase)
+    ) {
+      reject("Hãy thu cần trước khi khoe cá.");
       return;
     }
-    p.showcase = { fishId: fish.id, species: fish.species, grams: fish.grams };
+    const fishId = parsed.data.fishId ?? this.lastCatches.get(c.sessionId)?.id;
+    const epoch = (this.showcaseEpoch.get(c.sessionId) ?? 0) + 1;
+    this.showcaseEpoch.set(c.sessionId, epoch);
+    const profile = await getProfile(c.auth);
+    if (
+      this.showcaseEpoch.get(c.sessionId) !== epoch ||
+      !p.connected ||
+      this.leavingSessions.has(c.sessionId) ||
+      !["IDLE", "RESULT", "SHOWCASING"].includes(p.phase) ||
+      profile.revision < (this.profileRevisions.get(c.sessionId) ?? -1)
+    ) {
+      reject("Trạng thái đã thay đổi. Hãy chọn lại cá.");
+      return;
+    }
+    const fish = profile.fish.find((f) => f.id === fishId);
+    if (!fish) {
+      reject("Con cá này không còn trong túi.");
+      return;
+    }
+    if (p.phase !== "SHOWCASING" || p.showcase?.fishId !== fish.id)
+      p.showcase = {
+        fishId: fish.id,
+        species: fish.species,
+        grams: fish.grams,
+        startedAt: Date.now(),
+        animationSeed: Math.random() * 10000,
+      };
+    p.phase = "SHOWCASING";
     c.send("SHOWCASE_STARTED", p.showcase);
   }
   async leaveGame(c: Client) {
+    this.showcaseEpoch.set(
+      c.sessionId,
+      (this.showcaseEpoch.get(c.sessionId) ?? 0) + 1,
+    );
     if (this.leavingSessions.has(c.sessionId)) return;
     this.leavingSessions.add(c.sessionId);
     this.inputs.delete(c.sessionId);
@@ -845,16 +939,24 @@ class Beach extends Room {
     c.leave(1000);
   }
 
-  async end(c: Client, message: string) {
+  async end(
+    c: Client,
+    message: string,
+    reason: FishingEndReason = "cancelled",
+  ) {
     const round = this.rounds.get(c.sessionId);
-    if (!round || (round.busy && this.players.get(c.sessionId)?.phase !== "REELING")) return;
+    if (
+      !round ||
+      (round.busy && this.players.get(c.sessionId)?.phase !== "REELING")
+    )
+      return;
     round.busy = true;
     round.timers.forEach(clearTimeout);
     const profile = await finishFishing(c.auth, round.id);
     count(
-      message.startsWith("Giật sớm")
+      reason === "early"
         ? "missed_early"
-        : message.startsWith("Cá đã bơi mất")
+        : reason === "late"
           ? "missed_late"
           : "cancelled",
     );
@@ -867,7 +969,7 @@ class Beach extends Room {
       delete p.shadowScale;
     }
     this.cooldown.set(c.sessionId, performance.now() + 800);
-    c.send("FISH_ENDED", {});
+    c.send("FISH_ENDED", { reason });
     c.send("NOTICE", message);
   }
   async error(c: Client, error?: unknown) {
@@ -898,6 +1000,15 @@ class Beach extends Room {
       return;
     this.profileRevisions.set(c.sessionId, profile.revision);
     const player = this.players.get(c.sessionId);
+    this.showcaseEpoch.set(
+      c.sessionId,
+      (this.showcaseEpoch.get(c.sessionId) ?? 0) + 1,
+    );
+    if (
+      player?.showcase?.fishId &&
+      !profile.fish.some((f) => f.id === player.showcase!.fishId)
+    )
+      this.stow(c);
     const changed =
       player &&
       (player.name !== profile.name ||
@@ -917,17 +1028,42 @@ class Beach extends Room {
   teleport(c: Client, data: unknown) {
     if (!this.messagesGate.allow(c.sessionId) || this.draining) return;
     const parsed = z
-      .object({ area: z.enum(["beach", "village", "coral", "mystery"]) })
+      .object({
+        area: z.enum(["beach", "village", "coral", "mystery"]).optional(),
+        destination: z
+          .enum([
+            "beach",
+            "dock",
+            "village",
+            "pond",
+            "lighthouse",
+            "coral",
+            "mystery",
+          ])
+          .optional(),
+      })
       .strict()
       .safeParse(data);
     const player = this.players.get(c.sessionId);
     const reject = (message: string) =>
       c.send("TELEPORT_RESULT", { ok: false, message });
-    if (!parsed.success || !player) {
+    if (
+      !parsed.success ||
+      !player ||
+      (!parsed.data.destination && !parsed.data.area)
+    ) {
       reject("Điểm đến không hợp lệ.");
       return;
     }
-    if (!AREAS[parsed.data.area].open) {
+    const destination: DestinationId =
+      parsed.data.destination ??
+      (parsed.data.area === "beach"
+        ? "dock"
+        : parsed.data.area === "village"
+          ? "pond"
+          : parsed.data.area!);
+    const target = DESTINATIONS[destination];
+    if (!target.open || !target.point) {
       reject("Khu vực này sắp mở.");
       return;
     }
@@ -939,18 +1075,24 @@ class Beach extends Room {
       reject("Hãy chờ một chút trước khi dịch chuyển tiếp.");
       return;
     }
-    const area = parsed.data.area as OpenAreaId;
-    Object.assign(player, SPAWNS[area], {
+    const area = target.area as OpenAreaId;
+    Object.assign(player, target.point, {
       area,
       moving: false,
-      y: groundHeightAt(SPAWNS[area]),
+      y: groundHeightAt(target.point),
       vy: 0,
       grounded: true,
       running: false,
     });
     this.inputs.delete(c.sessionId);
     this.teleports.set(c.sessionId, performance.now() + 2000);
-    c.send("TELEPORT_RESULT", { ok: true, area, x: player.x, z: player.z });
+    c.send("TELEPORT_RESULT", {
+      ok: true,
+      area,
+      destination,
+      x: player.x,
+      z: player.z,
+    });
   }
   async sendSession(c: Client) {
     const player = this.players.get(c.sessionId);
@@ -969,6 +1111,10 @@ class Beach extends Room {
   }
 
   async onLeave(c: Client, consented: boolean) {
+    this.showcaseEpoch.set(
+      c.sessionId,
+      (this.showcaseEpoch.get(c.sessionId) ?? 0) + 1,
+    );
     const player = this.players.get(c.sessionId);
     if (player) {
       player.connected = false;
@@ -981,7 +1127,12 @@ class Beach extends Room {
     }
     this.social.members();
     this.inputs.delete(c.sessionId);
-    if (!consented && player && !this.bannedSessions.has(c.sessionId) && !this.leavingSessions.has(c.sessionId)) {
+    if (
+      !consented &&
+      player &&
+      !this.bannedSessions.has(c.sessionId) &&
+      !this.leavingSessions.has(c.sessionId)
+    ) {
       try {
         const returned = await this.allowReconnection(c, 30);
         count("reconnects");
@@ -1016,6 +1167,7 @@ class Beach extends Room {
       this.memberAccounts.delete(c.sessionId);
       this.lastCatches.delete(c.sessionId);
       this.jumpSequences.delete(c.sessionId);
+      this.showcaseEpoch.delete(c.sessionId);
       this.jumpSaved.delete(c.sessionId);
       this.leavingSessions.delete(c.sessionId);
       this.moderation.delete(c.auth);

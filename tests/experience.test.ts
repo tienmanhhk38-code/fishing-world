@@ -16,11 +16,35 @@ import {
 } from "../packages/shared/src/index";
 import { selectCatch } from "../apps/server/src/catch-selection";
 describe("experience v4 rules", () => {
+  it("keeps running speed in a jump and returns to walking after landing", () => {
+    let p: Motion = {
+      ...SPAWNS.beach,
+      y: groundHeightAt(SPAWNS.beach),
+      vy: 6,
+      grounded: false,
+      running: true,
+      moving: true,
+      yaw: Math.PI / 2,
+    };
+    const x = p.x;
+    for (let i = 0; i < 24; i++)
+      p = simulateMovement(p, { x: 1, z: 0, sprint: false }, 1 / 60);
+    expect(p.grounded).toBe(false);
+    expect(p.running).toBe(true);
+    expect(p.x - x).toBeCloseTo(7 * 0.4, 2);
+    for (let i = 0; i < 40 && !p.grounded; i++)
+      p = simulateMovement(p, { x: 1, z: 0, sprint: false }, 1 / 60);
+    expect(p.grounded).toBe(true);
+    const landedX = p.x;
+    p = simulateMovement(p, { x: 1, z: 0, sprint: false }, 1 / 60);
+    expect(p.running).toBe(false);
+    expect(p.x - landedX).toBeCloseTo(4.4 / 60, 3);
+  });
   it("samples rarity tiers independently of species counts and keeps freshwater pools valid", () => {
     let seed = 1749;
     const random = () =>
       (seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0) / 4294967296;
-    const counts = { common: 0, uncommon: 0, rare: 0, legendary: 0 };
+    const counts = { common: 0, uncommon: 0, rare: 0, legendary: 0, mythic: 0 };
     for (let i = 0; i < 50000; i++)
       counts[selectCatch("beach", "wood", "dough", random).species.rarity]++;
     for (const rarity of Object.keys(counts) as (keyof typeof counts)[])
@@ -28,10 +52,11 @@ describe("experience v4 rules", () => {
         FISHING_RULES[rarity].encounter / 100,
         2,
       );
-    for (let i = 0; i < 500; i++)
-      expect(
-        selectCatch("village", "wood", "dough", random).species.rarity,
-      ).not.toBe("legendary");
+    const freshwater = Array.from({ length: 1000 }, () =>
+      selectCatch("village", "wood", "dough", random),
+    );
+    expect(freshwater.every((c) => c.species.area === "village")).toBe(true);
+    expect(freshwater.some((c) => c.species.rarity === "legendary")).toBe(true);
   });
   it("applies every reaction deadline including bounded RTT and does not accept early hooks", () => {
     for (const rules of Object.values(FISHING_RULES)) {

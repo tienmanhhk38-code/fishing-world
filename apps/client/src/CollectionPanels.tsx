@@ -1,3 +1,4 @@
+import { formatFishWeight } from "@fishing/shared";
 import { useEffect, useState } from "react";
 import {
   BookOpen,
@@ -27,9 +28,6 @@ export function ShopPanel({ onClose }: { onClose: () => void }) {
   const economy = useEconomy();
   const [tab, setTab] = useState<"rods" | "baits">("rods"),
     [quantity, setQuantity] = useState(10);
-  useEffect(() => {
-    void transact({ action: "viewShop" }).catch(() => {});
-  }, []);
   const blocked = economy.busy || economy.pending,
     level = levelProgress(profile.xp).level;
   return (
@@ -53,6 +51,9 @@ export function ShopPanel({ onClose }: { onClose: () => void }) {
             <X />
           </button>
         </div>
+        <p className="npc-greeting">
+          Cô Sáu: Ghé sạp nào! Chọn cần và mồi cho chuyến câu hôm nay nhé.
+        </p>
         <div className="inventory-tabs" role="tablist" aria-label="Hàng hóa">
           <button
             role="tab"
@@ -223,12 +224,18 @@ export function AlbumPanel({ onClose }: { onClose: () => void }) {
           <h2 id="album-title">
             <BookOpen /> Album cá
           </h2>
-          <span className="album-progress">{entries.size} / 15 loài</span>
+          <span className="album-progress">
+            {entries.size} / {SPECIES.length} loài
+          </span>
           <button className="icon" aria-label="Đóng album" onClick={onClose}>
             <X />
           </button>
         </div>
-        <progress value={entries.size} max={15} aria-label="Tiến độ album" />
+        <progress
+          value={entries.size}
+          max={SPECIES.length}
+          aria-label="Tiến độ album"
+        />
         <div className="inventory-tabs" role="tablist" aria-label="Loại nước">
           {[
             { id: "all", name: "Tất cả" },
@@ -278,8 +285,7 @@ export function AlbumPanel({ onClose }: { onClose: () => void }) {
                 </span>
                 <p>Đã bắt {entry.count} con</p>
                 <p>
-                  <Trophy size={17} /> {(entry.recordGrams / 1000).toFixed(2)}{" "}
-                  kg
+                  <Trophy size={17} /> {formatFishWeight(entry.recordGrams)}
                 </p>
                 <p>{AREAS[species.area].name}</p>
               </>
@@ -287,7 +293,9 @@ export function AlbumPanel({ onClose }: { onClose: () => void }) {
               <div className="empty">
                 <LockKeyhole size={40} />
                 <h3>Chưa khám phá</h3>
-                <p>Thử câu ở cả biển và ao làng để tìm đủ 15 loài.</p>
+                <p>
+                  Thử câu ở cả biển và ao làng để tìm đủ {SPECIES.length} loài.
+                </p>
               </div>
             )}
           </aside>

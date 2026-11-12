@@ -68,6 +68,7 @@ function bakedScene(scene: THREE.Group, id: string, materialName?: string) {
     scene.traverse((object) => {
       if (
         object instanceof THREE.Mesh &&
+        object.parent?.name !== "fish-lod-low" &&
         (!materialName ||
           (!Array.isArray(object.material) &&
             object.material.name === materialName))

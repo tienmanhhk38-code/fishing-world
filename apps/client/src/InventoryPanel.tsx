@@ -18,7 +18,9 @@ import {
   type RodId,
   type BaitId,
   type SaleQuote,
+  formatFishWeight,
 } from "@fishing/shared";
+import { useGame, send } from "./network";
 
 import { SaleConfirmation } from "./ProgressPanels";
 import { useEconomy, transact, quoteSale } from "./economy-client";
@@ -52,6 +54,22 @@ export function InventoryPanel({
 }) {
   const fish = profile.fish;
   const economy = useEconomy();
+  const game = useGame();
+  const [showPending, setShowPending] = useState(false);
+  useEffect(() => {
+    useGame.setState({ showcaseError: "", showcaseAck: 0 });
+  }, []);
+  useEffect(() => {
+    if (showPending && !game.connected) setShowPending(false);
+    if (showPending && game.showcaseError) setShowPending(false);
+    if (showPending && game.showcaseAck) onClose();
+  }, [
+    showPending,
+    game.connected,
+    game.showcaseError,
+    game.showcaseAck,
+    onClose,
+  ]);
   const blocked = economy.busy || economy.pending;
   const [quote, setQuote] = useState<SaleQuote | null>(null);
   useEffect(() => {
@@ -120,11 +138,11 @@ export function InventoryPanel({
                   >
                     <button
                       onClick={() => setSelectedId(item.id)}
-                      aria-label={`${item.species}, ${(item.grams / 1000).toFixed(2)} kg`}
+                      aria-label={`${item.species}, ${formatFishWeight(item.grams)}`}
                       aria-pressed={selected.id === item.id}
                     >
                       <AssetImage id={fishModelId(item.species)} />
-                      <b>{(item.grams / 1000).toFixed(2)} kg</b>
+                      <b>{formatFishWeight(item.grams)}</b>
                     </button>
                   </article>
                 ))
@@ -144,7 +162,7 @@ export function InventoryPanel({
                   {AREAS[selected.area ?? "beach"].water}
                 </span>
                 <p>
-                  <Weight size={16} /> {(selected.grams / 1000).toFixed(2)} kg
+                  <Weight size={16} /> {formatFishWeight(selected.grams)}
                 </p>
                 <p>
                   <MapPin size={16} /> {AREAS[selected.area ?? "beach"].name}
@@ -155,14 +173,38 @@ export function InventoryPanel({
                 <span className={`rarity ${selected.rarity ?? "common"}`}>
                   {RARITIES[selected.rarity ?? "common"]}
                 </span>
-                <p>Giá bán {selected.saleValue?.toLocaleString("vi-VN")} Xu</p>
-                <button
-                  className="play sell-one"
-                  disabled={blocked}
-                  onClick={() => void sell(selected.id)}
-                >
-                  Bán cá
-                </button>
+                <p className="fish-price">
+                  Giá bán {selected.saleValue?.toLocaleString("vi-VN")} Xu
+                </p>
+                <div className="fish-actions">
+                  <button
+                    className="showcase-action"
+                    disabled={
+                      !!blocked ||
+                      showPending ||
+                      !game.connected ||
+                      !["IDLE", "RESULT", "SHOWCASING"].includes(game.phase)
+                    }
+                    onClick={() => {
+                      useGame.setState({ showcaseError: "", showcaseAck: 0 });
+                      setShowPending(true);
+                      send("FISH_SHOWCASE_REQUEST", { fishId: selected.id });
+                    }}
+                  >
+                    {showPending ? "Đang lấy cá…" : "Mang ra khoe"}
+                  </button>
+                  <button
+                    className="play sell-one"
+                    disabled={blocked}
+                    onClick={() => void sell(selected.id)}
+                  >
+                    Bán cá
+                  </button>
+                </div>
+                {!["IDLE", "RESULT", "SHOWCASING"].includes(game.phase) && (
+                  <small>Hãy thu cần trước khi khoe cá.</small>
+                )}
+                {game.showcaseError && <p role="alert">{game.showcaseError}</p>}
               </aside>
             )}
           </div>

@@ -7,6 +7,7 @@ export * from "./world";
 export * from "./fishing-rules";
 export * from "./quests";
 export * from "./movement";
+export * from "./residents";
 export type Phase =
   | "IDLE"
   | "CASTING"
@@ -31,6 +32,12 @@ export interface Fish {
   newSpecies?: boolean;
 }
 export interface Player {
+  speech?: { text: string; until: number };
+  kind?: "player" | "npc" | "bot";
+  phaseStartedAt?: number;
+  phaseDurationMs?: number;
+  motionSeed?: number;
+  emote?: import("./social").EmoteId;
   id: string;
   name: string;
   appearanceId: AppearanceId;
@@ -48,14 +55,24 @@ export interface Player {
   grounded: boolean;
   running: boolean;
   ackSeq: number;
-  jumpSeq?:number;
+  jumpSeq?: number;
   snapshotAt: number;
   shadowScale?: number;
   reel?: import("./fishing-rules").ReelPlan;
-  escape?: { at: number; origin: { x: number; z: number } };
+  escape?: {
+    at: number;
+    origin: { x: number; z: number };
+    reason?: "line_break";
+  };
   phase: Phase;
   bobber: { x: number; z: number };
-  showcase?: { fishId?: string; species: string; grams: number };
+  showcase?: {
+    fishId?: string;
+    species: string;
+    grams: number;
+    startedAt?: number;
+    animationSeed?: number;
+  };
 }
 export interface Profile {
   id: string;

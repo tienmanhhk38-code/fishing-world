@@ -6,6 +6,8 @@ import { db } from "./db";
 import { GameError } from "./economy";
 import {
   cleanChat,
+  within,
+  NEARBY_CHAT_RADIUS,
   type ChatMessage,
   type RoomMember,
   type AppearanceId,
@@ -14,7 +16,11 @@ import {
 
 const id = z.string().uuid();
 const chatSchema = z
-  .object({ requestId: id, text: z.string().max(2000) })
+  .object({
+    requestId: id,
+    text: z.string().max(2000),
+    channel: z.enum(["world", "nearby"]).optional().default("world"),
+  })
   .strict();
 const muteSchema = z
   .object({ requestId: id, targetId: id, muted: z.boolean() })
@@ -38,6 +44,7 @@ type Host = {
   clients: Client[];
   members: () => RoomMember[];
   idle: (sessionId: string) => boolean;
+  position: (sessionId: string) => { x: number; z: number } | undefined;
 };
 
 async function locked<T>(
@@ -146,7 +153,8 @@ export class RoomSocial {
       if (kind === "CHAT_SEND") {
         const parsed = chatSchema.safeParse(raw);
         if (!parsed.success) throw new GameError("Tin nhắn không hợp lệ.");
-        const text = cleanChat(parsed.data.text);
+        const text = cleanChat(parsed.data.text),
+          channel = parsed.data.channel;
         if (!text || Array.from(text).length > 160)
           throw new GameError("Tin nhắn cần từ 1 đến 160 ký tự.");
         const saved = await locked(c.auth, async (tx) => {
@@ -154,7 +162,11 @@ export class RoomSocial {
             where: { guestId_requestId: { guestId: c.auth, requestId } },
           });
           if (previous) {
-            if (previous.text !== text || previous.roomId !== this.host.roomId)
+            if (
+              previous.text !== text ||
+              previous.roomId !== this.host.roomId ||
+              previous.channel !== channel
+            )
               throw new GameError("Mã tin nhắn đã được dùng.");
             return null;
           }
@@ -179,6 +191,7 @@ export class RoomSocial {
               requestId,
               roomId: this.host.roomId,
               text,
+              channel,
               name: guest.name,
               appearanceId: guest.appearanceId,
             },
@@ -192,12 +205,22 @@ export class RoomSocial {
             appearanceId: saved.appearanceId as AppearanceId,
             text: saved.text,
             createdAt: saved.createdAt.toISOString(),
+            channel,
+            playerId: c.sessionId,
+            expiresAt: saved.createdAt.getTime() + 6000,
           };
-          this.history = [...this.history, message].slice(-80);
+          if (channel === "world")
+            this.history = [...this.history, message].slice(-80);
           for (const recipient of this.host.clients)
             if (
               this.muted.has(recipient.auth) &&
-              !this.muted.get(recipient.auth)!.has(c.auth)
+              !this.muted.get(recipient.auth)!.has(c.auth) &&
+              (channel === "world" ||
+                within(
+                  this.host.position(c.sessionId),
+                  this.host.position(recipient.sessionId),
+                  NEARBY_CHAT_RADIUS,
+                ))
             )
               recipient.send("CHAT_MESSAGE", message);
         }
@@ -280,9 +303,22 @@ export class RoomSocial {
               roomId: this.host.roomId,
               reason,
               detail,
-              evidence: this.history
-                .filter((message) => message.senderId === targetId)
-                .slice(-20) as unknown as Prisma.InputJsonValue,
+              evidence: (
+                await tx.chatMessage.findMany({
+                  where: { guestId: targetId, roomId: this.host.roomId },
+                  orderBy: { createdAt: "desc" },
+                  take: 20,
+                })
+              )
+                .reverse()
+                .map((m) => ({
+                  id: m.id,
+                  senderId: m.guestId,
+                  name: m.name,
+                  text: m.text,
+                  channel: m.channel,
+                  createdAt: m.createdAt.toISOString(),
+                })) as Prisma.InputJsonValue,
             },
           });
         });

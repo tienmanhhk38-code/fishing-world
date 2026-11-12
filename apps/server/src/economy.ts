@@ -126,7 +126,10 @@ async function profile(tx: Tx, id: string): Promise<Profile> {
     }),
     tx.ownedRod.findMany({ where: { guestId: id } }),
     tx.baitStock.findMany({ where: { guestId: id } }),
-    tx.album.findMany({ where: { guestId: id }, orderBy: {speciesId: 'asc'} }),
+    tx.album.findMany({
+      where: { guestId: id },
+      orderBy: { speciesId: "asc" },
+    }),
   ]);
   const caught = album.reduce((sum, entry) => sum + entry.count, 0);
   return {
@@ -216,6 +219,7 @@ export async function prepareSale(id: string, fishId?: string) {
 export async function economyOperation(
   id: string,
   input: z.infer<typeof operationSchema>,
+  authorizeAction: () => void = () => {},
 ) {
   const { requestId, ...action } = input;
   const fingerprint = createHash("sha256")
@@ -234,6 +238,7 @@ export async function economyOperation(
         profile: await profile(tx, id),
       };
     }
+    authorizeAction();
     const operationId = randomUUID();
     let delta = 0,
       message = "Đã cập nhật hành trang.";
@@ -445,7 +450,9 @@ export function commitCatch(
     const round = await tx.fishingRound.findUniqueOrThrow({
       where: { id: roundId },
     });
-    const { species, grams } = candidate.selected as unknown as ReturnType<typeof selectCatch>;
+    const { species, grams } = candidate.selected as unknown as ReturnType<
+      typeof selectCatch
+    >;
     const previous = await tx.album.findUnique({
       where: { guestId_speciesId: { guestId: id, speciesId: species.id } },
     });

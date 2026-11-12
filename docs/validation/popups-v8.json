@@ -1,0 +1,1255 @@
+{
+  "states": 16,
+  "viewports": 6,
+  "errors": [],
+  "checks": [
+    {
+      "name": "rooms",
+      "width": 360,
+      "height": 800,
+      "title": "18px",
+      "padding": "12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [
+        "16px"
+      ],
+      "oldTitle": "21px"
+    },
+    {
+      "name": "rooms",
+      "width": 390,
+      "height": 844,
+      "title": "18px",
+      "padding": "12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [
+        "16px"
+      ],
+      "oldTitle": "21px"
+    },
+    {
+      "name": "rooms",
+      "width": 844,
+      "height": 390,
+      "title": "18px",
+      "padding": "10px 12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [
+        "16px"
+      ],
+      "oldTitle": "27px"
+    },
+    {
+      "name": "rooms",
+      "width": 740,
+      "height": 360,
+      "title": "18px",
+      "padding": "10px 12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [
+        "16px"
+      ],
+      "oldTitle": "27px"
+    },
+    {
+      "name": "rooms",
+      "width": 1366,
+      "height": 768,
+      "title": "27px",
+      "padding": "26px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [
+        "14px"
+      ],
+      "oldTitle": "27px"
+    },
+    {
+      "name": "rooms",
+      "width": 1920,
+      "height": 1080,
+      "title": "27px",
+      "padding": "26px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [
+        "14px"
+      ],
+      "oldTitle": "27px"
+    },
+    {
+      "name": "appearance",
+      "width": 360,
+      "height": 800,
+      "title": "18px",
+      "padding": "12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [
+        "16px"
+      ],
+      "oldTitle": "22px"
+    },
+    {
+      "name": "appearance",
+      "width": 390,
+      "height": 844,
+      "title": "18px",
+      "padding": "12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [
+        "16px"
+      ],
+      "oldTitle": "22px"
+    },
+    {
+      "name": "appearance",
+      "width": 844,
+      "height": 390,
+      "title": "18px",
+      "padding": "10px 12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [
+        "16px"
+      ],
+      "oldTitle": "22px"
+    },
+    {
+      "name": "appearance",
+      "width": 740,
+      "height": 360,
+      "title": "18px",
+      "padding": "10px 12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [
+        "16px"
+      ],
+      "oldTitle": "22px"
+    },
+    {
+      "name": "appearance",
+      "width": 1366,
+      "height": 768,
+      "title": "27px",
+      "padding": "24px",
+      "overflow": 0,
+      "minButtonWidth": 48,
+      "minButtonHeight": 48,
+      "inputFonts": [
+        "16px"
+      ],
+      "oldTitle": "27px"
+    },
+    {
+      "name": "appearance",
+      "width": 1920,
+      "height": 1080,
+      "title": "27px",
+      "padding": "24px",
+      "overflow": 0,
+      "minButtonWidth": 48,
+      "minButtonHeight": 48,
+      "inputFonts": [
+        "16px"
+      ],
+      "oldTitle": "27px"
+    },
+    {
+      "name": "settings",
+      "width": 360,
+      "height": 800,
+      "title": "18px",
+      "padding": "12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [
+        "16px",
+        "16px"
+      ],
+      "oldTitle": "27px"
+    },
+    {
+      "name": "settings",
+      "width": 390,
+      "height": 844,
+      "title": "18px",
+      "padding": "12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [
+        "16px",
+        "16px"
+      ],
+      "oldTitle": "27px"
+    },
+    {
+      "name": "settings",
+      "width": 844,
+      "height": 390,
+      "title": "18px",
+      "padding": "10px 12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [
+        "16px",
+        "16px"
+      ],
+      "oldTitle": "27px"
+    },
+    {
+      "name": "settings",
+      "width": 740,
+      "height": 360,
+      "title": "18px",
+      "padding": "10px 12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [
+        "16px",
+        "16px"
+      ],
+      "oldTitle": "27px"
+    },
+    {
+      "name": "settings",
+      "width": 1366,
+      "height": 768,
+      "title": "27px",
+      "padding": "26px 30px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 40,
+      "inputFonts": [
+        "13px",
+        "13px"
+      ],
+      "oldTitle": "27px"
+    },
+    {
+      "name": "settings",
+      "width": 1920,
+      "height": 1080,
+      "title": "27px",
+      "padding": "26px 30px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 40,
+      "inputFonts": [
+        "13px",
+        "13px"
+      ],
+      "oldTitle": "27px"
+    },
+    {
+      "name": "inventory",
+      "width": 360,
+      "height": 800,
+      "title": "18px",
+      "padding": "12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "25px"
+    },
+    {
+      "name": "inventory",
+      "width": 390,
+      "height": 844,
+      "title": "18px",
+      "padding": "12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "25px"
+    },
+    {
+      "name": "inventory",
+      "width": 844,
+      "height": 390,
+      "title": "18px",
+      "padding": "10px 12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "28px"
+    },
+    {
+      "name": "inventory",
+      "width": 740,
+      "height": 360,
+      "title": "18px",
+      "padding": "10px 12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "28px"
+    },
+    {
+      "name": "inventory",
+      "width": 1366,
+      "height": 768,
+      "title": "28px",
+      "padding": "22px 25px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 38,
+      "inputFonts": [],
+      "oldTitle": "28px"
+    },
+    {
+      "name": "inventory",
+      "width": 1920,
+      "height": 1080,
+      "title": "28px",
+      "padding": "22px 25px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 38,
+      "inputFonts": [],
+      "oldTitle": "28px"
+    },
+    {
+      "name": "equipment",
+      "width": 360,
+      "height": 800,
+      "title": "18px",
+      "padding": "12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "25px"
+    },
+    {
+      "name": "equipment",
+      "width": 390,
+      "height": 844,
+      "title": "18px",
+      "padding": "12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "25px"
+    },
+    {
+      "name": "equipment",
+      "width": 844,
+      "height": 390,
+      "title": "18px",
+      "padding": "10px 12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "28px"
+    },
+    {
+      "name": "equipment",
+      "width": 740,
+      "height": 360,
+      "title": "18px",
+      "padding": "10px 12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "28px"
+    },
+    {
+      "name": "equipment",
+      "width": 1366,
+      "height": 768,
+      "title": "28px",
+      "padding": "22px 25px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 38,
+      "inputFonts": [],
+      "oldTitle": "28px"
+    },
+    {
+      "name": "equipment",
+      "width": 1920,
+      "height": 1080,
+      "title": "28px",
+      "padding": "22px 25px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 38,
+      "inputFonts": [],
+      "oldTitle": "28px"
+    },
+    {
+      "name": "sale",
+      "width": 360,
+      "height": 800,
+      "title": "18px",
+      "padding": "12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "22px"
+    },
+    {
+      "name": "sale",
+      "width": 390,
+      "height": 844,
+      "title": "18px",
+      "padding": "12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "22px"
+    },
+    {
+      "name": "sale",
+      "width": 844,
+      "height": 390,
+      "title": "18px",
+      "padding": "10px 12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "25px"
+    },
+    {
+      "name": "sale",
+      "width": 740,
+      "height": 360,
+      "title": "18px",
+      "padding": "10px 12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "25px"
+    },
+    {
+      "name": "sale",
+      "width": 1366,
+      "height": 768,
+      "title": "25px",
+      "padding": "25px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "25px"
+    },
+    {
+      "name": "sale",
+      "width": 1920,
+      "height": 1080,
+      "title": "25px",
+      "padding": "25px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "25px"
+    },
+    {
+      "name": "album",
+      "width": 360,
+      "height": 800,
+      "title": "18px",
+      "padding": "12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "22px"
+    },
+    {
+      "name": "album",
+      "width": 390,
+      "height": 844,
+      "title": "18px",
+      "padding": "12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "22px"
+    },
+    {
+      "name": "album",
+      "width": 844,
+      "height": 390,
+      "title": "18px",
+      "padding": "10px 12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "23px"
+    },
+    {
+      "name": "album",
+      "width": 740,
+      "height": 360,
+      "title": "18px",
+      "padding": "10px 12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "23px"
+    },
+    {
+      "name": "album",
+      "width": 1366,
+      "height": 768,
+      "title": "28px",
+      "padding": "26px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 38,
+      "inputFonts": [],
+      "oldTitle": "28px"
+    },
+    {
+      "name": "album",
+      "width": 1920,
+      "height": 1080,
+      "title": "28px",
+      "padding": "26px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 38,
+      "inputFonts": [],
+      "oldTitle": "28px"
+    },
+    {
+      "name": "quests",
+      "width": 360,
+      "height": 800,
+      "title": "18px",
+      "padding": "12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "25px"
+    },
+    {
+      "name": "quests",
+      "width": 390,
+      "height": 844,
+      "title": "18px",
+      "padding": "12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "25px"
+    },
+    {
+      "name": "quests",
+      "width": 844,
+      "height": 390,
+      "title": "18px",
+      "padding": "10px 12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "30px"
+    },
+    {
+      "name": "quests",
+      "width": 740,
+      "height": 360,
+      "title": "18px",
+      "padding": "10px 12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "30px"
+    },
+    {
+      "name": "quests",
+      "width": 1366,
+      "height": 768,
+      "title": "30px",
+      "padding": "26px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 42,
+      "inputFonts": [],
+      "oldTitle": "30px"
+    },
+    {
+      "name": "quests",
+      "width": 1920,
+      "height": 1080,
+      "title": "30px",
+      "padding": "26px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 42,
+      "inputFonts": [],
+      "oldTitle": "30px"
+    },
+    {
+      "name": "help",
+      "width": 360,
+      "height": 800,
+      "title": "30px",
+      "padding": "12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "25px"
+    },
+    {
+      "name": "help",
+      "width": 390,
+      "height": 844,
+      "title": "30px",
+      "padding": "12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "25px"
+    },
+    {
+      "name": "help",
+      "width": 844,
+      "height": 390,
+      "title": "30px",
+      "padding": "10px 12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "30px"
+    },
+    {
+      "name": "help",
+      "width": 740,
+      "height": 360,
+      "title": "30px",
+      "padding": "10px 12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "30px"
+    },
+    {
+      "name": "help",
+      "width": 1366,
+      "height": 768,
+      "title": "30px",
+      "padding": "35px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "30px"
+    },
+    {
+      "name": "help",
+      "width": 1920,
+      "height": 1080,
+      "title": "30px",
+      "padding": "35px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "30px"
+    },
+    {
+      "name": "community",
+      "width": 360,
+      "height": 800,
+      "title": "18px",
+      "padding": "12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [
+        "16px"
+      ],
+      "oldTitle": "22px"
+    },
+    {
+      "name": "community",
+      "width": 390,
+      "height": 844,
+      "title": "18px",
+      "padding": "12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [
+        "16px"
+      ],
+      "oldTitle": "22px"
+    },
+    {
+      "name": "community",
+      "width": 844,
+      "height": 390,
+      "title": "18px",
+      "padding": "10px 12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [
+        "16px"
+      ],
+      "oldTitle": "22px"
+    },
+    {
+      "name": "community",
+      "width": 740,
+      "height": 360,
+      "title": "18px",
+      "padding": "10px 12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [
+        "16px"
+      ],
+      "oldTitle": "22px"
+    },
+    {
+      "name": "community",
+      "width": 1366,
+      "height": 768,
+      "title": "28px",
+      "padding": "24px",
+      "overflow": 0,
+      "minButtonWidth": 48,
+      "minButtonHeight": 48,
+      "inputFonts": [
+        "13px"
+      ],
+      "oldTitle": "28px"
+    },
+    {
+      "name": "community",
+      "width": 1920,
+      "height": 1080,
+      "title": "28px",
+      "padding": "24px",
+      "overflow": 0,
+      "minButtonWidth": 48,
+      "minButtonHeight": 48,
+      "inputFonts": [
+        "13px"
+      ],
+      "oldTitle": "28px"
+    },
+    {
+      "name": "report",
+      "width": 360,
+      "height": 800,
+      "title": "18px",
+      "padding": "12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [
+        "16px",
+        "16px"
+      ],
+      "oldTitle": "23px"
+    },
+    {
+      "name": "report",
+      "width": 390,
+      "height": 844,
+      "title": "18px",
+      "padding": "12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [
+        "16px",
+        "16px"
+      ],
+      "oldTitle": "23px"
+    },
+    {
+      "name": "report",
+      "width": 844,
+      "height": 390,
+      "title": "18px",
+      "padding": "10px 12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [
+        "16px",
+        "16px"
+      ],
+      "oldTitle": "23px"
+    },
+    {
+      "name": "report",
+      "width": 740,
+      "height": 360,
+      "title": "18px",
+      "padding": "10px 12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [
+        "16px",
+        "16px"
+      ],
+      "oldTitle": "23px"
+    },
+    {
+      "name": "report",
+      "width": 1366,
+      "height": 768,
+      "title": "23px",
+      "padding": "26px",
+      "overflow": 0,
+      "minButtonWidth": 48,
+      "minButtonHeight": 48,
+      "inputFonts": [
+        "13px",
+        "13px"
+      ],
+      "oldTitle": "23px"
+    },
+    {
+      "name": "report",
+      "width": 1920,
+      "height": 1080,
+      "title": "23px",
+      "padding": "26px",
+      "overflow": 0,
+      "minButtonWidth": 48,
+      "minButtonHeight": 48,
+      "inputFonts": [
+        "13px",
+        "13px"
+      ],
+      "oldTitle": "23px"
+    },
+    {
+      "name": "nearby",
+      "width": 360,
+      "height": 800,
+      "title": "13px",
+      "padding": "10px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [
+        "16px"
+      ],
+      "oldTitle": "13px"
+    },
+    {
+      "name": "nearby",
+      "width": 390,
+      "height": 844,
+      "title": "13px",
+      "padding": "10px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [
+        "16px"
+      ],
+      "oldTitle": "13px"
+    },
+    {
+      "name": "nearby",
+      "width": 844,
+      "height": 390,
+      "title": "13px",
+      "padding": "10px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [
+        "16px"
+      ],
+      "oldTitle": "13px"
+    },
+    {
+      "name": "nearby",
+      "width": 740,
+      "height": 360,
+      "title": "13px",
+      "padding": "10px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [
+        "16px"
+      ],
+      "oldTitle": "13px"
+    },
+    {
+      "name": "nearby",
+      "width": 1366,
+      "height": 768,
+      "title": "13px",
+      "padding": "12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [
+        "16px"
+      ],
+      "oldTitle": "13px"
+    },
+    {
+      "name": "nearby",
+      "width": 1920,
+      "height": 1080,
+      "title": "13px",
+      "padding": "12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [
+        "16px"
+      ],
+      "oldTitle": "13px"
+    },
+    {
+      "name": "map",
+      "width": 360,
+      "height": 800,
+      "title": "18px",
+      "padding": "12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "21px"
+    },
+    {
+      "name": "map",
+      "width": 390,
+      "height": 844,
+      "title": "18px",
+      "padding": "12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "21px"
+    },
+    {
+      "name": "map",
+      "width": 844,
+      "height": 390,
+      "title": "18px",
+      "padding": "10px 12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "27px"
+    },
+    {
+      "name": "map",
+      "width": 740,
+      "height": 360,
+      "title": "18px",
+      "padding": "10px 12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "27px"
+    },
+    {
+      "name": "map",
+      "width": 1366,
+      "height": 768,
+      "title": "27px",
+      "padding": "26px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "27px"
+    },
+    {
+      "name": "map",
+      "width": 1920,
+      "height": 1080,
+      "title": "27px",
+      "padding": "26px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "27px"
+    },
+    {
+      "name": "shop",
+      "width": 360,
+      "height": 800,
+      "title": "18px",
+      "padding": "12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "22px"
+    },
+    {
+      "name": "shop",
+      "width": 390,
+      "height": 844,
+      "title": "18px",
+      "padding": "12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "22px"
+    },
+    {
+      "name": "shop",
+      "width": 844,
+      "height": 390,
+      "title": "18px",
+      "padding": "10px 12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "23px"
+    },
+    {
+      "name": "shop",
+      "width": 740,
+      "height": 360,
+      "title": "18px",
+      "padding": "10px 12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "23px"
+    },
+    {
+      "name": "shop",
+      "width": 1366,
+      "height": 768,
+      "title": "28px",
+      "padding": "26px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 38,
+      "inputFonts": [],
+      "oldTitle": "28px"
+    },
+    {
+      "name": "shop",
+      "width": 1920,
+      "height": 1080,
+      "title": "28px",
+      "padding": "26px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 38,
+      "inputFonts": [],
+      "oldTitle": "28px"
+    },
+    {
+      "name": "shop-baits",
+      "width": 360,
+      "height": 800,
+      "title": "18px",
+      "padding": "12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [
+        "16px"
+      ],
+      "oldTitle": "22px"
+    },
+    {
+      "name": "shop-baits",
+      "width": 390,
+      "height": 844,
+      "title": "18px",
+      "padding": "12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [
+        "16px"
+      ],
+      "oldTitle": "22px"
+    },
+    {
+      "name": "shop-baits",
+      "width": 844,
+      "height": 390,
+      "title": "18px",
+      "padding": "10px 12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [
+        "16px"
+      ],
+      "oldTitle": "23px"
+    },
+    {
+      "name": "shop-baits",
+      "width": 740,
+      "height": 360,
+      "title": "18px",
+      "padding": "10px 12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [
+        "16px"
+      ],
+      "oldTitle": "23px"
+    },
+    {
+      "name": "shop-baits",
+      "width": 1366,
+      "height": 768,
+      "title": "28px",
+      "padding": "26px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 38,
+      "inputFonts": [
+        "12px"
+      ],
+      "oldTitle": "28px"
+    },
+    {
+      "name": "shop-baits",
+      "width": 1920,
+      "height": 1080,
+      "title": "28px",
+      "padding": "26px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 38,
+      "inputFonts": [
+        "12px"
+      ],
+      "oldTitle": "28px"
+    },
+    {
+      "name": "result",
+      "width": 360,
+      "height": 800,
+      "title": "18px",
+      "padding": "12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "23px"
+    },
+    {
+      "name": "result",
+      "width": 390,
+      "height": 844,
+      "title": "18px",
+      "padding": "12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "23px"
+    },
+    {
+      "name": "result",
+      "width": 844,
+      "height": 390,
+      "title": "18px",
+      "padding": "10px 12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "26px"
+    },
+    {
+      "name": "result",
+      "width": 740,
+      "height": 360,
+      "title": "18px",
+      "padding": "10px 12px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 44,
+      "inputFonts": [],
+      "oldTitle": "26px"
+    },
+    {
+      "name": "result",
+      "width": 1366,
+      "height": 768,
+      "title": "26px",
+      "padding": "24px 20px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 42,
+      "inputFonts": [],
+      "oldTitle": "26px"
+    },
+    {
+      "name": "result",
+      "width": 1920,
+      "height": 1080,
+      "title": "26px",
+      "padding": "24px 20px",
+      "overflow": 0,
+      "minButtonWidth": 44,
+      "minButtonHeight": 42,
+      "inputFonts": [],
+      "oldTitle": "26px"
+    }
+  ]
+}

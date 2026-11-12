@@ -1,4 +1,5 @@
 import { test, expect, type APIRequestContext } from "@playwright/test";
+import { Client, type Room } from "colyseus.js";
 import { randomUUID, randomBytes } from "node:crypto";
 import { db } from "../../apps/server/src/db";
 import {
@@ -13,7 +14,15 @@ async function seedCatch(id: string, speciesId = "mackerel", grams = 1000) {
   const species = speciesFor(speciesId)!;
   const round = randomUUID();
   await beginFishing(id, round, species.area);
-  await db.fishingRound.update({where:{id:round},data:{status:'REELING',selected:JSON.parse(JSON.stringify({species,grams})),plan:{escape:false},reelEndsAt:new Date(Date.now()-1)}});
+  await db.fishingRound.update({
+    where: { id: round },
+    data: {
+      status: "REELING",
+      selected: JSON.parse(JSON.stringify({ species, grams })),
+      plan: { escape: false },
+      reelEndsAt: new Date(Date.now() - 1),
+    },
+  });
   const result = await commitCatch(id, round, { species, grams });
   await finishFishing(id, round);
   return result;
@@ -25,6 +34,30 @@ async function seedProgress(id: string) {
 }
 const post = (request: APIRequestContext, body: unknown) =>
   request.post("/api/economy", { data: body });
+const merchantRooms: Room[] = [];
+async function visitMerchant(request: APIRequestContext) {
+  const identity = await (await request.get("/api/guest")).json();
+  const room = await new Client("ws://127.0.0.1:2567").create("beach", {
+    ticket: identity.ticket,
+  });
+  merchantRooms.push(room);
+  room.onMessage("*", () => {});
+  room.onMessage("PING", (n) => room.send("PONG", n));
+  await new Promise<void>((resolve) => {
+    const off = room.onMessage("WORLD", () => {
+      off();
+      resolve();
+    });
+  });
+  const arrived = new Promise((resolve) =>
+    room.onMessage("TELEPORT_RESULT", resolve),
+  );
+  room.send("TELEPORT_REQUEST", { destination: "village" });
+  await arrived;
+}
+test.afterEach(async () => {
+  await Promise.all(merchantRooms.splice(0).map((r) => r.leave()));
+});
 test.afterAll(async () => {
   await db.$disconnect();
 });
@@ -68,6 +101,7 @@ test("sales, purchases and bait consumption stay atomic under retries and concur
       })
     ).status(),
   ).toBe(400);
+  await visitMerchant(request);
   const rodA = { requestId: randomUUID(), action: "buyRod", itemId: "bamboo" },
     rodB = { ...rodA, requestId: randomUUID() };
   const rods = await Promise.all([post(request, rodA), post(request, rodB)]);
@@ -192,6 +226,7 @@ test("competing spends cannot overdraw and duplicate catches cannot grant a seco
     action: "sell",
     quoteId: quote.id,
   });
+  await visitMerchant(request);
   const spends = await Promise.all(
     Array.from({ length: 2 }, () =>
       post(request, {
@@ -216,7 +251,15 @@ test("competing spends cannot overdraw and duplicate catches cannot grant a seco
   const round = randomUUID();
   await beginFishing(identity.id, round, "beach");
   const selected = { species: speciesFor("mackerel")!, grams: 1200 };
-  await db.fishingRound.update({where:{id:round},data:{status:'REELING',selected:JSON.parse(JSON.stringify(selected)),plan:{escape:false},reelEndsAt:new Date(Date.now()-1)}});
+  await db.fishingRound.update({
+    where: { id: round },
+    data: {
+      status: "REELING",
+      selected: JSON.parse(JSON.stringify(selected)),
+      plan: { escape: false },
+      reelEndsAt: new Date(Date.now() - 1),
+    },
+  });
   const commits = await Promise.allSettled([
     commitCatch(identity.id, round, selected),
     commitCatch(identity.id, round, selected),
@@ -347,10 +390,13 @@ test("the full UI loop sells, buys, equips, keeps album records and survives a l
   ).toBeHidden();
   await page.getByRole("button", { name: "Đóng túi đồ" }).click();
   await page.getByRole("button", { name: "Album", exact: true }).click();
-  await expect(page.locator(".album-progress")).toHaveText("2 / 15 loài");
+  await expect(page.locator(".album-progress")).toHaveText("2 / 35 loài");
   await expect(page.locator(".fish-detail")).toContainText("Đã bắt 10 con");
   await page.screenshot({ path: ".local/m3-album.png" });
   await page.getByRole("button", { name: "Đóng album" }).click();
+  await page.getByRole("button", { name: "Bản đồ", exact: true }).click();
+  await page.getByRole("button", { name: "Làng Chài", exact: true }).click();
+  await page.getByRole("button", { name: "Dịch chuyển", exact: true }).click();
   await page.getByRole("button", { name: "Cửa hàng", exact: true }).click();
   const bamboo = page.locator(".shop-card").filter({ hasText: "Cần tre" });
   await expect(
@@ -378,6 +424,10 @@ test("the full UI loop sells, buys, equips, keeps album records and survives a l
     .getByRole("button", { name: "Trang bị", exact: true })
     .click();
   await page.getByRole("button", { name: "Đóng túi đồ" }).click();
+  await page.waitForTimeout(2100);
+  await page.getByRole("button", { name: "Bản đồ", exact: true }).click();
+  await page.getByRole("button", { name: "Bến câu biển", exact: true }).click();
+  await page.getByRole("button", { name: "Dịch chuyển", exact: true }).click();
   await page.getByRole("button", { name: "Thả câu" }).click();
   await expect(page.getByText("Thư thả một chút, cá đang đến.")).toBeVisible();
   await page.getByRole("button", { name: "Thu cần", exact: true }).click();
@@ -393,6 +443,18 @@ test("the full UI loop sells, buys, equips, keeps album records and survives a l
   ]) {
     await page.setViewportSize(viewport);
     for (const name of ["Cửa hàng", "Album"]) {
+      const menu = page.getByRole("button", { name: "Chức năng", exact: true });
+      if (name === "Cửa hàng") {
+        if (await menu.isVisible()) await menu.click();
+        await page.getByRole("button", { name: "Bản đồ", exact: true }).click();
+        await page
+          .getByRole("button", { name: "Làng Chài", exact: true })
+          .click();
+        await page.waitForTimeout(2100);
+        await page
+          .getByRole("button", { name: "Dịch chuyển", exact: true })
+          .click();
+      } else if (await menu.isVisible()) await menu.click();
       await page.getByRole("button", { name, exact: true }).click();
       const box = await page.getByRole("dialog").boundingBox();
       expect(box!.x).toBeGreaterThanOrEqual(0);

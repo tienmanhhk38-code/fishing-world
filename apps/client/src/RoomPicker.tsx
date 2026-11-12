@@ -95,7 +95,9 @@ export function RoomPicker({
                 </div>
                 <b>{room.name}</b>
                 <span>
-                  {room.clients} / {room.maxClients} người
+                  {room.locked || room.clients >= room.maxClients
+                    ? "Phòng đã đầy"
+                    : "Có thể tham gia"}
                 </span>
                 <small>{room.locked ? "Đầy" : `Mã ${room.id}`}</small>
               </button>

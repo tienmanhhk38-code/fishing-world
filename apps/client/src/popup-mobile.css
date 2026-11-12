@@ -1,0 +1,804 @@
+/* Single owner for compact popup geometry. HUD and desktop styling stay in their own files. */
+@media (max-width: 700px) and (orientation: portrait),
+  (max-height: 550px) and (orientation: landscape) {
+  :root {
+    --popup-title: 18px;
+    --popup-section: 15px;
+    --popup-text: 12px;
+    --popup-note: 10px;
+    --popup-icon: 18px;
+    --popup-gap: 8px;
+    --popup-padding: 12px;
+    --popup-limit: calc(
+      var(--visible-height, 100dvh) - var(--safe-top) - var(--safe-bottom)
+    );
+  }
+  main .overlay {
+    max-height: var(--visible-height, 100dvh);
+  }
+  main .panel,
+  main .result {
+    padding: var(--popup-padding);
+    width: max-content;
+    max-width: 100%;
+    height: auto;
+    min-height: 0;
+    max-height: var(--popup-limit);
+    overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scroll-padding-top: 60px;
+    font-size: var(--popup-text);
+    line-height: 1.45;
+    border-radius: 20px;
+  }
+  main .panel {
+    width: min(680px, calc(100vw - var(--safe-left) - var(--safe-right)));
+  }
+  main .panel .panel-heading {
+    position: sticky;
+    top: -1px;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    gap: var(--popup-gap);
+    margin: 0 0 var(--popup-gap);
+    min-width: 0;
+    background: #205e7866;
+    border-radius: 12px;
+    backdrop-filter: blur(18px);
+  }
+  .panel .panel-heading > :first-child {
+    min-width: 0;
+  }
+  .panel .panel-heading h2,
+  main .result h2 {
+    font-size: var(--popup-title);
+    line-height: 1.25;
+    margin: 0;
+    gap: 6px;
+    overflow-wrap: anywhere;
+  }
+  .panel .panel-heading h2 svg {
+    width: var(--popup-icon);
+    height: var(--popup-icon);
+    flex-shrink: 0;
+  }
+  .panel .panel-heading small {
+    font-size: 9px;
+    line-height: 1.3;
+    letter-spacing: 0.3px;
+  }
+  main .panel h3 {
+    font-size: var(--popup-section);
+    line-height: 1.3;
+    margin: 8px 0;
+  }
+  main .panel p {
+    font-size: var(--popup-text);
+    line-height: 1.45;
+    margin: 6px 0;
+    overflow-wrap: anywhere;
+  }
+  .panel :is(.panel-coins, .album-progress, .member-count) {
+    font-size: 10px;
+    margin: 0 0 0 auto;
+    padding: 4px 6px;
+    gap: 4px;
+  }
+  .panel :is(.panel-coins, .member-count) {
+    max-width: 45%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .panel svg {
+    width: var(--popup-icon);
+    height: var(--popup-icon);
+    flex-shrink: 0;
+  }
+  main .panel :is(button, .icon, .play, .secondary),
+  main .result button,
+  .nearby-layer .nearby-composer button {
+    min-height: 44px;
+    min-width: 44px;
+    font-size: 12px;
+    line-height: 1.25;
+    padding: 6px 10px;
+    gap: 6px;
+    border-radius: 16px;
+  }
+  main .panel :is(.icon, .close, .member-more),
+  main .result > button:first-child {
+    width: 44px;
+    height: 44px;
+    padding: 8px;
+    flex-shrink: 0;
+  }
+  main
+    .panel
+    :is(input:not([type="checkbox"]):not([type="range"]), select, textarea),
+  .nearby-layer .nearby-composer input {
+    font-size: 16px;
+    min-height: 44px;
+    min-width: 0;
+    padding: 8px 10px;
+    border-radius: 12px;
+    max-width: 100%;
+  }
+  .panel :is(.inventory-tabs, .quest-tabs) {
+    gap: 6px;
+    margin: 0 0 8px;
+  }
+  .panel :is(.inventory-tabs, .quest-tabs) button {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+  .panel :is(.npc-greeting, .panel-error, .quest-reset) {
+    font-size: 11px;
+    margin: 6px 0 8px;
+    padding: 0;
+  }
+  .panel .panel-error {
+    padding: 8px;
+  }
+  .panel footer {
+    gap: 8px;
+    margin-top: 8px;
+    padding-top: 8px;
+    font-size: 10px;
+  }
+  .panel
+    :is(
+      .inventory-content,
+      .album-content,
+      .shop-grid,
+      .equipment-list,
+      .quest-list
+    ) {
+    gap: 8px;
+    min-width: 0;
+  }
+  .inventory-panel .fish-grid {
+    gap: 6px;
+    min-height: 76px;
+    max-height: min(220px, 28dvh);
+  }
+  .inventory-panel .fish-grid article,
+  .inventory-panel .fish-grid article > button {
+    min-height: 72px;
+  }
+  .inventory-panel .fish-grid .asset-image {
+    height: 48px;
+  }
+  .inventory-panel .fish-grid b {
+    font-size: 11px;
+  }
+  .panel .fish-detail {
+    padding: 8px;
+    border-radius: 16px;
+    min-width: 0;
+  }
+  .panel .fish-detail h3 {
+    font-size: 15px;
+    margin: 0 0 4px;
+  }
+  .panel .fish-detail p {
+    font-size: 11px;
+    margin: 4px 0;
+    gap: 5px;
+  }
+  .panel .fish-detail > .asset-image {
+    height: 80px;
+  }
+  .panel .fish-detail small {
+    font-size: 10px;
+  }
+  .panel .fish-detail .rarity {
+    font-size: 10px;
+    margin: 4px 0;
+    padding: 3px 8px;
+  }
+  .panel .fish-actions {
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .inventory-panel .fish-actions :is(.showcase-action, .sell-one),
+  .inventory-panel .sell-all {
+    min-height: 44px;
+    margin: 0;
+    font-size: 12px;
+    padding: 6px 8px;
+  }
+  .inventory-panel .fish-count {
+    font-size: 11px;
+    gap: 4px;
+  }
+  .panel .pagination {
+    gap: 4px;
+    font-size: 11px;
+  }
+  .panel .album-grid {
+    gap: 6px;
+    max-height: min(240px, 32dvh);
+  }
+  .panel .album-grid > button {
+    min-height: 54px;
+    padding: 4px;
+  }
+  .panel .album-grid .asset-image {
+    height: 44px;
+  }
+  .panel .shop-card {
+    padding: 8px;
+    gap: 0 8px;
+    min-width: 0;
+    border-radius: 16px;
+  }
+  .panel .shop-card h3 {
+    font-size: 15px;
+    margin: 0;
+  }
+  .panel .shop-card p,
+  .panel .shop-card > span {
+    font-size: 11px;
+    min-height: 0;
+    margin: 1px 0;
+  }
+  .panel .shop-card strong {
+    font-size: 12px;
+    min-height: 0;
+    overflow-wrap: anywhere;
+  }
+  .panel .shop-card > button {
+    margin-top: 4px;
+    min-height: 44px;
+    font-size: 12px;
+    width: 100%;
+  }
+  .panel .shop-card > .asset-image {
+    width: 100%;
+    height: 76px;
+  }
+  .panel .equipment-list {
+    min-height: 0;
+    align-items: start;
+  }
+  .panel .owned-equipment {
+    min-height: 144px;
+    gap: 6px;
+    padding: 8px;
+  }
+  .panel .owned-equipment .asset-image {
+    width: 100%;
+    height: 72px;
+  }
+  .panel .owned-equipment h3 {
+    font-size: 15px;
+    margin: 0;
+  }
+  .panel .bait-quantity {
+    gap: 6px;
+    margin: 8px 0;
+    flex-wrap: wrap;
+  }
+  .panel .bait-quantity input {
+    width: 80px;
+  }
+  .panel .setting-row {
+    min-height: 52px;
+    gap: 8px;
+    padding: 4px 0;
+    font-size: 12px;
+  }
+  .panel .setting-row small {
+    font-size: 10px;
+    margin-top: 2px;
+    line-height: 1.35;
+  }
+  .panel .setting-row select {
+    min-width: 100px;
+  }
+  .panel .range-field {
+    gap: 4px;
+    flex-shrink: 0;
+  }
+  .panel .range-field input {
+    width: 76px;
+    min-height: 44px;
+  }
+  .panel .range-field output {
+    font-size: 10px;
+    width: 30px;
+  }
+  .settings-panel h3 {
+    margin-top: 8px;
+  }
+  .panel .lobby-exit {
+    margin-top: 10px;
+    padding-top: 8px;
+  }
+  .panel .quest-list article {
+    grid-template-columns: 18px minmax(0, 1fr) 90px;
+    gap: 8px;
+    padding: 8px;
+    border-radius: 14px;
+  }
+  .panel .quest-list h3 {
+    font-size: 14px;
+    margin: 0 0 4px;
+  }
+  .panel .quest-list small {
+    font-size: 10px;
+  }
+  .panel .quest-list .play {
+    font-size: 12px;
+    padding: 6px;
+  }
+  .panel .room-toolbar {
+    margin: 8px 0;
+    font-size: 11px;
+    gap: 8px;
+  }
+  .panel .room-list {
+    gap: 8px;
+    min-height: 80px;
+    max-height: 30dvh;
+  }
+  .panel .room-card {
+    padding-bottom: 8px;
+    gap: 4px;
+  }
+  .panel .room-card-art {
+    height: 60px;
+  }
+  .panel .room-card > b {
+    font-size: 13px;
+  }
+  .panel .room-card > span {
+    font-size: 11px;
+  }
+  .panel .room-card small {
+    font-size: 10px;
+    letter-spacing: 0;
+  }
+  .panel .join-by-code {
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .panel .join-by-code label {
+    flex: 1;
+    min-width: 0;
+  }
+  .panel .join-by-code span {
+    font-size: 11px;
+  }
+  .panel .community-layout {
+    gap: 8px;
+  }
+  .panel :is(.community-chat, .community-people) {
+    padding: 8px;
+    border-radius: 16px;
+  }
+  .panel .chat-log {
+    height: 144px;
+  }
+  .panel .chat-line {
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  .panel .chat-line p {
+    font-size: 12px;
+    padding: 6px 8px;
+  }
+  .panel .chat-line b {
+    font-size: 11px;
+  }
+  .panel .chat-line .portrait-avatar {
+    width: 32px;
+    height: 32px;
+  }
+  .panel .chat-form {
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .panel .chat-form > button > span {
+    display: none;
+  }
+  .panel .chat-form input {
+    padding-right: 10px;
+  }
+  .panel .chat-input-wrap small {
+    display: none;
+  }
+  .panel .member-list {
+    height: 128px;
+  }
+  .panel .member-row {
+    min-height: 48px;
+    padding: 6px;
+    gap: 6px;
+  }
+  .panel .member-row .portrait-avatar {
+    width: 32px;
+    height: 32px;
+  }
+  .panel .member-name b {
+    font-size: 12px;
+    overflow-wrap: anywhere;
+  }
+  .panel .member-name > small {
+    font-size: 10px;
+  }
+  .panel .member-menu {
+    padding: 6px;
+  }
+  .panel .appearance-layout {
+    gap: 12px;
+  }
+  .panel .appearance-stage {
+    align-self: start;
+    min-height: 190px;
+    padding: 6px;
+    border-radius: 16px;
+  }
+  .panel .appearance-stage > img {
+    height: 150px;
+  }
+  .panel .appearance-stage > b {
+    font-size: 14px;
+    margin-top: 4px;
+  }
+  .panel .appearance-stage > small {
+    font-size: 10px;
+    margin: 3px 0;
+  }
+  .panel .appearance-plinth {
+    bottom: 47px;
+    height: 22px;
+  }
+  .panel .appearance-choices {
+    gap: 6px;
+  }
+  .panel .appearance-choices button {
+    min-height: 72px;
+    padding: 4px;
+    gap: 4px;
+    font-size: 10px;
+  }
+  .panel .appearance-choices .portrait-avatar {
+    max-width: 56px;
+    max-height: 56px;
+    width: 100%;
+  }
+  .panel .appearance-choices i {
+    width: 18px;
+    height: 18px;
+  }
+  .panel .appearance-choices i svg {
+    width: 13px;
+    height: 13px;
+  }
+  .panel .character-name {
+    margin-top: 8px;
+    gap: 6px;
+  }
+  .panel .character-name > span {
+    font-size: 12px;
+  }
+  .panel .character-name small {
+    font-size: 10px;
+  }
+  .panel .save-appearance {
+    margin-top: 8px;
+    font-size: 12px;
+  }
+  .report-panel textarea {
+    min-height: 72px;
+  }
+  .report-panel > label {
+    gap: 6px;
+    margin: 8px 0;
+    font-size: 12px;
+  }
+  .report-panel > small {
+    font-size: 10px;
+    margin-bottom: 8px;
+  }
+  .panel .sale-coins {
+    gap: 8px;
+    padding: 16px 8px;
+  }
+  .panel .sale-coins svg {
+    width: 36px;
+    height: 36px;
+  }
+  .panel .sale-coins strong {
+    font-size: 26px;
+    overflow-wrap: anywhere;
+  }
+  .panel .sale-buttons {
+    gap: 8px;
+  }
+  main .sale-panel {
+    width: min(360px, 100%);
+  }
+  .panel .area-card {
+    padding: 8px;
+    border-radius: 16px;
+  }
+  .panel .area-card h3 {
+    font-size: 15px;
+    margin: 6px 0;
+  }
+  .panel .area-card > svg {
+    width: 28px;
+    height: 28px;
+  }
+  .panel .area-card .play {
+    margin-top: 8px;
+    min-height: 44px;
+  }
+  .panel .map-content {
+    margin-top: 8px;
+    gap: 8px;
+  }
+  .panel .map-destination-list {
+    gap: 6px;
+  }
+  .panel .map-destination-list button {
+    font-size: 11px;
+    background: #164b6ec9;
+    border: 1px solid #d8f6ff66;
+  }
+  .panel .map-destination-list button[aria-pressed="true"] {
+    border-color: #ffe07b;
+    background: #92611ac9;
+  }
+  main .help {
+    width: min(440px, 100%);
+  }
+  .panel.help > .close {
+    position: sticky;
+    top: 0;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+    background: #205e7866;
+  }
+  .panel.help > .play {
+    margin: 8px 0 0;
+    width: 100%;
+  }
+  main .result {
+    position: absolute;
+    left: 50%;
+    right: auto;
+    top: 50%;
+    bottom: auto;
+    transform: translate(-50%, -50%);
+    width: min(300px, calc(100vw - var(--safe-left) - var(--safe-right)));
+    max-height: var(--popup-limit);
+    margin: 0;
+  }
+  main .result > button:first-child {
+    position: sticky;
+    top: 0;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+    background: #205e7866;
+  }
+  main .result :is(p, small, .record-label) {
+    font-size: 11px;
+    margin: 4px 0;
+  }
+  main .result .result-star {
+    font-size: 11px;
+  }
+  main .result .fish-illustration {
+    height: 76px;
+  }
+  main .result .fish-art {
+    width: 120px;
+    height: 88px;
+  }
+  main .result > b {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+  main .result .rarity {
+    font-size: 10px;
+    margin: 4px 0;
+  }
+  main .result .result-actions {
+    gap: 8px;
+    margin-top: 8px;
+  }
+  main .result .result-actions button {
+    min-height: 44px;
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+  .nearby-layer .nearby-composer {
+    width: min(280px, calc(100vw - 24px));
+    top: max(8px, calc(var(--visible-height, 100dvh) - 136px));
+    padding: 8px;
+    border-radius: 16px;
+    font-size: 12px;
+  }
+  .nearby-layer .nearby-composer > div {
+    font-size: 12px;
+    margin-bottom: 6px;
+    gap: 8px;
+  }
+  .nearby-layer .nearby-composer > small {
+    display: none;
+  }
+  .nearby-layer .nearby-composer .chat-form > button {
+    margin: 0;
+  }
+}
+@media (max-width: 700px) and (orientation: portrait) {
+  .panel .inventory-content,
+  .panel .album-content {
+    grid-template-columns: 1fr;
+  }
+  .panel .inventory-tabs button {
+    flex: 1;
+  }
+  .inventory-panel .fish-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .panel .fish-detail {
+    display: grid;
+    grid-template-columns: 84px minmax(0, 1fr);
+    gap: 4px 8px;
+    text-align: left;
+  }
+  .panel .fish-detail > .asset-image {
+    width: 84px;
+    height: 80px;
+    grid-row: 1/5;
+  }
+  .panel .fish-detail .water-badge {
+    display: none;
+  }
+  .panel .fish-detail .rarity {
+    grid-column: 1/-1;
+    justify-self: start;
+  }
+  .panel .fish-detail .fish-price {
+    grid-column: 1/-1;
+  }
+  .panel .fish-actions {
+    grid-column: 1/-1;
+  }
+  .panel .album-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .panel .shop-grid,
+  .panel .equipment-list {
+    grid-template-columns: 1fr;
+  }
+  .panel .shop-card {
+    display: grid;
+    grid-template-columns: 76px minmax(0, 1fr);
+    text-align: left;
+    justify-items: start;
+  }
+  .panel .shop-card > .asset-image {
+    width: 76px;
+    height: 88px;
+    grid-row: 1/6;
+  }
+  .panel .shop-card > button {
+    grid-column: 2;
+  }
+  .panel .community-layout,
+  .panel .appearance-layout {
+    grid-template-columns: 1fr;
+  }
+  .panel .photo-map .map-hotspot {
+    display: none;
+  }
+  .panel .map-content {
+    display: flex;
+    flex-direction: column;
+  }
+  .panel .map-destination-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .panel .room-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .panel .join-by-code {
+    flex-wrap: wrap;
+  }
+  .panel .join-by-code > button {
+    flex: 1;
+  }
+}
+@media (max-height: 550px) and (orientation: landscape) {
+  :root {
+    --popup-padding: 10px 12px;
+  }
+  .panel .inventory-content {
+    grid-template-columns: minmax(0, 1fr) 168px;
+  }
+  .inventory-panel .fish-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    max-height: 42dvh;
+  }
+  .panel .album-content {
+    grid-template-columns: minmax(0, 1fr) 168px;
+  }
+  .panel .album-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    max-height: 42dvh;
+  }
+  .panel .shop-grid,
+  .panel .equipment-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .panel .shop-card {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+  }
+  .panel .shop-card > .asset-image {
+    height: 40px;
+  }
+  .panel .fish-detail > .asset-image {
+    height: 56px;
+  }
+  .panel .appearance-layout {
+    grid-template-columns: 144px minmax(0, 1fr);
+  }
+  .panel .appearance-stage {
+    min-height: 180px;
+  }
+  .panel .appearance-stage > img {
+    height: 128px;
+  }
+  .panel .appearance-choices button {
+    min-height: 64px;
+  }
+  .panel .appearance-choices .portrait-avatar {
+    max-width: 48px;
+    max-height: 48px;
+  }
+  .panel .community-layout {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  }
+  .panel .community-chat .chat-log {
+    height: 112px;
+  }
+  .panel .community-people .member-list {
+    height: 112px;
+  }
+  .panel .room-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    max-height: 30dvh;
+  }
+  .panel .room-card-art {
+    height: 36px;
+  }
+  .panel .map-content {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(168px, 1fr);
+  }
+  .panel .photo-map .map-hotspot {
+    width: 44px !important;
+    height: 44px !important;
+  }
+  main .result {
+    width: 320px;
+  }
+}

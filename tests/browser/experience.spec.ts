@@ -178,7 +178,7 @@ test("quest claims are sequential, atomic, replay safe and reject expired days",
   expect(sale.ok()).toBe(true);
   profile = await (await request.get("/api/profile")).json();
   expect(profile.quests.find((q: any) => q.id === "daily-sell").progress).toBe(
-    150,
+    Math.min(150, quote.total),
   );
   expect(profile.baitCounts.worm).toBe(3);
   expect(await db.questClaim.count({ where: { guestId: g.id } })).toBe(3);
@@ -210,7 +210,9 @@ test("two guests share reeling and manual showcase; movement, replay guards and 
   b.onMessage("WORLD", (p) => (observer = p));
   const self = () => players.find((p) => p.id === a.sessionId)!;
   try {
-    await expect.poll(() => players.length).toBe(2);
+    await expect
+      .poll(() => players.filter((p) => !p.kind || p.kind === "player").length)
+      .toBe(2);
     const startX = self().x;
     a.send("PLAYER_INPUT", { x: 1, z: 0, sprint: true, seq: 10 });
     await sleep(300);

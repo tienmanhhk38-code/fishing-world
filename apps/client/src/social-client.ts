@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { send, useGame } from "./network";
+import { serverNow } from "./motion-client";
 import type {
   RoomMember,
   ChatMessage,
@@ -9,6 +10,7 @@ import type {
   EmoteId,
 } from "@fishing/shared";
 export const emotes = new Map<string, { id: EmoteId; until: number }>();
+export const speech = new Map<string, ChatMessage>();
 export const useSocial = create<{
   members: RoomMember[];
   messages: ChatMessage[];
@@ -17,6 +19,7 @@ export const useSocial = create<{
   notice: string;
   error: string;
   draft: string;
+  nearbyDraft: string;
   sending: boolean;
 }>(() => ({
   members: [],
@@ -26,6 +29,7 @@ export const useSocial = create<{
   notice: "",
   error: "",
   draft: "",
+  nearbyDraft: "",
   sending: false,
 }));
 const pending = new Map<
@@ -47,7 +51,10 @@ class SocialError extends Error {
 export function receiveSocial(state: SocialState) {
   const mutedIds = new Set(state.muted.map((player) => player.id));
   for (const member of state.members)
-    if (mutedIds.has(member.publicId)) emotes.delete(member.id);
+    if (mutedIds.has(member.publicId)) {
+      emotes.delete(member.id);
+      speech.delete(member.id);
+    }
   useSocial.setState(state);
 }
 export function receiveChat(message: ChatMessage) {
@@ -57,6 +64,15 @@ export function receiveChat(message: ChatMessage) {
     state.messages.some((item) => item.id === message.id)
   )
     return;
+  if (message.channel === "nearby") {
+    if (
+      message.playerId &&
+      message.expiresAt &&
+      message.expiresAt > serverNow()
+    )
+      speech.set(message.playerId, message);
+    return;
+  }
   useSocial.setState({ messages: [...state.messages, message].slice(-80) });
 }
 export function receiveAck(ack: SocialAck) {
@@ -92,21 +108,30 @@ export async function socialAction(
   if (kind !== "CHAT_SEND" && kind !== "EMOTE_SEND")
     useSocial.setState({ notice: ack.message });
 }
-let chatAttempt: { text: string; requestId: string; context: string } | null =
-  null;
-export async function sendChat() {
+let chatAttempt: {
+  text: string;
+  requestId: string;
+  context: string;
+  channel: "world" | "nearby";
+} | null = null;
+export async function sendChat(channel: "world" | "nearby" = "world") {
   const state = useSocial.getState(),
-    text = state.draft.trim();
+    text = (channel === "nearby" ? state.nearbyDraft : state.draft).trim();
   if (!text || state.sending) return;
   const game = useGame.getState(),
     context = `${game.profile?.id}:${game.roomId}`;
-  if (chatAttempt?.text !== text || chatAttempt?.context !== context)
-    chatAttempt = { text, requestId: crypto.randomUUID(), context };
+  if (
+    chatAttempt?.text !== text ||
+    chatAttempt?.context !== context ||
+    chatAttempt?.channel !== channel
+  )
+    chatAttempt = { text, requestId: crypto.randomUUID(), context, channel };
   useSocial.setState({ sending: true });
   try {
-    await socialAction("CHAT_SEND", { text }, chatAttempt.requestId);
-    if (useSocial.getState().draft.trim() === text)
-      useSocial.setState({ draft: "" });
+    await socialAction("CHAT_SEND", { text, channel }, chatAttempt.requestId);
+    const key = channel === "nearby" ? "nearbyDraft" : "draft";
+    if (useSocial.getState()[key].trim() === text)
+      useSocial.setState({ [key]: "" });
     chatAttempt = null;
   } catch (error) {
     if (error instanceof SocialError && error.permanent) chatAttempt = null;
@@ -117,6 +142,7 @@ export async function sendChat() {
 }
 export function clearSocial() {
   emotes.clear();
+  speech.clear();
   for (const task of pending.values()) {
     clearTimeout(task.timer);
     task.reject(new Error("Kết nối bị ngắt. Hãy kết nối lại phòng."));

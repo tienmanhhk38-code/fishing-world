@@ -9,6 +9,7 @@ export type Sound =
   | "reel"
   | "catch"
   | "miss"
+  | "line-break"
   | "click";
 type Position = { x: number; y: number; z: number };
 let context: AudioContext | null = null,
@@ -33,11 +34,12 @@ const tracks = new Map<
   }
 >();
 let reelGeneration = 0;
+let musicStarted = false;
 function load(name: string) {
   if (!buffers.has(name))
     buffers.set(
       name,
-      fetch(`/assets/audio/${name}.wav`)
+      fetch(`/assets/audio/${name === "reel" ? "reel-machine-v3" : name}.wav`)
         .then((r) => {
           if (!r.ok) throw Error("Audio unavailable");
           return r.arrayBuffer();
@@ -68,7 +70,7 @@ function track(name: string) {
   if (current) return current;
   const element = new Audio(`/assets/audio/music/${name}-song.mp3`);
   element.loop = true;
-  element.preload = "none";
+  element.preload = "auto";
   const gain = context!.createGain();
   gain.gain.value = 0;
   context!.createMediaElementSource(element).connect(gain).connect(music);
@@ -87,10 +89,12 @@ function playMusic(restart: boolean) {
     .play()
     .then(() => {
       if (!context || scene !== name) return;
+      const fadeSeconds = musicStarted ? 1.2 : 0.08;
+      musicStarted = true;
       const t = context.currentTime;
       next.gain.gain.cancelScheduledValues(t);
       next.gain.gain.setValueAtTime(next.gain.gain.value, t);
-      next.gain.gain.linearRampToValueAtTime(1, t + 1.2);
+      next.gain.gain.linearRampToValueAtTime(1, t + fadeSeconds);
       for (const [key, old] of tracks)
         if (key !== name) {
           old.gain.gain.cancelScheduledValues(t);
@@ -158,6 +162,7 @@ export function enableAudio() {
         "reel",
         "catch",
         "miss",
+        "line-break",
         "click",
       ])
         void load(name).catch(() => {});
@@ -278,12 +283,12 @@ export function playSound(name: Sound, position?: Position, remote = false) {
         performance.now() - requested > (name === "bite" ? 200 : 600)
       )
         return;
-      if (voices.size >= 8 && name !== "bite") return;
+      if (voices.size >= 8 && !["bite", "line-break"].includes(name)) return;
       const source = context.createBufferSource();
       source.buffer = buffer;
       source.loop = name === "reel" && !remote;
       const gain = context.createGain();
-      gain.gain.value = remote ? 0.45 : name === "reel" ? 0.65 : 1;
+      gain.gain.value = remote ? 0.45 : 1;
       const pos =
         position ??
         (["nibble", "bite", "miss"].includes(name) ? float : angler);

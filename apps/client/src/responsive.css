@@ -1,0 +1,1040 @@
+/* Authoritative HUD geometry. Panels retain their content-specific grids. */
+:root {
+  --safe-top: max(12px, env(safe-area-inset-top));
+  --safe-right: max(16px, env(safe-area-inset-right));
+  --safe-bottom: max(16px, env(safe-area-inset-bottom));
+  --safe-left: max(16px, env(safe-area-inset-left));
+  --glass: rgba(20, 66, 94, 0.4);
+}
+main {
+  min-height: 0;
+  height: var(--visible-height, 100dvh);
+}
+/* Lobby content is anchored separately from the character preview. */
+.lobby .landing {
+  top: calc(var(--safe-top) + 28px);
+  left: max(var(--safe-left), 4vw);
+  right: auto;
+  bottom: auto;
+  width: 300px;
+  padding: 0;
+  gap: 24px;
+  transform: none;
+}
+.lobby .landing > .logo {
+  width: 300px;
+  margin: 0;
+}
+.landing-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  width: 100%;
+}
+.lobby .landing .landing-actions > button {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  min-height: 52px;
+}
+.lobby .landing .landing-actions > .play {
+  min-height: 60px;
+  font-size: 23px;
+  padding: 12px 20px;
+}
+.lobby .landing .landing-actions > small {
+  color: #f6fcff;
+  text-align: center;
+  font-size: 11px;
+  text-shadow: 0 2px 4px #1a5e83;
+}
+.lobby .landing-actions .login-error {
+  margin: 0;
+}
+main:not(.lobby) .camera-reset {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+}
+main:not(.lobby) .side .camera-menu {
+  display: none;
+}
+main:not(.lobby) .lobby-settings {
+  top: 0;
+  width: 44px;
+  height: 44px;
+}
+.menu-toggle {
+  display: none;
+}
+.map-destination-list {
+  display: none;
+}
+.npc-greeting {
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 8px 0 14px;
+  color: #e3f6fb;
+}
+.overlay {
+  padding: var(--safe-top) var(--safe-right) var(--safe-bottom) var(--safe-left);
+  background: #092b4a26;
+  backdrop-filter: blur(3px);
+}
+main .panel,
+main .result,
+.nearby-composer {
+  background: linear-gradient(135deg, #63a9c64d, var(--glass));
+  border: 1px solid #e1faff99;
+  box-shadow:
+    inset 0 1px 1px #ffffff80,
+    inset 0 -1px 1px #b5e8ff33,
+    0 18px 60px #082a4c40;
+  backdrop-filter: blur(18px) saturate(145%);
+  -webkit-backdrop-filter: blur(18px) saturate(145%);
+  max-height: 100%;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+main .panel-heading {
+  position: sticky;
+  top: -1px;
+  z-index: 3;
+  flex-shrink: 0;
+}
+main .panel-heading > .icon,
+main .panel-heading > button:last-child {
+  flex-shrink: 0;
+}
+main .panel input,
+main .panel textarea,
+main .panel select {
+  background-color: #103e60c9;
+  color: #fff;
+}
+main .panel > p,
+main .panel > small,
+main .area-card p {
+  color: #e3f6fb;
+}
+.top-status.hint,
+.fishing .top-status.hint {
+  position: absolute;
+  top: var(--safe-top);
+  bottom: auto;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(420px, calc(100% - 620px));
+  min-width: 200px;
+  min-height: 44px;
+  padding: 9px 14px;
+  gap: 9px;
+  margin: 0;
+  border: 1px solid #d7faff80;
+  background: #124c6db3;
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  pointer-events: auto;
+  z-index: 12;
+}
+.top-status.hint b {
+  font-size: 12px;
+  line-height: 1.4;
+}
+.top-status.hint > span {
+  font-size: 21px;
+}
+.top-status.hint.bite {
+  background: #94621cdb;
+  border-color: #ffe8a4;
+}
+.top-status > button {
+  flex-shrink: 0;
+  padding: 8px;
+  border-radius: 10px;
+  background: #235b76;
+}
+.head-bite {
+  width: 24px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: #ffe174;
+  color: #744119;
+  font-size: 24px;
+  font-weight: 1000;
+  box-shadow:
+    0 0 0 2px #fff7d9,
+    0 3px 8px #27455566;
+}
+.speech-bubble {
+  width: max-content;
+  max-width: 220px;
+  max-height: 135px;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  padding: 10px 13px;
+  color: #193b51;
+  background: #f4fbf4ed;
+  border: 1px solid #fff;
+  border-radius: 17px 17px 17px 4px;
+  font-size: 12px;
+  line-height: 1.4;
+  box-shadow: 0 4px 14px #14374935;
+}
+.nameplate i {
+  width: auto;
+  min-width: 17px;
+  padding: 0 3px;
+}
+.nameplate .npc-role {
+  font-size: 9px;
+  color: #d8f8bf;
+  border-left: 1px solid #d5efb866;
+  padding-left: 5px;
+}
+.npc-interaction {
+  min-width: 100px;
+  min-height: 44px;
+  padding: 9px 16px;
+  border-radius: 18px;
+  color: #61431d;
+  background: linear-gradient(#fff5b1, #ffd76b);
+  border: 2px solid #fff8d6;
+  box-shadow: 0 4px 14px #15375250;
+  white-space: nowrap;
+  font-size: 13px;
+}
+main:not(.lobby) header {
+  top: var(--safe-top);
+  left: var(--safe-left);
+  right: var(--safe-right);
+}
+main:not(.lobby) header .image-logo {
+  width: 140px;
+}
+main:not(.lobby) .profile {
+  max-width: 220px;
+}
+main:not(.lobby) .top-right {
+  margin-right: 55px;
+}
+main:not(.lobby) .coin-counter {
+  pointer-events: none;
+  top: 0;
+  right: 52px;
+  margin: 0;
+}
+main:not(.lobby) .location {
+  top: 92px;
+  left: var(--safe-left);
+}
+main:not(.lobby) .side {
+  top: 170px;
+  bottom: calc(var(--safe-bottom) + 235px);
+  left: var(--safe-left);
+  overflow: auto;
+  gap: 8px;
+}
+main:not(.lobby) .side button {
+  flex-shrink: 0;
+  min-height: 44px;
+  width: 139px;
+  padding: 4px 8px;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 1.2;
+}
+main:not(.lobby) .side button > span {
+  width: 32px;
+  height: 32px;
+}
+main:not(.lobby) .side button svg {
+  width: 19px;
+  height: 19px;
+}
+main:not(.lobby) .movement-buttons {
+  right: var(--safe-right);
+  bottom: calc(var(--safe-bottom) + 184px);
+  gap: 8px;
+}
+main:not(.lobby) .room {
+  top: 116px;
+  right: var(--safe-right);
+}
+main:not(.lobby) .tutorial {
+  top: 160px;
+  right: var(--safe-right);
+  left: auto;
+  width: 210px;
+}
+main:not(.lobby) .tutorial-toggle {
+  top: 160px;
+  right: var(--safe-right);
+  left: auto;
+}
+main:not(.lobby) .equipment {
+  left: var(--safe-left);
+  bottom: calc(var(--safe-bottom) + 175px);
+}
+main:not(.lobby) .action-area {
+  right: var(--safe-right);
+  bottom: var(--safe-bottom);
+}
+main:not(.lobby) .cast {
+  width: 112px;
+  height: 112px;
+}
+main:not(.lobby) .chat-dock {
+  left: var(--safe-left);
+  right: auto;
+  bottom: var(--safe-bottom);
+  width: 285px;
+  max-width: calc(100vw - 170px);
+}
+main:not(.lobby) .chat-dock.expanded {
+  width: 300px;
+}
+.chat-dock .chat-form > button > span,
+.chat-dock .chat-input-wrap small {
+  display: none;
+}
+main:not(.lobby) .hud-emotes {
+  position: absolute;
+  bottom: calc(var(--safe-bottom) + 128px);
+  right: var(--safe-right);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.hud-emotes .emote-tray {
+  display: flex;
+  gap: 8px;
+  margin: 0;
+}
+.hud-emotes .emote-tray button,
+.nearby-toggle {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border-radius: 15px;
+  background: #174f6dc4;
+  border: 1px solid #c2eef199;
+}
+.nearby-toggle {
+  display: grid;
+  place-items: center;
+  gap: 0;
+  width: 64px;
+  padding: 4px;
+}
+.nearby-toggle span {
+  font-size: 9px;
+  line-height: 1;
+}
+.nearby-chat {
+  position: relative;
+}
+.nearby-composer {
+  position: absolute;
+  right: 0;
+  bottom: 54px;
+  width: 310px;
+  padding: 12px;
+  border-radius: 20px;
+}
+.nearby-composer > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+.nearby-composer > div > button {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  background: #194d6b;
+  border-radius: 12px;
+}
+.nearby-composer .chat-form {
+  margin: 0;
+  padding: 0;
+  gap: 8px;
+}
+.nearby-composer .chat-input-wrap {
+  min-width: 0;
+}
+.nearby-composer .chat-form input {
+  min-height: 44px;
+  width: 100%;
+  font-size: 16px;
+}
+.nearby-composer .chat-form > button {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 8px;
+}
+.nearby-composer .chat-form > button > span,
+.nearby-composer .chat-input-wrap small {
+  display: none;
+}
+.nearby-composer > small {
+  display: block;
+  margin-top: 8px;
+  font-size: 10px;
+  color: #e5f7ff;
+}
+main:not(.lobby).chat-typing .hud-emotes {
+  z-index: 15;
+}
+main:not(.lobby).chat-typing .joystick,
+main:not(.lobby).chat-typing .movement-buttons {
+  display: none;
+}
+.fishing .hud-emotes,
+.fishing .menu-toggle {
+  display: none !important;
+}
+@supports not (backdrop-filter: blur(1px)) {
+  main .panel,
+  main .result,
+  .nearby-composer {
+    background: #154568ed;
+  }
+}
+@media (pointer: coarse) {
+  main button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  .chat-dock-heading {
+    gap: 8px;
+  }
+  main:not(.lobby) .movement-buttons {
+    display: flex;
+    gap: 8px;
+  }
+  main:not(.lobby) .joystick {
+    display: flex;
+    bottom: calc(var(--safe-bottom) + 56px);
+  }
+}
+@media (max-width: 700px) and (orientation: portrait) {
+  .lobby .landing {
+    inset: 0;
+    width: auto;
+    gap: 0;
+    pointer-events: none;
+  }
+  .lobby .landing > .logo {
+    position: absolute;
+    top: calc(var(--safe-top) + 8px);
+    left: var(--safe-left);
+    width: min(210px, 56vw);
+  }
+  .lobby .landing-actions {
+    position: absolute;
+    bottom: calc(var(--safe-bottom) + 30px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(270px, calc(100% - 48px));
+    pointer-events: auto;
+  }
+  .lobby .landing .landing-actions > .play {
+    min-height: 52px;
+    font-size: 20px;
+  }
+  main:not(.lobby) .camera-reset {
+    display: none;
+  }
+  main:not(.lobby) .side .camera-menu {
+    display: flex;
+  }
+  main:not(.lobby) .joystick > div {
+    width: 60px;
+    height: 60px;
+  }
+  :root {
+    --safe-left: max(12px, env(safe-area-inset-left));
+    --safe-right: max(12px, env(safe-area-inset-right));
+  }
+  main:not(.lobby) header .image-logo {
+    width: 92px;
+  }
+  main:not(.lobby) .top-right {
+    gap: 8px;
+    margin-right: 52px;
+  }
+  main:not(.lobby) .profile {
+    padding: 4px;
+    max-width: 130px;
+    border-radius: 15px;
+  }
+  main:not(.lobby) .profile .avatar {
+    width: 32px;
+    height: 32px;
+  }
+  main:not(.lobby) .profile > div {
+    display: none;
+  }
+  main:not(.lobby) .lobby-settings {
+    width: 44px;
+    height: 44px;
+    margin: 0;
+  }
+  main:not(.lobby) .coin-counter {
+    right: 52px;
+    top: 0;
+    font-size: 12px;
+    padding: 6px 9px;
+  }
+  main:not(.lobby) .coin-counter svg {
+    width: 16px;
+  }
+  main:not(.lobby) .coin-counter span {
+    display: none;
+  }
+  main:not(.lobby) .location {
+    top: calc(var(--safe-top) + 54px);
+    padding: 5px 8px;
+    max-width: 180px;
+  }
+  main:not(.lobby) .location b {
+    font-size: 12px;
+  }
+  main:not(.lobby) .location small {
+    font-size: 9px;
+  }
+  main:not(.lobby) .location-icon {
+    display: none;
+  }
+  main:not(.lobby) .room {
+    top: var(--safe-top);
+    left: calc(var(--safe-left) + 104px);
+    right: auto;
+    width: 64px;
+    height: 44px;
+    justify-content: center;
+    font-size: 9px;
+    padding: 4px 3px;
+    gap: 3px;
+  }
+  main:not(.lobby) .room > svg,
+  main:not(.lobby) .room-prefix {
+    display: none;
+  }
+  main:not(.lobby) .room .live-dot {
+    margin: 0;
+    flex-shrink: 0;
+  }
+  main:not(.lobby) .chat-dock .community-open {
+    position: fixed;
+    top: var(--safe-top);
+    left: calc(var(--safe-left) + 176px);
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    min-height: 44px;
+    padding: 4px;
+    gap: 4px;
+  }
+  main:not(.lobby) .chat-dock .community-open svg {
+    width: 16px;
+  }
+  main:not(.lobby) .chat-dock .community-open small {
+    font-size: 10px;
+  }
+  main:not(.lobby) .top-status.hint {
+    top: calc(var(--safe-top) + 104px);
+    width: calc(100% - var(--safe-left) - var(--safe-right));
+    min-width: 0;
+    padding: 8px 10px;
+    min-height: 44px;
+  }
+  main:not(.lobby) .top-status b {
+    font-size: 11px;
+  }
+  main:not(.lobby) .menu-toggle {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    top: calc(var(--safe-top) + 158px);
+    left: var(--safe-left);
+    padding: 8px 11px;
+    border-radius: 14px;
+    background: #174b6ac9;
+    border: 1px solid #d8f6ff80;
+    z-index: 13;
+    font-size: 11px;
+  }
+  main:not(.lobby) .side {
+    display: none;
+    top: calc(var(--safe-top) + 210px);
+    bottom: calc(var(--safe-bottom) + 235px);
+    width: 170px;
+    padding: 7px;
+    border-radius: 18px;
+    background: #103f60ed;
+    z-index: 13;
+  }
+  main:not(.lobby) .side.menu-open {
+    display: flex;
+    flex-direction: column;
+  }
+  main:not(.lobby) .side button {
+    width: 100%;
+    display: flex;
+    gap: 8px;
+    padding: 5px 8px;
+    font-size: 12px;
+  }
+  main:not(.lobby) .side button > span {
+    width: 30px;
+    height: 30px;
+  }
+  main:not(.lobby) .tutorial {
+    display: none;
+  }
+  main:not(.lobby) .tutorial-toggle {
+    top: calc(var(--safe-top) + 158px);
+    font-size: 10px;
+    max-width: 150px;
+  }
+  main:not(.lobby) .equipment {
+    display: none;
+  }
+  main:not(.lobby) .joystick {
+    display: flex;
+    left: var(--safe-left);
+    bottom: var(--safe-bottom);
+    width: 136px;
+    height: 136px;
+  }
+  main:not(.lobby) .action-area {
+    bottom: calc(var(--safe-bottom) + 56px);
+  }
+  main:not(.lobby) .cast {
+    width: 88px;
+    height: 88px;
+  }
+  main:not(.lobby) .cast b {
+    font-size: 14px;
+  }
+  main:not(.lobby) .cast > span svg {
+    width: 26px;
+    height: 26px;
+  }
+  main:not(.lobby) .cast small {
+    display: none;
+  }
+  main:not(.lobby) .movement-buttons {
+    bottom: var(--safe-bottom);
+    right: var(--safe-right);
+    gap: 8px;
+  }
+  main:not(.lobby) .movement-buttons button {
+    width: 48px;
+    height: 48px;
+  }
+  main:not(.lobby) .chat-dock,
+  main:not(.lobby) .chat-dock.expanded {
+    top: calc(var(--safe-top) + 58px);
+    bottom: auto;
+    left: auto;
+    right: var(--safe-right);
+    width: 116px;
+    max-width: calc(100vw - 24px);
+  }
+  main:not(.lobby) .chat-dock:not(.expanded) .chat-dock-heading {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  main:not(.lobby) .chat-dock:not(.expanded) .chat-toggle {
+    white-space: nowrap;
+    width: 116px;
+  }
+  main:not(.lobby) .chat-dock.expanded {
+    left: var(--safe-left);
+    right: auto;
+    width: calc(100vw - var(--safe-left) - var(--safe-right));
+    z-index: 16;
+  }
+  main:not(.lobby) .chat-dock .chat-log {
+    max-height: 100px;
+  }
+  main:not(.lobby) .chat-dock .chat-toggle {
+    min-height: 44px;
+    padding: 7px 10px;
+  }
+  main:not(.lobby) .chat-dock .chat-form {
+    gap: 8px;
+  }
+  main:not(.lobby) .chat-dock .chat-form input {
+    font-size: 16px;
+  }
+  main:not(.lobby) .hud-emotes {
+    bottom: calc(var(--safe-bottom) + 152px);
+    right: var(--safe-right);
+    gap: 8px;
+    flex-direction: row;
+    align-items: center;
+  }
+  .hud-emotes .emote-tray {
+    display: grid;
+    grid-template-columns: repeat(2, 44px);
+    gap: 8px;
+  }
+  .nearby-toggle {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: 7px;
+  }
+  .nearby-toggle span {
+    display: none;
+  }
+  .nearby-composer {
+    width: min(310px, calc(100vw - 24px));
+  }
+  main.chat-typing .hud-emotes {
+    bottom: calc(var(--safe-bottom) + 12px);
+  }
+  main.chat-typing .hud-emotes .emote-tray {
+    display: none;
+  }
+  main.chat-typing .chat-dock:not(.expanded) {
+    display: none;
+  }
+  main .desktop-help {
+    display: none;
+  }
+}
+@media (max-height: 550px) and (orientation: landscape) {
+  .lobby .landing {
+    top: var(--safe-top);
+    left: max(var(--safe-left), 6vw);
+    width: 285px;
+    gap: 8px;
+  }
+  .lobby .landing > .logo {
+    width: clamp(150px, 52vh, 210px);
+    margin: 0;
+  }
+  .lobby .landing-actions {
+    gap: 8px;
+  }
+  .lobby .landing .landing-actions > button,
+  .lobby .landing .landing-actions > .play {
+    min-height: 44px;
+    height: 44px;
+    padding: 7px 18px;
+    font-size: 16px;
+  }
+  .lobby .landing .landing-actions > small {
+    font-size: 9px;
+  }
+  main:not(.lobby) .camera-reset {
+    display: none;
+  }
+  main:not(.lobby) .side .camera-menu {
+    display: flex;
+  }
+  main:not(.lobby) .joystick > div {
+    width: 54px;
+    height: 54px;
+  }
+  main:not(.lobby) .chat-dock-heading > button {
+    min-height: 44px;
+    height: 44px;
+    padding: 6px 12px;
+  }
+  main:not(.lobby) .chat-dock-heading .chat-toggle {
+    white-space: nowrap;
+  }
+  :root {
+    --safe-top: max(8px, env(safe-area-inset-top));
+    --safe-bottom: max(8px, env(safe-area-inset-bottom));
+  }
+  main:not(.lobby) header .image-logo {
+    width: 86px;
+  }
+  main:not(.lobby) .profile {
+    padding: 3px;
+  }
+  main:not(.lobby) .profile .avatar {
+    width: 32px;
+    height: 32px;
+  }
+  main:not(.lobby) .profile > div {
+    display: none;
+  }
+  main:not(.lobby) .top-right {
+    gap: 8px;
+    margin-right: 52px;
+  }
+  main:not(.lobby) .coin-counter {
+    top: 0;
+    right: 52px;
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+  main:not(.lobby) .coin-counter span {
+    display: none;
+  }
+  main:not(.lobby) .lobby-settings {
+    width: 44px;
+    height: 44px;
+    margin: 0;
+  }
+  main:not(.lobby) .location {
+    top: calc(var(--safe-top) + 50px);
+    padding: 5px 8px;
+  }
+  main:not(.lobby) .location b {
+    font-size: 11px;
+  }
+  main:not(.lobby) .location small,
+  main:not(.lobby) .location-icon {
+    display: none;
+  }
+  main:not(.lobby) .room {
+    top: calc(var(--safe-top) + 50px);
+    font-size: 9px;
+  }
+  main:not(.lobby) .top-status.hint {
+    top: var(--safe-top);
+    width: min(340px, calc(100% - 340px));
+    min-width: 180px;
+    padding: 8px 10px;
+  }
+  main:not(.lobby) .top-status b {
+    font-size: 11px;
+  }
+  main:not(.lobby) .menu-toggle {
+    position: absolute;
+    top: calc(var(--safe-top) + 90px);
+    left: var(--safe-left);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 13px;
+    padding: 8px;
+    background: #16496ac9;
+    z-index: 13;
+  }
+  .menu-toggle span {
+    font-size: 10px;
+  }
+  main:not(.lobby) .side {
+    display: none;
+    top: calc(var(--safe-top) + 140px);
+    bottom: var(--safe-bottom);
+    width: 235px;
+    padding: 8px;
+    border-radius: 18px;
+    background: #103f60ed;
+    z-index: 13;
+  }
+  main:not(.lobby) .side.menu-open {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    align-content: start;
+  }
+  main:not(.lobby) .side button {
+    width: 100%;
+    display: flex;
+    font-size: 10px;
+    padding: 4px;
+    gap: 5px;
+  }
+  main:not(.lobby) .side button > span {
+    width: 28px;
+    height: 28px;
+  }
+  main:not(.lobby) .tutorial,
+  main:not(.lobby) .tutorial-toggle,
+  main:not(.lobby) .equipment,
+  main .desktop-help {
+    display: none;
+  }
+  main:not(.lobby) .joystick {
+    display: flex;
+    width: 116px;
+    height: 116px;
+    left: var(--safe-left);
+    bottom: var(--safe-bottom);
+  }
+  main:not(.lobby) .cast {
+    width: 76px;
+    height: 76px;
+  }
+  main:not(.lobby) .cast b {
+    font-size: 12px;
+  }
+  main:not(.lobby) .cast small {
+    display: none;
+  }
+  main:not(.lobby) .cast > span svg {
+    width: 24px;
+    height: 24px;
+  }
+  main:not(.lobby) .movement-buttons {
+    display: flex;
+    right: calc(var(--safe-right) + 88px);
+    bottom: var(--safe-bottom);
+    gap: 8px;
+  }
+  main:not(.lobby) .movement-buttons button {
+    width: 44px;
+    height: 44px;
+  }
+  main:not(.lobby) .hud-emotes {
+    bottom: calc(var(--safe-bottom) + 88px);
+    right: var(--safe-right);
+    gap: 8px;
+  }
+  .hud-emotes .emote-tray {
+    display: grid;
+    grid-template-columns: repeat(2, 44px);
+    gap: 8px;
+  }
+  .nearby-toggle {
+    width: 52px;
+  }
+  .nearby-composer {
+    width: 285px;
+  }
+  main:not(.lobby) .chat-dock,
+  main:not(.lobby) .chat-dock.expanded {
+    left: calc(var(--safe-left) + 132px);
+    bottom: var(--safe-bottom);
+    width: 200px;
+  }
+  main:not(.lobby) .chat-dock.expanded {
+    width: 260px;
+    z-index: 16;
+  }
+  main:not(.lobby) .chat-dock .chat-log {
+    max-height: 74px;
+  }
+  main:not(.lobby) .chat-dock .chat-form {
+    gap: 8px;
+  }
+  main.chat-typing .hud-emotes {
+    bottom: var(--safe-bottom);
+  }
+  main.chat-typing .hud-emotes .emote-tray {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .head-bite,
+  .speech-bubble,
+  .npc-interaction {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* Social popovers are independent of the HUD's responsive position. */
+.resident-nameplate {
+  background: #794e25e8;
+  border-color: #ffdfa1;
+  color: #fff1cc;
+}
+.nearby-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+}
+.nearby-dismiss {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: #082d4326;
+}
+.nearby-layer .nearby-composer {
+  position: fixed;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  top: max(8px, calc(var(--visible-height, 100dvh) - 190px));
+  transform: translateX(-50%);
+  width: min(350px, calc(100vw - 24px));
+  max-height: calc(var(--visible-height, 100dvh) - 16px);
+  overflow: auto;
+  background: #164761e8;
+  z-index: 101;
+  color: white;
+}
+.nearby-layer .chat-form {
+  display: flex;
+  align-items: center;
+}
+.nearby-layer .chat-input-wrap {
+  flex: 1;
+}
+.nearby-layer input {
+  box-sizing: border-box;
+  min-width: 0;
+  background: #103e60;
+  color: white;
+  border: 1px solid #b4e4ef;
+  border-radius: 12px;
+  padding: 10px;
+}
+.emote-picker {
+  position: relative;
+}
+.emote-toggle {
+  width: 44px;
+  height: 44px;
+  border-radius: 15px;
+  font-size: 24px;
+  background: #174f6dc4;
+  border: 1px solid #c2eef199;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.emote-picker .emote-tray,
+.hud-emotes .emote-picker .emote-tray {
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  width: max-content;
+  bottom: 44px;
+  right: 0;
+  padding: 10px 0;
+  gap: 8px;
+  z-index: 22;
+}
+.emote-dismiss {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  opacity: 0;
+  z-index: 20;
+}
+.emote-picker.open .emote-toggle {
+  position: relative;
+  z-index: 22;
+}
+main.chat-typing .hud-emotes .emote-picker .emote-tray {
+  display: flex;
+}

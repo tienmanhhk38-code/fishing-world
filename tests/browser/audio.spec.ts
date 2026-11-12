@@ -1,4 +1,43 @@
 import { test, expect } from "@playwright/test";
+
+test.describe("lobby startup", () => {
+  test.use({ hasTouch: true });
+  test("lobby attempts music on load, unlocks on a background gesture and defaults to 50 percent", async ({
+    page,
+  }) => {
+    await page.addInitScript(() => {
+      const play = HTMLMediaElement.prototype.play;
+      (window as any).__lobbyAttempts = [];
+      HTMLMediaElement.prototype.play = function () {
+        if (this.src.includes("/music/lobby-song.mp3"))
+          (window as any).__lobbyAttempts.push(this);
+        return play.call(this);
+      };
+    });
+    await page.goto("/");
+    await expect
+      .poll(() => page.evaluate(() => (window as any).__lobbyAttempts.length))
+      .toBeGreaterThan(0);
+    await page.touchscreen.tap(950, 640);
+    await expect
+      .poll(
+        () =>
+          page.evaluate(() =>
+            (window as any).__lobbyAttempts.some(
+              (a: HTMLAudioElement) => !a.paused && a.currentTime > 0.1,
+            ),
+          ),
+        { timeout: 5000 },
+      )
+      .toBe(true);
+    await page
+      .getByRole("button", { name: "Cài đặt game", exact: true })
+      .click();
+    await expect(page.getByLabel("Nhạc nền", { exact: true })).toHaveValue(
+      "50",
+    );
+  });
+});
 test("music streams, crossfades on room changes and survives menus and hidden tab", async ({
   page,
 }) => {
@@ -95,7 +134,7 @@ test("music streams, crossfades on room changes and survives menus and hidden ta
     })),
   );
   expect(
-    media.every((m: any) => m.duration > 100 && m.preload === "none" && m.loop),
+    media.every((m: any) => m.duration > 100 && m.preload === "auto" && m.loop),
   ).toBe(true);
   expect(
     await page.evaluate(() =>

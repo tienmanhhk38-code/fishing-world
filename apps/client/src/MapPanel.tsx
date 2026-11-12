@@ -1,23 +1,25 @@
 import { useEffect, useRef, useState } from "react";
-import { AREAS, type AreaId } from "@fishing/shared";
+import { AREAS, DESTINATIONS, type DestinationId } from "@fishing/shared";
 import { LockKeyhole, MapPin, Navigation, X } from "lucide-react";
 import { requestTeleport, useGame } from "./network";
 
-const positions: Record<AreaId, { left: string; top: string }> = {
-  beach: { left: "17%", top: "72%" },
-  village: { left: "44%", top: "33%" },
-  coral: { left: "88%", top: "85%" },
-  mystery: { left: "88%", top: "60%" },
-};
 export function MapPanel({ onClose }: { onClose: () => void }) {
   const game = useGame(),
-    [selected, setSelected] = useState<AreaId>(game.area);
+    [selected, setSelected] = useState<DestinationId>(
+      game.area === "beach" ? "dock" : "pond",
+    );
   const attempted = useRef(false);
   useEffect(() => {
     if (attempted.current && !game.teleportPending && !game.teleportError)
       onClose();
   }, [game.teleportPending, game.teleportError, onClose]);
-  const area = AREAS[selected];
+  const destination = DESTINATIONS[selected],
+    area = AREAS[destination.area];
+  const select = (id: DestinationId) => {
+    attempted.current = false;
+    setSelected(id);
+    useGame.setState({ teleportError: "" });
+  };
   return (
     <div className="overlay" onClick={onClose}>
       <section
@@ -41,49 +43,64 @@ export function MapPanel({ onClose }: { onClose: () => void }) {
               src="/assets/ui/island-map-reference.png"
               alt="Bản đồ đảo Fishing World: Bãi Biển, Làng Chài, hồ và hải đăng"
             />
-            {(Object.keys(AREAS) as AreaId[]).map((id) => (
+            {(Object.keys(DESTINATIONS) as DestinationId[]).map((id) => (
               <button
                 style={{
-                  ...positions[id],
-                  width: id === "beach" ? "23%" : "24%",
+                  left: DESTINATIONS[id].left,
+                  top: DESTINATIONS[id].top,
+                  width: id === "mystery" ? "23%" : "19%",
                   height: "13%",
                 }}
                 className={`map-hotspot ${selected === id ? "selected" : ""}`}
-                aria-label={AREAS[id].name}
-                title={AREAS[id].name}
+                aria-label={DESTINATIONS[id].name}
+                title={DESTINATIONS[id].name}
                 key={id}
                 aria-pressed={selected === id}
-                onClick={() => {
-                  attempted.current = false;
-                  setSelected(id);
-                  useGame.setState({ teleportError: "" });
-                }}
+                onClick={() => select(id)}
               ></button>
+            ))}
+          </div>
+          <div className="map-destination-list" aria-label="Điểm đến">
+            {(Object.keys(DESTINATIONS) as DestinationId[]).map((id) => (
+              <button
+                key={id}
+                aria-pressed={selected === id}
+                onClick={() => select(id)}
+              >
+                {!DESTINATIONS[id].open && <LockKeyhole size={14} />}{" "}
+                {DESTINATIONS[id].name}
+              </button>
             ))}
           </div>
           <aside className="area-card">
             <span className="area-water">{area.water}</span>
-            <h3>{area.name}</h3>
-            <p>{area.description}</p>
+            <h3>{destination.name}</h3>
+            <p>
+              {destination.open
+                ? `Khám phá ${destination.name.toLocaleLowerCase("vi-VN")} trên đảo. Dịch chuyển trong phòng hiện tại.`
+                : area.description}
+            </p>
             <small>
-              {game.area === selected
-                ? "Bạn đang ở khu vực này"
-                : area.open
-                  ? "Đã mở · Cùng phòng hiện tại"
-                  : "Sắp mở"}
+              {destination.open ? "Đã mở · Cùng phòng hiện tại" : "Sắp mở"}
             </small>
             <button
               className="play"
-              disabled={!area.open || !game.connected || game.teleportPending}
+              disabled={
+                !destination.open || !game.connected || game.teleportPending
+              }
               onClick={() => {
                 attempted.current = true;
                 requestTeleport(selected);
               }}
             >
-              {area.open ? <Navigation size={18} /> : <LockKeyhole size={18} />}{" "}
+              {destination.open ? (
+                <Navigation size={18} />
+              ) : (
+                <LockKeyhole size={18} />
+              )}{" "}
               {game.teleportPending
                 ? "Đang di chuyển…"
-                : area.open
+                : destination.open
                   ? "Dịch chuyển"
                   : "Sắp mở"}
             </button>

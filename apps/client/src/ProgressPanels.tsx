@@ -123,7 +123,7 @@ export function Tutorial({
     "Dùng WASD hoặc joystick để di chuyển.",
     "Tới gần bất kỳ bờ biển, bờ hồ hoặc bến. Thả cần xuống nước, chờ dấu ! rồi giật.",
     "Mở túi, chọn cá và xác nhận giá bán để nhận Xu.",
-    "Xem cần tre ở cửa hàng và điều kiện cấp 3.",
+    "Đến Làng Chài, tìm Cô Sáu ở sạp để xem cần tre và điều kiện cấp 3.",
   ];
   if (collapsed)
     return (
@@ -152,7 +152,7 @@ export function Tutorial({
           className="tutorial-action"
           onClick={step === 2 ? onBag : onShop}
         >
-          {step === 2 ? "Bán cá đầu tiên" : "Khám phá cần câu"}{" "}
+          {step === 2 ? "Bán cá đầu tiên" : "Tìm sạp cửa hàng"}{" "}
           <Check size={14} />
         </button>
       )}

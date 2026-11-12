@@ -1,3 +1,4 @@
+import { formatFishWeight } from "@fishing/shared";
 import React, { useEffect, useState, useRef, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import { Canvas } from "@react-three/fiber";
@@ -24,6 +25,7 @@ import {
   Flag,
   Footprints,
   ArrowUp,
+  Menu,
 } from "lucide-react";
 import { Scene } from "./scene";
 import {
@@ -35,6 +37,7 @@ import {
   enableAudio,
   send,
   useGame,
+  world,
   type JoinOptions,
 } from "./network";
 import "@fontsource-variable/nunito";
@@ -42,6 +45,8 @@ import "./style.css";
 import "./social.css";
 import "./coastal.css";
 import "./experience.css";
+import "./responsive.css";
+import "./popup-mobile.css";
 import { QuestPanel } from "./QuestPanel";
 import { useSettings } from "./settings";
 import { ShopPanel, AlbumPanel } from "./CollectionPanels";
@@ -50,15 +55,13 @@ import { AREAS, RODS, BAITS, RARITIES, levelProgress } from "@fishing/shared";
 import { RoomPicker } from "./RoomPicker";
 import { MapPanel } from "./MapPanel";
 import { SettingsPanel } from "./SettingsPanel";
-import {
-  CommunityPanel,
-  ChatDock,
-  EmoteTray,
-  SocialNotice,
-  Avatar,
-} from "./CommunityPanel";
+import { ChatDock, EmoteTray, SocialNotice, Avatar } from "./CommunityPanel";
 import { AppearancePanel } from "./AppearancePanel";
 import { focusAudio, playSound } from "./audio";
+import { canShop } from "@fishing/shared";
+import { transact, useEconomy, retryPending } from "./economy-client";
+import { useSocial } from "./social-client";
+import { NearbyChat } from "./CommunityPanel";
 import {
   GraphicsBoundary,
   GraphicsNotice,
@@ -68,12 +71,79 @@ import {
 function Logo() {
   return (
     <div className="logo image-logo">
-      <img src="/assets/ui/fishing-world-logo-20261111.png" alt="Fishing World Online" width={1536} height={1024} draggable={false} fetchPriority="high" />
+      <img
+        src="/assets/ui/fishing-world-logo-20261111.png"
+        alt="Fishing World Online"
+        width={1536}
+        height={1024}
+        draggable={false}
+        fetchPriority="high"
+      />
     </div>
   );
 }
 function FishArtwork({ species }: { species?: string }) {
   return <AssetImage id={fishModelId(species)} className="fish-art" />;
+}
+function TopStatus({ caption }: { caption: string }) {
+  const game = useGame(),
+    economy = useEconomy(),
+    social = useSocial();
+  useEffect(() => {
+    if (!economy.message && !social.notice && !game.notice) return;
+    const timer = setTimeout(() => {
+      useEconomy.setState({ message: "" });
+      useSocial.setState({ notice: "" });
+      useGame.setState({ notice: "" });
+    }, 6000);
+    return () => clearTimeout(timer);
+  }, [economy.message, social.notice, game.notice]);
+  const bite = game.phase === "BITE_WINDOW";
+  const active = !["IDLE", "SHOWCASING", "RESULT"].includes(game.phase);
+  const error = economy.error || social.error;
+  return (
+    <div
+      className={`hint top-status ${bite ? "bite" : ""}`}
+      role={error && !bite ? "alert" : "status"}
+    >
+      <span>{bite ? "!" : error ? "!" : "✦"}</span>
+      <div>
+        <b>
+          {bite
+            ? caption
+            : error ||
+              (active
+                ? caption
+                : game.notice || economy.message || social.notice || caption)}
+        </b>
+        {bite && (
+          <small>
+            {(game.hookWindowMs / 1000).toLocaleString("vi-VN")} giây để giật!
+          </small>
+        )}
+        {!bite && game.announcement && <small>{game.announcement}</small>}
+      </div>
+      {!bite &&
+        (economy.pending ? (
+          <button
+            disabled={economy.busy || !game.connected}
+            onClick={() => void retryPending().catch(() => {})}
+          >
+            Thử lại
+          </button>
+        ) : error ? (
+          <button
+            aria-label="Đóng thông báo"
+            onClick={() => {
+              useEconomy.setState({ error: "" });
+              useSocial.setState({ error: "" });
+            }}
+          >
+            <X size={16} />
+          </button>
+        ) : null)}
+    </div>
+  );
 }
 
 function AssetLoading() {
@@ -90,11 +160,11 @@ function App() {
   const game = useGame();
   const settings = useSettings();
   const drag = useRef<{ id: number; x: number; y: number } | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [shopOpen, setShopOpen] = useState(false),
     [albumOpen, setAlbumOpen] = useState(false);
   const [configOpen, setConfigOpen] = useState(false);
-  const [communityOpen, setCommunityOpen] = useState(false),
-    [appearanceOpen, setAppearanceOpen] = useState(false),
+  const [appearanceOpen, setAppearanceOpen] = useState(false),
     [chatFocused, setChatFocused] = useState(false);
   const [roomsOpen, setRoomsOpen] = useState(false),
     [mapOpen, setMapOpen] = useState(false);
@@ -121,7 +191,6 @@ function App() {
       setQuestsOpen(false);
       setShopOpen(false);
       setAlbumOpen(false);
-      setCommunityOpen(false);
       setHelp(false);
       setSprinting(false);
       controls.sprint = false;
@@ -136,9 +205,15 @@ function App() {
     mapOpen ||
     shopOpen ||
     albumOpen ||
-    communityOpen ||
     appearanceOpen;
   useEffect(() => {
+    // Try immediately; browsers that require a gesture are unlocked on the
+    // first pointer/key action anywhere, including the background of the lobby.
+    enableAudio();
+    const unlock = () => enableAudio();
+    document.addEventListener("pointerdown", unlock, { capture: true });
+    document.addEventListener("pointerup", unlock, { capture: true });
+    document.addEventListener("keydown", unlock, { capture: true });
     const click = (e: MouseEvent) => {
       const button = (e.target as HTMLElement).closest<HTMLButtonElement>(
         "button",
@@ -149,7 +224,12 @@ function App() {
       }
     };
     document.addEventListener("click", click);
-    return () => document.removeEventListener("click", click);
+    return () => {
+      document.removeEventListener("click", click);
+      document.removeEventListener("pointerdown", unlock, true);
+      document.removeEventListener("pointerup", unlock, true);
+      document.removeEventListener("keydown", unlock, true);
+    };
   }, []);
   useEffect(
     () => focusAudio(game.phase === "BITE_WINDOW" || game.phase === "REELING"),
@@ -163,10 +243,49 @@ function App() {
       setMapOpen(false);
       setHelp(false);
       setConfigOpen(false);
-      setCommunityOpen(false);
       setAppearanceOpen(false);
     }
   }, [fishing]);
+  useEffect(() => {
+    const interact = (event: Event) => {
+      if (modalOpen || !game.connected || game.phase !== "IDLE") return;
+      const npc = (event as CustomEvent<string>).detail;
+      if (npc === "merchant" && canShop(world.get(game.id))) {
+        void transact({ action: "viewShop" })
+          .then(() => setShopOpen(true))
+          .catch(() => {});
+      } else if (npc === "guide") setHelp(true);
+      else if (npc === "quest") setQuestsOpen(true);
+    };
+    window.addEventListener("fishing:npc", interact);
+    return () => window.removeEventListener("fishing:npc", interact);
+  }, [modalOpen, game.connected, game.id, game.phase]);
+  useEffect(() => {
+    if (!shopOpen) return;
+    const timer = setInterval(() => {
+      if (
+        !useGame.getState().connected ||
+        !canShop(world.get(useGame.getState().id))
+      )
+        setShopOpen(false);
+    }, 100);
+    return () => clearInterval(timer);
+  }, [shopOpen]);
+  useEffect(() => {
+    if (modalOpen) setMenuOpen(false);
+  }, [modalOpen]);
+  useEffect(() => {
+    const viewport = window.visualViewport;
+    const resize = () => {
+      document.documentElement.style.setProperty(
+        "--visible-height",
+        `${viewport?.height ?? window.innerHeight}px`,
+      );
+    };
+    resize();
+    viewport?.addEventListener("resize", resize);
+    return () => viewport?.removeEventListener("resize", resize);
+  }, []);
   const progress = levelProgress(game.profile?.xp ?? 0);
   useEffect(() => {
     if (!game.announcement) return;
@@ -206,11 +325,12 @@ function App() {
         mapOpen ||
         shopOpen ||
         albumOpen ||
-        communityOpen ||
         appearanceOpen ||
         chatFocused ||
         (e.target as HTMLElement).matches("input,textarea,select") ||
-        ((e.target as HTMLElement).matches('button')&&['Space','Enter'].includes(e.code)&&!(e.target as HTMLElement).closest('.action-area,.movement-buttons'))
+        ((e.target as HTMLElement).matches("button") &&
+          ["Space", "Enter"].includes(e.code) &&
+          !(e.target as HTMLElement).closest(".action-area,.movement-buttons"))
       )
         return;
       if (e.code === "Enter") {
@@ -257,7 +377,6 @@ function App() {
     mapOpen,
     shopOpen,
     albumOpen,
-    communityOpen,
     appearanceOpen,
     chatFocused,
   ]);
@@ -277,7 +396,7 @@ function App() {
   };
   return (
     <main
-      className={`${fishing ? "fishing" : ""} ${!started ? "lobby" : ""} ${settings.reducedMotion ? "reduce-motion" : ""} ${chatFocused ? "chat-typing" : ""}`}
+      className={`${fishing ? "fishing" : ""} ${!started ? "lobby" : ""} ${settings.reducedMotion ? "reduce-motion" : ""} ${chatFocused ? "chat-typing" : ""} ${menuOpen ? "functions-open" : ""}`}
     >
       <div
         className="world"
@@ -342,7 +461,7 @@ function App() {
         {started && (
           <div className="top-right">
             <button
-              className="profile hide-fishing"
+              className="profile"
               aria-label="Chỉnh sửa nhân vật"
               onClick={() => setAppearanceOpen(true)}
             >
@@ -363,7 +482,7 @@ function App() {
               </div>
             </button>
             <button
-              className="icon"
+              className="icon hide-fishing"
               aria-label="Âm thanh"
               onClick={() => {
                 enableAudio();
@@ -372,21 +491,28 @@ function App() {
             >
               {settings.soundMuted ? <VolumeX /> : <Volume2 />}
             </button>
+            <button
+              className="icon camera-reset hide-fishing"
+              aria-label="Góc nhìn"
+              title="Đặt lại góc nhìn"
+              onClick={() => {
+                controls.yaw = 0.35;
+                controls.pitch = 0.3;
+              }}
+            >
+              <RotateCcw />
+            </button>
           </div>
         )}
         {started && (
-          <button
-            className="coin-counter hide-fishing"
-            aria-label="Mở cửa hàng"
-            onClick={() => setShopOpen(true)}
-          >
+          <div className="coin-counter hide-fishing" aria-label="Số Xu">
             <Coins size={23} />
             <b>{(game.profile?.coins ?? 0).toLocaleString("vi-VN")}</b>
             <span>Xu</span>
-          </button>
+          </div>
         )}
         <button
-          className="lobby-settings icon"
+          className="lobby-settings icon hide-fishing"
           aria-label="Cài đặt game"
           onClick={() => setConfigOpen(true)}
         >
@@ -396,36 +522,38 @@ function App() {
       {!started ? (
         <section className="landing">
           <Logo />
-          <button
-            className="play"
-            onClick={() => void play()}
-            disabled={loading}
-          >
-            {loading ? "Đang ra bến…" : "Chơi khách"}
-            <ArrowRight size={22} />
-          </button>
-          <button
-            className="choose-room"
-            onClick={() => {
-              useGame.setState({ notice: "" });
-              setRoomsOpen(true);
-            }}
-          >
-            <Users size={18} /> Chọn phòng
-          </button>
-          <button
-            className="choose-room character-entry"
-            onClick={() => setAppearanceOpen(true)}
-          >
-            <Avatar appearanceId={game.profile?.appearanceId} />
-            Nhân vật
-          </button>
-          <small>Tiến trình lưu tự động trên trình duyệt</small>
-          {game.notice && (
-            <p role="alert" className="login-error">
-              {game.notice}
-            </p>
-          )}
+          <div className="landing-actions">
+            <button
+              className="play"
+              onClick={() => void play()}
+              disabled={loading}
+            >
+              {loading ? "Đang ra bến…" : "Chơi khách"}
+              <ArrowRight size={22} />
+            </button>
+            <button
+              className="choose-room"
+              onClick={() => {
+                useGame.setState({ notice: "" });
+                setRoomsOpen(true);
+              }}
+            >
+              <Users size={18} /> Chọn phòng
+            </button>
+            <button
+              className="choose-room character-entry"
+              onClick={() => setAppearanceOpen(true)}
+            >
+              <Avatar appearanceId={game.profile?.appearanceId} />
+              Nhân vật
+            </button>
+            <small>Tiến trình lưu tự động trên trình duyệt</small>
+            {game.notice && (
+              <p role="alert" className="login-error">
+                {game.notice}
+              </p>
+            )}
+          </div>
         </section>
       ) : (
         <>
@@ -437,12 +565,23 @@ function App() {
               <b>{AREAS[game.area].name}</b>
               <small>
                 <span className="live-dot" />{" "}
-                {game.area === "beach" ? "Bến bình yên" : "Ao làng"} ·{" "}
-                {game.count} người chơi
+                {game.area === "beach" ? "Bến bình yên" : "Ao làng"}
               </small>
             </div>
           </div>
-          <nav className="side hide-fishing">
+          <button
+            className="menu-toggle hide-fishing"
+            aria-label="Chức năng"
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            <Menu size={21} />
+            <span>Menu</span>
+          </button>
+          <nav
+            className={`side hide-fishing ${menuOpen ? "menu-open" : ""}`}
+            onClick={() => setMenuOpen(false)}
+          >
             <button
               onClick={() => {
                 useGame.setState({ teleportError: "" });
@@ -462,12 +601,6 @@ function App() {
               {(game.profile?.fish.length ?? 0) > 0 && (
                 <b className="badge">{game.profile?.fish.length}</b>
               )}
-            </button>
-            <button onClick={() => setShopOpen(true)}>
-              <span>
-                <ShoppingBasket />
-              </span>
-              Cửa hàng
             </button>
             <button onClick={() => setAlbumOpen(true)}>
               <span>
@@ -491,6 +624,7 @@ function App() {
               Cách chơi
             </button>
             <button
+              className="camera-menu"
               onClick={() => {
                 controls.yaw = 0.35;
                 controls.pitch = 0.3;
@@ -502,24 +636,19 @@ function App() {
               Góc nhìn
             </button>
           </nav>
-          <div className="room hide-fishing">
+          <div
+            className="room hide-fishing"
+            aria-label={`Mã phòng ${game.roomId}`}
+            title={`Mã phòng ${game.roomId}`}
+          >
             <Users size={15} />
-            <span>Mã phòng {game.roomId}</span>
+            <span>
+              <span className="room-prefix">Mã phòng </span>
+              {game.roomId}
+            </span>
             <span className="live-dot" />
           </div>
-          <div
-            className={"hint " + (game.phase === "BITE_WINDOW" ? "bite" : "")}
-          >
-            <span>{game.phase === "BITE_WINDOW" ? "!" : "✦"}</span>
-            <div>
-              <b>{captions[game.phase]}</b>
-              <small>
-                {game.phase === "BITE_WINDOW"
-                  ? `${(game.hookWindowMs / 1000).toLocaleString("vi-VN")} giây để giật!`
-                  : game.notice}
-              </small>
-            </div>
-          </div>
+          <TopStatus caption={captions[game.phase]} />
           {game.rtt > 300 && (
             <div className="connection">
               Kết nối yếu · {Math.round(game.rtt)} ms
@@ -571,7 +700,6 @@ function App() {
                 shopOpen ||
                 albumOpen ||
                 configOpen ||
-                communityOpen ||
                 appearanceOpen
               }
               onClick={() => {
@@ -614,6 +742,9 @@ function App() {
                   e.preventDefault();
                   jump();
                 }}
+                onClick={(e) => {
+                  if (e.detail === 0) jump();
+                }}
               >
                 <ArrowUp />
                 Nhảy
@@ -631,24 +762,20 @@ function App() {
               mapOpen ||
               shopOpen ||
               albumOpen ||
-              communityOpen ||
               appearanceOpen ||
               chatFocused
             }
           />
           <div className="desktop-help hide-fishing">
             <kbd>W A S D</kbd> Đi <span /> <kbd>Shift</kbd> Chạy <span />{" "}
-            <kbd>Space</kbd> Nhảy <span /> <kbd>F</kbd> Câu
+            <kbd>Space</kbd> Nhảy · Giữ Shift để chạy nhảy <span /> <kbd>F</kbd>{" "}
+            Câu
           </div>
-          {!modalOpen && (
-            <ChatDock
-              onCommunity={() => setCommunityOpen(true)}
-              onFocusChange={setChatFocused}
-            />
-          )}
+          {!modalOpen && <ChatDock onFocusChange={setChatFocused} />}
           {!modalOpen && (
             <div className="hud-emotes hide-fishing">
               <EmoteTray />
+              <NearbyChat onFocusChange={setChatFocused} />
             </div>
           )}
           <Tutorial
@@ -656,15 +783,20 @@ function App() {
               useGame.setState({ result: null });
               setBag(true);
             }}
-            onShop={() => setShopOpen(true)}
+            onShop={() => {
+              setMapOpen(true);
+              useGame.setState({
+                notice: "Đến Làng Chài và tìm Cô Sáu tại sạp hàng.",
+              });
+            }}
           />
-          {game.announcement && (
-            <div className="rare-announcement" role="status">
-              {game.announcement}
-            </div>
-          )}
           {game.result && (
-            <div className="result">
+            <div
+              className="result"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="result-fish-title"
+            >
               <button
                 aria-label="Đóng kết quả"
                 onClick={() => send("FISH_STOW")}
@@ -675,9 +807,9 @@ function App() {
               <div className="fish-illustration">
                 <FishArtwork species={game.result.species} />
               </div>
-              <h2>{game.result.species}</h2>
+              <h2 id="result-fish-title">{game.result.species}</h2>
               <p>
-                {(game.result.grams / 1000).toFixed(2)} kg <span>•</span>{" "}
+                {formatFishWeight(game.result.grams)} <span>•</span>{" "}
                 {AREAS[game.result.area ?? "beach"].name}
               </p>
               <span className={`rarity ${game.result.rarity ?? "common"}`}>
@@ -738,9 +870,6 @@ function App() {
           onExit={started ? () => void leaveToLobby() : undefined}
         />
       )}
-      {communityOpen && (
-        <CommunityPanel onClose={() => setCommunityOpen(false)} />
-      )}
       {appearanceOpen && (
         <AppearancePanel onClose={() => setAppearanceOpen(false)} />
       )}
@@ -750,14 +879,27 @@ function App() {
       {albumOpen && game.profile && (
         <AlbumPanel onClose={() => setAlbumOpen(false)} />
       )}
-      <EconomyNotice />
-      <SocialNotice />
+      {!started && (
+        <>
+          <EconomyNotice />
+          <SocialNotice />
+        </>
+      )}
       {bag && game.profile && (
         <InventoryPanel profile={game.profile} onClose={() => setBag(false)} />
       )}
       {help && (
         <div className="overlay" onClick={() => setHelp(false)}>
-          <section className="panel help" onClick={(e) => e.stopPropagation()}>
+          <section
+            className="panel help"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="help-title"
+            onKeyDown={(e) => {
+              if (e.key === "Escape") setHelp(false);
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
             <button
               className="close icon"
               onClick={() => setHelp(false)}
@@ -766,7 +908,11 @@ function App() {
               <X />
             </button>
             <small>CHẬM MỘT CHÚT, VUI MỘT NGÀY</small>
-            <h2>Cùng ra bến câu</h2>
+            <h2 id="help-title">Cùng ra bến câu</h2>
+            <p className="npc-greeting">
+              Chú Hải: Chào bạn! Đến sát bờ nước, chờ phao chìm rồi hãy giật
+              nhé.
+            </p>
             <p>
               Tới gần bờ biển, bờ hồ hoặc bến rồi bấm <b>Thả câu</b> hoặc F.
               Shift để chạy, Space để nhảy.
@@ -800,10 +946,11 @@ function Joystick({ hidden }: { hidden: boolean }) {
     const r = e.currentTarget.getBoundingClientRect(),
       x = e.clientX - r.left - r.width / 2,
       y = e.clientY - r.top - r.height / 2,
-      l = Math.max(1, Math.hypot(x, y) / 35);
+      range = r.width * 0.28,
+      l = Math.max(1, Math.hypot(x, y) / range);
     setKnob({ x: x / l, y: y / l });
-    controls.x = x / l / 35;
-    controls.z = y / l / 35;
+    controls.x = x / l / range;
+    controls.z = y / l / range;
   }
   return (
     <div

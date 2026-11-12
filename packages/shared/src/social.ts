@@ -38,6 +38,7 @@ export const EMOTES = {
   happy: { emoji: "😊", name: "Vui vẻ" },
   heart: { emoji: "❤️", name: "Thả tim" },
   clap: { emoji: "👏", name: "Vỗ tay" },
+  cry: { emoji: "😭", name: "Khóc ròng" },
 } as const;
 export type EmoteId = keyof typeof EMOTES;
 export const REPORT_REASONS = {
@@ -53,7 +54,7 @@ export interface ChatMessage {
   id: string;
   senderId: string;
   name: string;
-  appearanceId: AppearanceId;
+  appearanceId: AppearanceId | "system";
   text: string;
   createdAt: string;
 }

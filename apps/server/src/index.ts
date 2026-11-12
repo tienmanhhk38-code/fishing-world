@@ -48,6 +48,7 @@ import {
   DESTINATIONS,
   type DestinationId,
   type FishingEndReason,
+  formatFishWeight,
 } from "@fishing/shared";
 import {
   moveOnMap,
@@ -831,6 +832,11 @@ class Beach extends Room {
         p.phase = "RESULT";
         this.lastCatches.set(c.sessionId, result.fish);
         if (p.connected) c.send("FISH_RESULT", result.fish);
+        if (["rare", "legendary", "mythic"].includes(result.fish.rarity ?? "")) {
+          this.social.broadcastSystemChat(
+            `Người chơi ${p.name} đã câu được ${result.fish.species} nặng ${formatFishWeight(result.fish.grams)}!`,
+          );
+        }
         if (["legendary", "mythic"].includes(result.fish.rarity ?? ""))
           this.broadcast("ANNOUNCEMENT", {
             playerName: p.name,
@@ -850,6 +856,7 @@ class Beach extends Room {
           c.send("FISH_ENDED", { reason: "line_break" });
           c.send("NOTICE", "Đứt dây rồi! Cá đã thoát.");
         }
+        this.social.broadcastNearby(c, "ôi...đứt dây câu rồi");
       }
     } catch (error) {
       console.error("Reel settlement will retry", error);

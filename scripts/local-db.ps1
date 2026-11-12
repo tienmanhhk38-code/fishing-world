@@ -1,6 +1,15 @@
 $ErrorActionPreference = 'Stop'
 $workspace = Split-Path $PSScriptRoot -Parent
-$pgBin = 'C:\Program Files\PostgreSQL\17\bin'
+$pgDirs = Get-ChildItem 'C:\Program Files\PostgreSQL' -ErrorAction SilentlyContinue | Sort-Object Name -Descending
+$pgBin = $null
+foreach ($dir in $pgDirs) {
+  $candidate = Join-Path $dir.FullName 'bin'
+  if (Test-Path (Join-Path $candidate 'initdb.exe')) {
+    $pgBin = $candidate
+    break
+  }
+}
+if (!$pgBin) { $pgBin = 'C:\Program Files\PostgreSQL\17\bin' }
 $dataPath = Join-Path $workspace '.local\postgres'
 New-Item -ItemType Directory -Force (Join-Path $workspace '.local') | Out-Null
 if (!(Test-Path (Join-Path $dataPath 'PG_VERSION'))) {

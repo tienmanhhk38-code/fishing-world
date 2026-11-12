@@ -157,6 +157,45 @@ function AssetLoading() {
     </div>
   ) : null;
 }
+function normalizeMovementCode(e: KeyboardEvent): string | null {
+  if (
+    [
+      "KeyW",
+      "KeyA",
+      "KeyS",
+      "KeyD",
+      "ArrowUp",
+      "ArrowDown",
+      "ArrowLeft",
+      "ArrowRight",
+      "Space",
+      "KeyF",
+      "ShiftLeft",
+      "ShiftRight",
+    ].includes(e.code)
+  ) {
+    return e.code;
+  }
+  const k = e.key?.toLowerCase();
+  if (k === "w" || k === "ư") return "KeyW";
+  if (k === "s") return "KeyS";
+  if (
+    k === "a" ||
+    k === "â" ||
+    k === "ă" ||
+    k === "á" ||
+    k === "à" ||
+    k === "ả" ||
+    k === "ã" ||
+    k === "ạ"
+  )
+    return "KeyA";
+  if (k === "d" || k === "đ") return "KeyD";
+  if (k === "f") return "KeyF";
+  if (k === " ") return "Space";
+  return null;
+}
+
 function App() {
   const game = useGame();
   const settings = useSettings();
@@ -304,6 +343,7 @@ function App() {
     controls.sprint = false;
     setSprinting(false);
     drag.current = null;
+    const keyTimes = new Map<string, number>();
     const down = (e: KeyboardEvent) => {
       if (
         !started ||
@@ -328,6 +368,7 @@ function App() {
         window.dispatchEvent(new Event("fishing:chat"));
         return;
       }
+      const code = normalizeMovementCode(e) ?? e.code;
       if (
         [
           "Space",
@@ -336,26 +377,58 @@ function App() {
           "ArrowDown",
           "ArrowLeft",
           "ArrowRight",
-        ].includes(e.code)
+        ].includes(code)
       )
         e.preventDefault();
-      controls.keys.add(e.code);
-      if (e.code === "Space" && !e.repeat) jump();
-      if (e.code === "KeyF" && !e.repeat) action();
+      controls.keys.add(code);
+      keyTimes.set(code, performance.now());
+      if (code === "Space" && !e.repeat) jump();
+      if (code === "KeyF" && !e.repeat) action();
     };
-    const up = (e: KeyboardEvent) => controls.keys.delete(e.code);
+    const up = (e: KeyboardEvent) => {
+      const code = normalizeMovementCode(e);
+      if (code) {
+        controls.keys.delete(code);
+        keyTimes.delete(code);
+      }
+      controls.keys.delete(e.code);
+      keyTimes.delete(e.code);
+    };
     const clear = () => {
       controls.keys.clear();
+      keyTimes.clear();
       controls.x = 0;
       controls.z = 0;
+    };
+    const watchdog = setInterval(() => {
+      const now = performance.now();
+      for (const [code, time] of keyTimes.entries()) {
+        if (now - time > 450) {
+          controls.keys.delete(code);
+          keyTimes.delete(code);
+        }
+      }
+    }, 100);
+    const onCompositionEnd = () => {
+      if (
+        !chatFocused &&
+        !(document.activeElement as HTMLElement)?.matches("input,textarea,select")
+      ) {
+        clear();
+      }
     };
     window.addEventListener("keydown", down);
     window.addEventListener("keyup", up);
     window.addEventListener("blur", clear);
+    window.addEventListener("compositionend", onCompositionEnd);
+    document.addEventListener("visibilitychange", clear);
     return () => {
+      clearInterval(watchdog);
       window.removeEventListener("keydown", down);
       window.removeEventListener("keyup", up);
       window.removeEventListener("blur", clear);
+      window.removeEventListener("compositionend", onCompositionEnd);
+      document.removeEventListener("visibilitychange", clear);
     };
   }, [
     questsOpen,

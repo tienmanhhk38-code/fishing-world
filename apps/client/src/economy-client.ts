@@ -54,10 +54,15 @@ async function post(path: string, body: unknown) {
       body: JSON.stringify(body),
       signal: abort.signal,
     });
-    const result = await response.json();
+    let result: any = null;
+    try {
+      result = await response.json();
+    } catch {
+      result = null;
+    }
     if (!response.ok)
       throw new ResponseError(
-        result.error ?? "Không thể lưu dữ liệu.",
+        result?.error ?? "Không thể lưu dữ liệu.",
         response.status < 500,
       );
     return result;

@@ -626,25 +626,32 @@
     font-size: 12px;
   }
   .nearby-layer .nearby-composer {
-    width: min(280px, calc(100vw - 24px));
+    width: min(320px, calc(100vw - 24px));
     top: calc(
       var(--visual-top, 0px) +
         max(8px, calc(var(--visible-height, 100dvh) - 136px))
     );
-    padding: 8px;
-    border-radius: 16px;
+    background: none;
+    border: none;
+    box-shadow: none;
+    padding: 0;
     font-size: 12px;
-  }
-  .nearby-layer .nearby-composer > div {
-    font-size: 12px;
-    margin-bottom: 6px;
-    gap: 8px;
-  }
-  .nearby-layer .nearby-composer > small {
-    display: none;
   }
   .nearby-layer .nearby-composer .chat-form > button {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    max-height: 44px;
+    padding: 0;
+    border-radius: 22px;
     margin: 0;
+  }
+  .nearby-layer .nearby-composer input {
+    height: 44px;
+    min-height: 44px;
+    max-height: 44px;
+    border-radius: 22px;
   }
 }
 @media (max-width: 700px) and (orientation: portrait) {

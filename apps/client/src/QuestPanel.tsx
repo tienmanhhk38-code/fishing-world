@@ -36,17 +36,22 @@ export function QuestPanel({ onClose }: { onClose: () => void }) {
     setMessage("");
     try {
       const response = await fetch("/api/quests/claim", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            questId,
-            period,
-            requestId: crypto.randomUUID(),
-          }),
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          questId,
+          period,
+          requestId: crypto.randomUUID(),
         }),
+      });
+      let result: any = null;
+      try {
         result = await response.json();
+      } catch {
+        result = null;
+      }
       if (!response.ok)
-        throw Error(result.error ?? "Chưa nhận được phần thưởng.");
+        throw Error(result?.error ?? "Chưa nhận được phần thưởng. Hãy thử lại.");
       applyProfile(result.profile);
       setMessage(result.message);
       playSound("click");

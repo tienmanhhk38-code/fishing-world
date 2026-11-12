@@ -1,4 +1,5 @@
 import { performance } from "node:perf_hooks";
+import { randomUUID } from "node:crypto";
 import type { Client } from "@colyseus/core";
 import type { Prisma } from "@prisma/client";
 import { z } from "zod";
@@ -36,7 +37,7 @@ const reportSchema = z
 const emoteSchema = z
   .object({
     requestId: id,
-    emoteId: z.enum(["wave", "happy", "heart", "clap"]),
+    emoteId: z.enum(["wave", "happy", "heart", "clap", "cry"]),
   })
   .strict();
 type Host = {
@@ -103,6 +104,49 @@ export class RoomSocial {
     this.recentEmotes.delete(guestId);
     this.commandBudget.delete(guestId);
     this.members();
+  }
+  broadcastNearby(c: Client, text: string) {
+    const member = this.host.members().find((m) => m.id === c.sessionId);
+    if (!member) return;
+    const message: ChatMessage = {
+      id: randomUUID(),
+      senderId: c.auth,
+      name: member.name,
+      appearanceId: member.appearanceId,
+      text,
+      createdAt: new Date().toISOString(),
+      channel: "nearby",
+      playerId: c.sessionId,
+      expiresAt: Date.now() + 6000,
+    };
+    for (const recipient of this.host.clients) {
+      if (
+        this.muted.has(recipient.auth) &&
+        !this.muted.get(recipient.auth)!.has(c.auth) &&
+        within(
+          this.host.position(c.sessionId),
+          this.host.position(recipient.sessionId),
+          NEARBY_CHAT_RADIUS,
+        )
+      ) {
+        recipient.send("CHAT_MESSAGE", message);
+      }
+    }
+  }
+  broadcastSystemChat(text: string) {
+    const message: ChatMessage = {
+      id: randomUUID(),
+      senderId: "system",
+      name: "Hệ thống",
+      appearanceId: "system",
+      text,
+      createdAt: new Date().toISOString(),
+      channel: "world",
+    };
+    this.history = [...this.history, message].slice(-80);
+    for (const recipient of this.host.clients) {
+      recipient.send("CHAT_MESSAGE", message);
+    }
   }
   async handle(c: Client, kind: string, raw: unknown) {
     const now = performance.now(),

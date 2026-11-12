@@ -130,6 +130,23 @@
 .chat-line.own p {
   background: #d6f6ee;
 }
+.chat-line.system-line b {
+  color: #ffd866;
+}
+.chat-line.system-line p {
+  background: linear-gradient(135deg, #fff9e6, #fff0c2);
+  color: #5c3b00;
+  border: 1px solid #fed268;
+}
+.portrait-avatar.system-avatar {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  border: 2px solid #fed268;
+  box-shadow: 0 2px 8px #f59e0b44;
+}
 .chat-empty {
   min-height: 100%;
   display: flex;

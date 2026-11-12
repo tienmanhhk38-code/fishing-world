@@ -19,6 +19,7 @@ describe("social text boundaries", () => {
     expect(validName("a".repeat(21))).toBeNull();
     expect(validName("  Nắng   Hè  ")).toBe("Nắng Hè");
     expect(Object.keys(APPEARANCES)).toHaveLength(4);
-    expect(Object.keys(EMOTES)).toHaveLength(4);
+    expect(Object.keys(EMOTES)).toHaveLength(5);
+    expect(EMOTES.cry).toEqual({ emoji: "😭", name: "Khóc ròng" });
   });
 });

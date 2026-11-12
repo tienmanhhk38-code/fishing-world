@@ -1,6 +1,6 @@
 import { createPortal } from "react-dom";
 import { useEffect, useRef, useState } from "react";
-import { MessageCircle, X, Send } from "lucide-react";
+import { MessageCircle, X, Send, Sparkles } from "lucide-react";
 import { EMOTES, type AppearanceId, type EmoteId } from "@fishing/shared";
 import { useGame, controls } from "./network";
 import { useSocial, socialAction, sendChat } from "./social-client";
@@ -9,9 +9,16 @@ export function Avatar({
   appearanceId = "sailor",
   className = "",
 }: {
-  appearanceId?: AppearanceId;
+  appearanceId?: AppearanceId | "system";
   className?: string;
 }) {
+  if (appearanceId === "system") {
+    return (
+      <div className={`portrait-avatar system-avatar ${className}`} title="Hệ thống">
+        <Sparkles size={18} />
+      </div>
+    );
+  }
   return (
     <img
       className={`portrait-avatar ${className}`}
@@ -39,7 +46,7 @@ function ChatLog({ compact = false }: { compact?: boolean }) {
       {messages.length ? (
         messages.slice(compact ? -3 : -80).map((message) => (
           <div
-            className={`chat-line ${message.senderId === ownId ? "own" : ""}`}
+            className={`chat-line ${message.senderId === ownId ? "own" : ""} ${message.senderId === "system" ? "system-line" : ""}`}
             key={message.id}
           >
             {!compact && <Avatar appearanceId={message.appearanceId} />}
@@ -89,7 +96,11 @@ function ChatForm({
       className="chat-form"
       onSubmit={(e) => {
         e.preventDefault();
-        void sendChat(channel).catch(() => {});
+        void sendChat(channel)
+          .then(() => {
+            if (channel === "nearby") onClose?.();
+          })
+          .catch(() => {});
       }}
       onFocusCapture={() => {
         controls.keys.clear();
@@ -179,23 +190,13 @@ export function NearbyChat({
               aria-label="Đóng khung chat gần"
               onClick={() => setOpen(false)}
             />
-            <section className="nearby-composer" aria-label="Chat trên đầu">
-              <div>
-                <b>Chat gần · 20 m</b>
-                <button
-                  aria-label="Đóng chat gần"
-                  onClick={() => setOpen(false)}
-                >
-                  <X size={18} />
-                </button>
-              </div>
+            <div className="nearby-composer" role="region" aria-label="Chat gần">
               <ChatForm
                 channel="nearby"
                 onFocusChange={onFocusChange}
                 onClose={() => setOpen(false)}
               />
-              <small>Tin hiện trên đầu trong 6 giây.</small>
-            </section>
+            </div>
           </div>,
           document.body,
         )}

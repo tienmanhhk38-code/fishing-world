@@ -9,7 +9,7 @@ test.describe("lobby startup", () => {
       const play = HTMLMediaElement.prototype.play;
       (window as any).__lobbyAttempts = [];
       HTMLMediaElement.prototype.play = function () {
-        if (this.src.includes("/music/lobby-song.mp3"))
+        if (this.src.includes("/music/game-song.mp3"))
           (window as any).__lobbyAttempts.push(this);
         return play.call(this);
       };
@@ -82,7 +82,7 @@ test("music streams, crossfades on room changes and survives menus and hidden ta
       page.evaluate(
         () =>
           (window as any).__music.find((a: HTMLAudioElement) =>
-            a.src.includes("lobby"),
+            a.src.includes("game"),
           )?.currentTime ?? 0,
       ),
     )
@@ -95,7 +95,7 @@ test("music streams, crossfades on room changes and survives menus and hidden ta
       page.evaluate(
         () =>
           (window as any).__music.find((a: HTMLAudioElement) =>
-            a.src.includes("game"),
+            a.src.includes("lobby"),
           )?.currentTime ?? 0,
       ),
     )
@@ -105,14 +105,14 @@ test("music streams, crossfades on room changes and survives menus and hidden ta
     await page.evaluate(
       () =>
         (window as any).__music.find((a: HTMLAudioElement) =>
-          a.src.includes("lobby"),
+          a.src.includes("game"),
         ).paused,
     ),
   ).toBe(true);
   const before = await page.evaluate(
     () =>
       (window as any).__music.find((a: HTMLAudioElement) =>
-        a.src.includes("game"),
+        a.src.includes("lobby"),
       ).currentTime,
   );
   await page.getByRole("button", { name: "Cài đặt game", exact: true }).click();
@@ -122,7 +122,7 @@ test("music streams, crossfades on room changes and survives menus and hidden ta
     await page.evaluate(
       () =>
         (window as any).__music.find((a: HTMLAudioElement) =>
-          a.src.includes("game"),
+          a.src.includes("lobby"),
         ).currentTime,
     ),
   ).toBeGreaterThan(before);
@@ -167,7 +167,7 @@ test("music streams, crossfades on room changes and survives menus and hidden ta
       page.evaluate(
         () =>
           (window as any).__music.find((a: HTMLAudioElement) =>
-            a.src.includes("game"),
+            a.src.includes("lobby"),
           ).paused,
       ),
     )
@@ -180,7 +180,7 @@ test("music streams, crossfades on room changes and survives menus and hidden ta
       page.evaluate(
         () =>
           (window as any).__music.find((a: HTMLAudioElement) =>
-            a.src.includes("lobby"),
+            a.src.includes("game"),
           ).currentTime,
       ),
     )
@@ -190,7 +190,7 @@ test("music streams, crossfades on room changes and survives menus and hidden ta
     await page.evaluate(
       () =>
         (window as any).__music.find((a: HTMLAudioElement) =>
-          a.src.includes("game"),
+          a.src.includes("lobby"),
         ).paused,
     ),
   ).toBe(true);
@@ -227,4 +227,56 @@ test("unavailable music does not block fishing or effect loading", async ({
         (await page.evaluate(() => (window as any).__effectAttempts)),
     )
     .toBeGreaterThan(0);
+});
+
+test("fallback media uses swapped lobby and game music", async ({
+  browser,
+}) => {
+  const context = await browser.newContext();
+  await context.addInitScript(() => {
+    Object.defineProperty(window, "AudioContext", { value: undefined });
+    Object.defineProperty(window, "webkitAudioContext", { value: undefined });
+    (window as any).__tracks = [];
+    const play = HTMLMediaElement.prototype.play;
+    HTMLMediaElement.prototype.play = function () {
+      if (
+        this.src.includes("/music/") &&
+        !(window as any).__tracks.includes(this)
+      )
+        (window as any).__tracks.push(this);
+      return play.call(this);
+    };
+  });
+  const page = await context.newPage();
+  try {
+    await page.goto("/");
+    await page
+      .getByRole("button", { name: "Cài đặt game", exact: true })
+      .click();
+    await page.getByRole("button", { name: "Đóng cài đặt" }).click();
+    await expect
+      .poll(() =>
+        page.evaluate(() =>
+          (window as any).__tracks.some(
+            (a: HTMLAudioElement) =>
+              a.src.endsWith("/game-song.mp3") && !a.paused,
+          ),
+        ),
+      )
+      .toBe(true);
+    await page.getByRole("button", { name: "Chọn phòng", exact: true }).click();
+    await page.getByRole("button", { name: "Tạo phòng mới" }).click();
+    await expect
+      .poll(() =>
+        page.evaluate(() =>
+          (window as any).__tracks.some(
+            (a: HTMLAudioElement) =>
+              a.src.endsWith("/lobby-song.mp3") && !a.paused,
+          ),
+        ),
+      )
+      .toBe(true);
+  } finally {
+    await context.close();
+  }
 });

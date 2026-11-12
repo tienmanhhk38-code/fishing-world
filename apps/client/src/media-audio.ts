@@ -1,3 +1,4 @@
+import { musicTrackUrl } from "./music-track";
 // Media-element fallback for browser ports without Web Audio (e.g. Windows WebKit).
 // Spatial audio uses the Web Audio path whenever that API exists.
 import { useSettings } from "./settings";
@@ -35,7 +36,7 @@ function music(restart = false) {
   if (!enabled || document.hidden) return;
   let next = tracks.get(scene);
   if (!next) {
-    next = new Audio(`/assets/audio/music/${scene}-song.mp3`);
+    next = new Audio(musicTrackUrl(scene));
     next.preload = "auto";
     next.loop = true;
     next.volume = 0;

@@ -1,3 +1,4 @@
+import { installViewportSizing } from "./viewport";
 import { formatFishWeight } from "@fishing/shared";
 import React, { useEffect, useState, useRef, Suspense } from "react";
 import { createRoot } from "react-dom/client";
@@ -274,18 +275,7 @@ function App() {
   useEffect(() => {
     if (modalOpen) setMenuOpen(false);
   }, [modalOpen]);
-  useEffect(() => {
-    const viewport = window.visualViewport;
-    const resize = () => {
-      document.documentElement.style.setProperty(
-        "--visible-height",
-        `${viewport?.height ?? window.innerHeight}px`,
-      );
-    };
-    resize();
-    viewport?.addEventListener("resize", resize);
-    return () => viewport?.removeEventListener("resize", resize);
-  }, []);
+  useEffect(installViewportSizing, []);
   const progress = levelProgress(game.profile?.xp ?? 0);
   useEffect(() => {
     if (!game.announcement) return;

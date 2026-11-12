@@ -852,6 +852,9 @@ function MotionDriver() {
   return null;
 }
 function Camera() {
+  const size = useThree((state) => state.size);
+  const touch =
+    navigator.maxTouchPoints > 0 || matchMedia("(pointer: coarse)").matches;
   const anchor = useMemo(() => new THREE.Vector3(0, 0.72, 2), []),
     orbit = useMemo(() => new THREE.Vector3(10, 7, 12), []),
     look = useMemo(() => new THREE.Vector3(-1.2, 1.5, -1.8), []),
@@ -874,7 +877,9 @@ function Camera() {
         "BITE_WINDOW",
         "REELING",
       ].includes(state.phase),
-      distance = fishing && !useSettings.getState().reducedMotion ? 12 : 14.8;
+      distance =
+        (fishing && !useSettings.getState().reducedMotion ? 12 : 14.8) *
+        (touch && size.width > size.height && size.height <= 550 ? 0.88 : 1);
     desired.set(
       Math.sin(controls.yaw) * Math.cos(controls.pitch) * distance,
       1.5 + Math.sin(controls.pitch) * distance,

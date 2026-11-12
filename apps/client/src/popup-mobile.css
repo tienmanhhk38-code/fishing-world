@@ -627,7 +627,10 @@
   }
   .nearby-layer .nearby-composer {
     width: min(280px, calc(100vw - 24px));
-    top: max(8px, calc(var(--visible-height, 100dvh) - 136px));
+    top: calc(
+      var(--visual-top, 0px) +
+        max(8px, calc(var(--visible-height, 100dvh) - 136px))
+    );
     padding: 8px;
     border-radius: 16px;
     font-size: 12px;

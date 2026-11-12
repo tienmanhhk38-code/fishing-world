@@ -1,3 +1,4 @@
+import { musicTrackUrl } from "./music-track";
 import { useSettings } from "./settings";
 import { ISLAND_OUTLINE } from "@fishing/shared";
 import { mediaAudio } from "./media-audio";
@@ -68,7 +69,7 @@ function sync() {
 function track(name: string) {
   let current = tracks.get(name);
   if (current) return current;
-  const element = new Audio(`/assets/audio/music/${name}-song.mp3`);
+  const element = new Audio(musicTrackUrl(name as "lobby" | "game"));
   element.loop = true;
   element.preload = "auto";
   const gain = context!.createGain();

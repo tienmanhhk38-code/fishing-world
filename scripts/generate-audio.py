@@ -42,7 +42,7 @@ save('island-melody', 16, music)
 
 def tone(freq, t, length):
     return math.sin(2 * math.pi * freq * t) * math.sin(math.pi * t / length) ** 2 if 0 < t < length else 0
-save('bite', .5, lambda t: .45 * (tone(880, t, .19) + tone(1174.66, t - .22, .22)))
+save('bite', .5, lambda t: .26 * (tone(880, t, .19) + tone(1174.66, t - .22, .22)) + .22 * math.sin(2 * math.pi * 110 * t) * (.5 + .5 * math.sin(2 * math.pi * 34 * t)) * math.sin(math.pi * t / .5) ** 2)
 save('cast', .6, lambda t: rng.uniform(-1, 1) * .13 * math.sin(math.pi * t / .6) ** 4 + .25 * tone(180, t - .35, .18))
 save('hook', .35, lambda t: .28 * math.sin(2 * math.pi * (300 * t + 800 * t * t)) * math.exp(-8 * t))
 save('catch', 1.1, lambda t: sum(.22 * tone(f, t - start, .35) for f, start in [(523.25, 0), (659.25, .18), (783.99, .36), (1046.5, .57)]))
@@ -50,4 +50,5 @@ save('click', .08, lambda t: .12 * tone(650, t, .08))
 save('miss', .4, lambda t: .15 * math.sin(2 * math.pi * (320 * t - 220 * t * t)) * math.sin(math.pi * t / .4) ** 2)
 save('nibble', .16, lambda t: .12 * tone(480, t, .16))
 save('reel', .8, lambda t: .08 * math.sin(2 * math.pi * 145 * t) * (.6 + .4 * math.sin(2 * math.pi * 35 * t)) + .015 * rng.uniform(-1, 1))
-print('Generated 10 original WAV assets.')
+save('line-break', .5, lambda t: .48 * rng.uniform(-1, 1) * math.exp(-55 * t) + .24 * math.sin(2 * math.pi * (640 * t - 500 * t * t)) * math.exp(-10 * t))
+print('Generated 11 original WAV assets.')

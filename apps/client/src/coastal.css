@@ -39,20 +39,13 @@
     box-shadow:
       0 5px 18px #06395225,
       inset 0 1px #ffffff30;
-    padding: 6px 17px 6px 6px;
   }
   .profile .avatar {
-    width: 44px;
-    height: 44px;
     border-width: 2px;
   }
   .profile b {
     font-size: 13px;
     letter-spacing: 0.2px;
-  }
-  .profile i {
-    width: 65px;
-    height: 5px;
   }
   main:not(.lobby) .icon {
     background: linear-gradient(145deg, #287fa4e8, #155477e8);
@@ -62,9 +55,6 @@
     border-color: #b6e8f0a8;
   }
   .location {
-    top: 98px;
-    left: 24px;
-    padding: 8px 13px 8px 8px;
     border: 1px solid #c8f0f177;
     border-radius: 18px;
     background: #134d70c9;
@@ -79,20 +69,9 @@
     color: #d7f3f4;
   }
   .location-icon {
-    width: 31px;
-    height: 31px;
     background: #3c9db599;
   }
-  .side {
-    top: 180px;
-    left: 24px;
-    gap: 7px;
-  }
   .side button {
-    min-height: 42px;
-    width: 139px;
-    padding: 4px 12px 4px 5px;
-    gap: 10px;
     font-size: 12px;
     border: 1px solid #bceaf25e;
     border-radius: 15px;
@@ -108,24 +87,16 @@
   }
   .side button:hover {
     background: #226b8ee8;
-    transform: translateX(3px);
   }
   .side button > span {
-    width: 32px;
-    height: 32px;
     background: #3893ac70;
     border: 0;
     box-shadow: none;
   }
   .side button svg {
-    width: 19px;
-    height: 19px;
     color: #d7faf5;
   }
   .room {
-    top: 88px;
-    right: 24px;
-    padding: 7px 12px;
     border: 1px solid #b5e5eb66;
     border-radius: 13px;
     background: #124a68bc;
@@ -133,11 +104,6 @@
     backdrop-filter: blur(8px);
   }
   .tutorial {
-    top: 132px;
-    left: auto;
-    right: 24px;
-    width: 222px;
-    padding: 12px 14px;
     border-radius: 17px;
     background: linear-gradient(135deg, #164768e8, #143854dc);
     border: 1px solid #b8e4eb77;
@@ -146,7 +112,6 @@
   }
   .tutorial h3 {
     font-size: 14px;
-    margin: 6px 0;
   }
   .tutorial p {
     font-size: 10px;
@@ -157,15 +122,7 @@
     letter-spacing: 0.6px;
     color: #ffdc83;
   }
-  .tutorial-toggle {
-    top: 132px;
-    left: auto;
-    right: 24px;
-  }
   .equipment {
-    left: 24px;
-    bottom: 28px;
-    padding: 9px 13px;
     background: #123f5cdd;
     border-radius: 16px;
     border-color: #bfe8e266;
@@ -187,13 +144,7 @@
   .hint small {
     font-size: 10px;
   }
-  .action-area {
-    right: 28px;
-    bottom: 28px;
-  }
   .cast {
-    width: 112px;
-    height: 112px;
     border-width: 2px;
     box-shadow:
       0 4px 0 #b77820,
@@ -202,13 +153,6 @@
   }
   .cast b {
     font-size: 17px;
-  }
-  .cast > span svg {
-    width: 32px;
-    height: 32px;
-  }
-  .hud-emotes {
-    right: 28px;
   }
 }
 @media (max-width: 700px) {

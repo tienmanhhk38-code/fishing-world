@@ -47,6 +47,9 @@ export const REPORT_REASONS = {
 } as const;
 export type ReportReason = keyof typeof REPORT_REASONS;
 export interface ChatMessage {
+  channel?: "world" | "nearby";
+  playerId?: string;
+  expiresAt?: number;
   id: string;
   senderId: string;
   name: string;

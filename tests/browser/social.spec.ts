@@ -241,7 +241,7 @@ async function appearance(page: Page, name: string, outfit: string) {
     .click();
   await expect(page.getByRole("dialog")).toBeHidden();
 }
-test("two players customize, chat as text, mute/report, emote and type Space while fishing", async ({
+test("two players customize, chat as text, emote and type Space while fishing", async ({
   browser,
 }) => {
   const a = await browser.newContext(),
@@ -274,8 +274,10 @@ test("two players customize, chat as text, mute/report, emote and type Space whi
     await q.getByRole("button", { name: "Chọn phòng", exact: true }).click();
     await q.getByRole("textbox", { name: "Mã phòng", exact: true }).fill(code);
     await q.getByRole("button", { name: "Vào phòng", exact: true }).click();
-    await p.getByRole("button", { name: "Cộng đồng", exact: true }).click();
-    await expect(p.locator(".member-row")).toHaveCount(2);
+    await expect(
+      p.getByRole("button", { name: "Cộng đồng", exact: true }),
+    ).toHaveCount(0);
+    await p.getByRole("button", { name: "Mở chat", exact: true }).click();
     const html = "<img src=x onerror=alert(1)>";
     await p.getByRole("textbox", { name: "Tin nhắn", exact: true }).fill(html);
     await p.getByRole("button", { name: "Gửi tin nhắn", exact: true }).click();
@@ -283,38 +285,8 @@ test("two players customize, chat as text, mute/report, emote and type Space whi
     expect(await p.locator(".chat-line p img").count()).toBe(0);
     await q.getByRole("button", { name: "Mở chat", exact: true }).click();
     await expect(q.locator(".chat-line p")).toHaveText(html);
-    await p
-      .getByRole("button", { name: "Tùy chọn Linh QA", exact: true })
-      .click();
-    await p.getByRole("button", { name: "Tắt tiếng", exact: true }).click();
-    await expect(
-      p.locator(".member-row").filter({ hasText: "Linh QA" }),
-    ).toContainText("Đã tắt tiếng");
-    await q
-      .getByRole("textbox", { name: "Tin nhắn", exact: true })
-      .fill("Một tin tạm ẩn");
-    await q.getByRole("button", { name: "Gửi tin nhắn", exact: true }).click();
-    await expect(
-      q.locator(".chat-line p").filter({ hasText: "Một tin tạm ẩn" }),
-    ).toBeVisible();
-    await expect(
-      p.locator(".chat-line p").filter({ hasText: "Một tin tạm ẩn" }),
-    ).toHaveCount(0);
-    await p
-      .getByRole("button", { name: "Tùy chọn Linh QA", exact: true })
-      .click();
-    await p.getByRole("button", { name: "Báo cáo", exact: true }).click();
-    await p.getByRole("combobox").selectOption("abuse");
-    await p.getByRole("button", { name: "Gửi báo cáo", exact: true }).click();
-    await expect(
-      p.getByRole("dialog", { name: "Báo cáo người chơi" }),
-    ).toBeHidden();
-    await p
-      .getByRole("button", { name: "Tùy chọn Linh QA", exact: true })
-      .click();
-    await p.getByRole("button", { name: "Bỏ tắt tiếng", exact: true }).click();
-    await p.screenshot({ path: ".local/m4-community.png" });
-    await p.getByRole("button", { name: "Đóng cộng đồng" }).click();
+    await p.getByRole("button", { name: "Thu gọn chat", exact: true }).click();
+    await q.getByRole("button", { name: "Biểu cảm", exact: true }).hover();
     await q.getByRole("button", { name: "Vẫy tay", exact: true }).click();
     await expect(p.locator(".emote-bubble")).toContainText("👋");
     await p.screenshot({ path: ".local/m4-emote.png" });
@@ -344,10 +316,7 @@ test("two players customize, chat as text, mute/report, emote and type Space whi
       /avatar-ocean/,
     );
     await expect(p.locator(".profile b")).toHaveText("Sunny QA");
-    await q.getByRole("button", { name: "Cộng đồng", exact: true }).click();
-    await expect(
-      q.locator(".member-row").filter({ hasText: "Sunny QA" }).locator("img"),
-    ).toHaveAttribute("src", /avatar-ocean/);
+    await expect(q.locator(".member-row")).toHaveCount(0);
     expect(errors).toEqual([]);
   } finally {
     await a.close();
@@ -355,7 +324,7 @@ test("two players customize, chat as text, mute/report, emote and type Space whi
   }
 });
 
-test("appearance and community fit portrait and landscape; original WAV assets decode", async ({
+test("appearance and chat fit portrait and landscape; original WAV assets decode", async ({
   page,
 }) => {
   await page.goto("/");
@@ -376,8 +345,8 @@ test("appearance and community fit portrait and landscape; original WAV assets d
     { width: 844, height: 390 },
   ]) {
     await page.setViewportSize(viewport);
-    await page.getByRole("button", { name: "Cộng đồng", exact: true }).click();
-    const box = await page.getByRole("dialog").boundingBox();
+    await page.getByRole("button", { name: "Mở chat", exact: true }).click();
+    const box = await page.locator(".chat-dock").boundingBox();
     expect(box!.x).toBeGreaterThanOrEqual(0);
     expect(box!.y).toBeGreaterThanOrEqual(0);
     expect(box!.y + box!.height).toBeLessThanOrEqual(viewport.height);
@@ -387,7 +356,9 @@ test("appearance and community fit portrait and landscape; original WAV assets d
     await page.screenshot({
       path: `.local/m4-community-${viewport.width}.png`,
     });
-    await page.getByRole("button", { name: "Đóng cộng đồng" }).click();
+    await page
+      .getByRole("button", { name: "Thu gọn chat", exact: true })
+      .click();
   }
   const decoded = await page.evaluate(async () => {
     const context = new AudioContext();

@@ -5,12 +5,14 @@ type Pos = { x: number; y: number; z: number };
 const tracks = new Map<string, HTMLAudioElement>(),
   voices = new Set<HTMLAudioElement>(),
   pool = new Map<string, HTMLAudioElement[]>();
+const voiceScale = new WeakMap<HTMLAudioElement, number>();
 let enabled = false,
   scene: "lobby" | "game" = "lobby",
   focused = false,
   reel: HTMLAudioElement | null = null,
   ambience: HTMLAudioElement | null = null,
   fade = 0;
+let musicStarted = false;
 function volume() {
   const s = useSettings.getState();
   return s.soundMuted ? 0 : s.musicVolume * 0.48 * (focused ? 0.35 : 1);
@@ -23,25 +25,36 @@ function sync() {
     const s = useSettings.getState();
     ambience.volume = s.soundMuted ? 0 : s.ambienceVolume * 0.12;
   }
+  const s = useSettings.getState();
+  for (const a of voices)
+    a.volume = s.soundMuted
+      ? 0
+      : Math.min(1, s.volume * (voiceScale.get(a) ?? 0.9));
 }
 function music(restart = false) {
   if (!enabled || document.hidden) return;
   let next = tracks.get(scene);
   if (!next) {
     next = new Audio(`/assets/audio/music/${scene}-song.mp3`);
-    next.preload = "none";
+    next.preload = "auto";
     next.loop = true;
     next.volume = 0;
     tracks.set(scene, next);
   }
   if (!restart && !next.paused) return;
   if (restart) next.currentTime = 0;
-  void next.play().catch(() => {});
+  const duration = musicStarted ? 1200 : 80;
+  void next
+    .play()
+    .then(() => {
+      musicStarted = true;
+    })
+    .catch(() => {});
   cancelAnimationFrame(fade);
   const started = performance.now(),
     initial = new Map([...tracks].map(([key, a]) => [key, a.volume]));
   const tick = (now: number) => {
-    const t = Math.min(1, (now - started) / 1200);
+    const t = Math.min(1, (now - started) / duration);
     for (const [key, a] of tracks) {
       a.volume = Math.max(
         0,
@@ -75,10 +88,13 @@ export const mediaAudio = {
         "reel",
         "catch",
         "miss",
+        "line-break",
         "click",
       ]) {
         const entries = Array.from({ length: 2 }, () => {
-          const a = new Audio(`/assets/audio/${name}.wav`);
+          const a = new Audio(
+            `/assets/audio/${name === "reel" ? "reel-machine-v3" : name}.wav`,
+          );
           a.preload = "auto";
           a.volume = 0;
           void a
@@ -135,20 +151,21 @@ export const mediaAudio = {
     if (!enabled || document.hidden || s.soundMuted || !s.volume) return;
     const distance = Math.hypot(pos.x - listener.x, pos.z - listener.z);
     if (remote && (distance > 28 || voices.size >= 5)) return;
-    if (voices.size >= 8 && name !== "bite") return;
+    if (voices.size >= 8 && !["bite", "line-break"].includes(name)) return;
     if (name === "reel" && !remote) this.stopReel();
     const a =
       pool.get(name)?.find((a) => !voices.has(a)) ??
-      (!remote && name === "bite" ? pool.get(name)?.[0] : undefined);
+      (!remote && ["bite", "line-break"].includes(name)
+        ? pool.get(name)?.[0]
+        : undefined);
     if (!a) return;
     a.pause();
     a.currentTime = 0;
     a.volume = Math.min(
       1,
-      s.volume *
-        0.9 *
-        (remote ? 0.45 / (1 + distance / 8) : name === "reel" ? 0.65 : 1),
+      s.volume * 0.9 * (remote ? 0.45 / (1 + distance / 8) : 1),
     );
+    voiceScale.set(a, 0.9 * (remote ? 0.45 / (1 + distance / 8) : 1));
     a.loop = name === "reel" && !remote;
     voices.add(a);
     if (a.loop) reel = a;

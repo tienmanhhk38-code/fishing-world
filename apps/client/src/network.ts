@@ -19,7 +19,9 @@ import type {
   Fish,
   OpenAreaId,
   AreaId,
+  DestinationId,
 } from "@fishing/shared";
+import { DESTINATIONS } from "@fishing/shared";
 export const world = new Map<string, Player>();
 export const useGame = create<{
   profile: Profile | null;
@@ -32,6 +34,7 @@ export const useGame = create<{
   rtt: number;
   result: Fish | null;
   count: number;
+  actorSignature: string;
   area: OpenAreaId;
   reconnecting: boolean;
   teleportPending: boolean;
@@ -39,6 +42,8 @@ export const useGame = create<{
   announcement: string;
   hookWindowMs: number;
   leftLobby: boolean;
+  showcaseError: string;
+  showcaseAck: number;
 }>(() => ({
   profile: null,
   id: "",
@@ -50,6 +55,7 @@ export const useGame = create<{
   rtt: 0,
   result: null,
   count: 0,
+  actorSignature: "",
   area: "beach",
   reconnecting: false,
   teleportPending: false,
@@ -57,6 +63,8 @@ export const useGame = create<{
   announcement: "",
   hookWindowMs: 900,
   leftLobby: false,
+  showcaseError: "",
+  showcaseAck: 0,
 }));
 let room: Room | null = null;
 let leaving = false;
@@ -140,9 +148,9 @@ function bind(joined: Room) {
     emotes.set(playerId, { id: emoteId, until: Date.now() + durationMs }),
   );
   joined.onMessage("PROFILE", applyProfile);
-  joined.onMessage("ANNOUNCEMENT", ({ playerName, species }) =>
+  joined.onMessage("ANNOUNCEMENT", ({ playerName, species, rarity }) =>
     useGame.setState({
-      announcement: `${playerName} vừa bắt được ${species} Cực hiếm!`,
+      announcement: `${playerName} vừa bắt được ${species} ${rarity === "mythic" ? "Huyền thoại" : "Cực hiếm"}!`,
     }),
   );
   joined.onMessage(
@@ -174,26 +182,38 @@ function bind(joined: Room) {
     world.clear();
     for (const player of players) world.set(player.id, player);
     const self = world.get(joined.sessionId);
+    const realCount = players.filter(
+      (p) => p.connected && (!p.kind || p.kind === "player"),
+    ).length;
     useGame.setState((state) => ({
-      ...(state.count !== players.length ? { count: players.length } : {}),
+      ...(state.count !== realCount ? { count: realCount } : {}),
+      actorSignature: players.map((p) => p.id).join(","),
       ...(self && self.area !== state.area ? { area: self.area } : {}),
     }));
   });
   joined.onMessage("PING", (nonce) => joined.send("PONG", nonce));
   joined.onMessage("RTT", (rtt) => useGame.setState({ rtt }));
   joined.onMessage("NOTICE", (notice) => {
-    if (/^Giật sớm|^Cá đã bơi mất/.test(notice)) playSound("miss");
     useGame.setState({ notice });
   });
   joined.onMessage("FISH_STARTED", ({ roundId }) => {
     playSound("cast");
     useGame.setState({ roundId, phase: "CASTING", result: null, notice: "" });
   });
-  joined.onMessage("FISH_CUE", ({ phase, windowMs }) => {
-    useGame.setState({ phase, hookWindowMs: windowMs ?? 900 });
-    if (phase === "BITE_WINDOW") playSound("bite");
-    if (phase === "NIBBLING") playSound("nibble");
-  });
+  joined.onMessage(
+    "FISH_CUE",
+    ({ phase, windowMs, phaseStartedAt, durationMs }) => {
+      const p = world.get(joined.sessionId);
+      if (p)
+        Object.assign(p, {
+          phase,
+          phaseStartedAt,
+          phaseDurationMs: durationMs,
+        });
+      useGame.setState({ phase, hookWindowMs: windowMs ?? 900 });
+      if (phase === "BITE_WINDOW") playSound("bite");
+    },
+  );
   joined.onMessage("FISH_HOOK_CONFIRMED", ({ reel }) => {
     const p = world.get(joined.sessionId);
     if (p) p.reel = reel;
@@ -212,13 +232,22 @@ function bind(joined: Room) {
       p.showcase = showcase;
       p.phase = "SHOWCASING";
     }
-    useGame.setState({ phase: "SHOWCASING", result: null });
+    useGame.setState({
+      phase: "SHOWCASING",
+      result: null,
+      showcaseAck: Date.now(),
+      showcaseError: "",
+    });
   });
+  joined.onMessage("SHOWCASE_ERROR", ({ message }) =>
+    useGame.setState({ showcaseError: message }),
+  );
   joined.onMessage("FISH_ESCAPED", () => {
     stopReelSound();
-    playSound("miss");
+    playSound("line-break");
   });
-  joined.onMessage("FISH_ENDED", () => {
+  joined.onMessage("FISH_ENDED", ({ reason }) => {
+    if (reason === "early" || reason === "late") playSound("miss");
     stopReelSound();
     useGame.setState({ phase: "IDLE", roundId: "", result: null });
   });
@@ -244,7 +273,7 @@ function bind(joined: Room) {
         });
       useGame.setState({
         area: result.area,
-        notice: `Đã đến ${result.area === "village" ? "Làng Chài" : "Bãi Biển"}.`,
+        notice: `Đã đến ${result.destination ? DESTINATIONS[result.destination as DestinationId].name : result.area === "village" ? "Làng Chài" : "Bãi Biển"}.`,
       });
     }
   });
@@ -260,6 +289,7 @@ function bind(joined: Room) {
     controls.x = controls.z = 0;
     showcases.clear();
     clearSocial();
+    stopReelSound();
     for (const player of world.values()) delete player.showcase;
     useGame.setState({ connected: false, teleportPending: false });
     if (code === 4000 || code === 4003 || code === 4008) {
@@ -367,10 +397,10 @@ export function connect(options: JoinOptions = {}) {
   })();
   return connecting;
 }
-export function requestTeleport(area: AreaId) {
+export function requestTeleport(destination: DestinationId) {
   if (!room || useGame.getState().teleportPending) return;
   useGame.setState({ teleportPending: true, teleportError: "" });
-  room.send("TELEPORT_REQUEST", { area });
+  room.send("TELEPORT_REQUEST", { destination });
 }
 
 export function send(type: string, data: unknown = {}) {
@@ -424,7 +454,8 @@ function clearRoom() {
   });
 }
 export function jump() {
-  const s=useGame.getState();if(!s.connected||!['IDLE','SHOWCASING'].includes(s.phase))return;
+  const s = useGame.getState();
+  if (!s.connected || !["IDLE", "SHOWCASING"].includes(s.phase)) return;
   predictJump(++jumpSeq);
   send("PLAYER_JUMP", { seq: jumpSeq });
 }

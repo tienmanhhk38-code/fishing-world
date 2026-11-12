@@ -18,8 +18,8 @@ export function selectCatch(
   const tiers = [...new Set(available.map((s) => s.rarity))];
   const tierWeights = tiers.map(
     (r) =>
-      FISHING_RULES[r].encounter *
-      (r === "rare" || r === "legendary" ? 1 + luck : 1),
+      (r === "common" && area === "beach" ? 69.9 : FISHING_RULES[r].encounter) *
+      (r === "rare" || r === "legendary" || r === "mythic" ? 1 + luck : 1),
   );
   let tierRoll = random() * tierWeights.reduce((a, b) => a + b, 0),
     rarity = tiers[tiers.length - 1];

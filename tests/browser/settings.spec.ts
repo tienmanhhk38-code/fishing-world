@@ -70,7 +70,7 @@ test("lobby preferences persist and affect render resolution", async ({
     dialog.getByLabel("Âm thanh môi trường", { exact: true }),
   ).toHaveValue("45");
   await expect(dialog.getByLabel("Nhạc nền", { exact: true })).toHaveValue(
-    "25",
+    "50",
   );
   await expect(
     dialog.getByRole("switch", { name: "Tắt toàn bộ âm thanh" }),

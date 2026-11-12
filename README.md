@@ -5,11 +5,11 @@
 <p align="center"><strong>Game câu cá 3D online — khám phá đảo, bắt cá và chia sẻ thành quả cùng bạn bè.</strong></p>
 <p align="center">React · Three.js / React Three Fiber · Colyseus · Express · PostgreSQL / Prisma</p>
 
-![Cảnh chơi thực tế Fishing World Online](docs/images/gameplay.png)
+![Cảnh chơi thực tế Fishing World Online](docs/images/experience-v5-desktop.png)
 
 ## Giới thiệu
 
-Fishing World Online là game trình duyệt phong cách chibi, giao diện tiếng Việt, hỗ trợ máy tính và cảm ứng. Người chơi dùng phiên khách, vào cùng mã phòng, khám phá Bãi Biển/Làng Chài, câu 15 loài cá, bán lấy Xu, nâng cấp trang bị và hoàn thành nhiệm vụ. Tiến trình lưu trên PostgreSQL, không chỉ trong bộ nhớ trình duyệt.
+Fishing World Online là game trình duyệt phong cách chibi, giao diện tiếng Việt, hỗ trợ máy tính và cảm ứng. Người chơi dùng phiên khách, vào cùng mã phòng, khám phá Bãi Biển/Làng Chài, câu 30 loài cá, bán lấy Xu, nâng cấp trang bị và hoàn thành nhiệm vụ. Tiến trình lưu trên PostgreSQL, không chỉ trong bộ nhớ trình duyệt.
 
 **Trạng thái:** bản beta đang phát triển, đã kiểm chứng local; chưa có URL production công khai. Hình trên là ảnh game thật. Mỹ thuật hiện là mô hình stylized procedural, chưa tái tạo toàn bộ độ chi tiết của concept.
 
@@ -18,8 +18,8 @@ Fishing World Online là game trình duyệt phong cách chibi, giao diện ti�
 - **Thế giới chung:** đảo khoảng 123 × 86 m, bến gỗ, làng, hồ nước ngọt, hải đăng, nước trong và sóng ven bờ; tối đa 20 người/phòng theo cấu hình hiện tại.
 - **Di chuyển:** đi, chạy, nhảy; dự đoán tại máy người chơi, server xác nhận input và nội suy người khác; camera xoay tự do, chế độ 30/60 FPS.
 - **Câu cá:** chỉ thả trong 2 m tới nước lộ thiên; nhấp giả, cửa sổ giật theo độ hiếm, bo cá tự động và xác suất hụt. Server chọn và xác thực toàn bộ kết quả.
-- **Tiến trình:** 15 loài/4 độ hiếm, túi cá, album/kỷ lục, XP/cấp độ, Xu, 3 cần và 3 loại mồi; giao dịch chống gửi lặp.
-- **Hoạt động:** khoe/cất cá chủ động, chat/emote, cộng đồng, mute/report và công cụ quản trị; nhiệm vụ khởi đầu và ngày, reset lúc 00:00 Việt Nam.
+- **Tiến trình:** 30 loài/4 độ hiếm, túi cá, album/kỷ lục, XP/cấp độ, Xu, 3 cần và 3 loại mồi; giao dịch chống gửi lặp.
+- **Hoạt động:** khoe cá từ 10 kg bằng hai tay, chat thế giới/chat gần 20 m, NPC và người câu ảo, cộng đồng, mute/report và công cụ quản trị; nhiệm vụ khởi đầu và ngày, reset lúc 00:00 Việt Nam.
 - **Trải nghiệm:** bốn ngoại hình, cài đặt đồ họa/âm lượng/camera tại lobby, nhạc streaming theo cảnh, hiệu ứng âm thanh và nút về lobby.
 - **Lưu bền vững:** chỉ nhận cá/XP sau khi kéo thành công; kết quả kéo được lưu để reconnect/restart không lấy mẫu lại; sao lưu/kiểm tra khôi phục database.
 
@@ -78,17 +78,19 @@ Database cũ đã tạo bằng `db push` phải được backup và đối chi�
 
 ## Điều khiển
 
-| Thao tác | Máy tính | Cảm ứng |
-| --- | --- | --- |
-| Di chuyển | WASD / mũi tên | Joystick trái |
-| Chạy | Giữ Shift | Nút Chạy bật/tắt |
-| Nhảy | Space | Nút Nhảy |
-| Xoay camera | Kéo chuột trên cảnh | Kéo vùng cảnh bằng ngón khác |
-| Thả / giật câu | F hoặc nút hành động | Nút hành động phải |
-| Chat | Enter; gõ bình thường trong ô chat | Nút Trò chuyện |
-| Về lobby | Cài đặt → Về lobby | Cài đặt → Về lobby |
+| Thao tác       | Máy tính                           | Cảm ứng                      |
+| -------------- | ---------------------------------- | ---------------------------- |
+| Di chuyển      | WASD / mũi tên                     | Joystick trái                |
+| Chạy           | Giữ Shift                          | Nút Chạy bật/tắt             |
+| Nhảy           | Space                              | Nút Nhảy                     |
+| Xoay camera    | Kéo chuột trên cảnh                | Kéo vùng cảnh bằng ngón khác |
+| Thả / giật câu | F hoặc nút hành động               | Nút hành động phải           |
+| Chat           | Enter; gõ bình thường trong ô chat | Nút Trò chuyện               |
+| Về lobby       | Cài đặt → Về lobby                 | Cài đặt → Về lobby           |
 
-Chờ phao chìm và dấu **!** để giật. Cửa sổ giật là 900/700/550/400 ms theo độ hiếm, bù RTT tối đa 150 ms. Bấm sớm/quá hạn hoặc kéo hụt không nhận cá/XP. Sau thành công chọn **Câu tiếp**, **Khoe cá** hoặc **Xem túi**; đang khoe phải **Cất cá** trước khi câu lại.
+Cửa hàng mở tại NPC Cô Sáu trong Làng Chài, trong phạm vi 3 m. Bản đồ có năm điểm đến mở; San Hô và Đảo Bí Ẩn còn khóa. Chat gần nằm cạnh nhóm biểu cảm, hiện trên đầu trong 6 giây.
+
+Chờ phao chìm và dấu **!** trên đầu nhân vật để giật. Cửa sổ giật là 900/700/550/400 ms theo độ hiếm, bù RTT tối đa 150 ms. Bấm sớm/quá hạn hoặc kéo hụt không nhận cá/XP. Sau thành công chọn **Câu tiếp**, **Khoe cá** hoặc **Xem túi**; đang khoe phải **Cất cá** trước khi câu lại.
 
 ## Cấu trúc repository
 
@@ -108,16 +110,16 @@ vercel.json        Build frontend và Vercel Functions proxy
 
 ## Lệnh thường dùng
 
-| Lệnh | Mục đích |
-| --- | --- |
-| `pnpm dev` | Chạy client và backend local |
-| `pnpm build` | Kiểm tra TypeScript và build cả workspace |
-| `pnpm test` | Unit test |
-| `pnpm test:browser` | Chromium UI/API/integration |
-| `pnpm test:cross-browser` | Luồng âm thanh/game trên Firefox và WebKit |
-| `pnpm db:generate` | Sinh Prisma Client |
-| `pnpm db:backup` | Backup + manifest kiểm chứng |
-| `pnpm db:restore-verify` | Restore vào database mới và đối chiếu digest |
+| Lệnh                      | Mục đích                                     |
+| ------------------------- | -------------------------------------------- |
+| `pnpm dev`                | Chạy client và backend local                 |
+| `pnpm build`              | Kiểm tra TypeScript và build cả workspace    |
+| `pnpm test`               | Unit test                                    |
+| `pnpm test:browser`       | Chromium UI/API/integration                  |
+| `pnpm test:cross-browser` | Luồng âm thanh/game trên Firefox và WebKit   |
+| `pnpm db:generate`        | Sinh Prisma Client                           |
+| `pnpm db:backup`          | Backup + manifest kiểm chứng                 |
+| `pnpm db:restore-verify`  | Restore vào database mới và đối chiếu digest |
 
 Playwright cần server local đang chạy, database test riêng và browser đã cài: `pnpm exec playwright install chromium firefox webkit`. Một số test tạo dữ liệu trực tiếp trong database; không chạy với database production. Harness `test:release` còn kill/restart Docker để thử recovery, chỉ dành cho beta local.
 

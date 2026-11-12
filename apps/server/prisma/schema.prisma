@@ -140,6 +140,7 @@ model CoinLedger {
 }
 
 model ChatMessage {
+  channel      String   @default("world")
   id           String   @id @default(uuid())
   roomId       String
   guestId      String

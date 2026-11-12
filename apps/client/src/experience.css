@@ -151,36 +151,9 @@
   outline-offset: 3px;
 }
 @media (pointer: coarse), (max-width: 700px) {
-  .movement-buttons {
-    display: flex;
-  }
-  .quest-list article {
-    grid-template-columns: 24px minmax(0, 1fr) 80px;
-    padding: 10px;
-    gap: 8px;
-  }
-  .quest-list h3 {
-    font-size: 13px;
-  }
-  .quest-list .play {
-    font-size: 11px;
-  }
-  .quest-icon svg {
-    width: 20px;
-  }
   .showcase {
     max-width: 210px;
     font-size: 11px !important;
-  }
-}
-@media (max-height: 550px) and (pointer: coarse) {
-  .movement-buttons {
-    right: 165px;
-    bottom: 22px;
-  }
-  .movement-buttons button {
-    width: 48px;
-    height: 48px;
   }
 }
 .showcase {

@@ -1,0 +1,115 @@
+{
+  "date": "2026-11-12",
+  "timezone": "Asia/Bangkok",
+  "build": "passed",
+  "unitTests": {
+    "passed": 38,
+    "files": 9
+  },
+  "browserTests": {
+    "chromiumScenarios": 33,
+    "note": "32 passed in final full run; the 200 ms nibble observation test passed on rerun after fixing its polling harness. Final shadow rendering is verified separately.",
+    "additionalAudio": {
+      "firefox": 2,
+      "webkit": 2
+    },
+    "finalShadowVisualVerification": "passed after the flat instanced shadow optimization"
+  },
+  "touch": {
+    "scope": "Chromium mobile emulation with two simultaneous CDP touch pointers; not physical-device certification",
+    "distance": 2.7757714285714252,
+    "yawChange": 0.4181479018787009,
+    "jumpHeight": 0.78339,
+    "runToggle": true
+  },
+  "newFishAssets": {
+    "models": 15,
+    "totalGlbBytes": 392636
+  },
+  "audio": {
+    "reel": {
+      "peak": 0.075,
+      "rms": 0.0306,
+      "seconds": 0.8
+    },
+    "bite": {
+      "peak": 0.3315,
+      "rms": 0.0932,
+      "seconds": 0.5
+    },
+    "line-break": {
+      "peak": 0.4924,
+      "rms": 0.0512,
+      "seconds": 0.5
+    },
+    "reelGainChangeDb": 10.75
+  },
+  "render": {
+    "scope": "1280x800, Intel UHD 730/D3D11, 20 real network guests plus cosmetic NPCs, 8 camera angles, 60 FPS cap. Current measurements use built client on port 2567.",
+    "isolatedEnvironment": false,
+    "interpretation": "Large timing variation and background workload prevent a reliable FPS regression conclusion. Raw final results are retained; no physical mobile FPS certification.",
+    "quality": {
+      "low": {
+        "baseline": {
+          "fpsMin": 54.46,
+          "fpsMax": 58.87,
+          "frameP95WorstMs": 26.4,
+          "peakDrawCalls": 181,
+          "peakTriangles": 898204,
+          "errors": []
+        },
+        "current": {
+          "fpsMin": 2.49,
+          "fpsMax": 59.06,
+          "frameP95WorstMs": 805.5,
+          "peakDrawCalls": 227,
+          "peakTriangles": 896620,
+          "errors": []
+        }
+      },
+      "high": {
+        "baseline": {
+          "fpsMin": 50.28,
+          "fpsMax": 58.67,
+          "frameP95WorstMs": 29.6,
+          "peakDrawCalls": 182,
+          "peakTriangles": 1081000,
+          "errors": []
+        },
+        "current": {
+          "fpsMin": 9.31,
+          "fpsMax": 57.39,
+          "frameP95WorstMs": 140.5,
+          "peakDrawCalls": 200,
+          "peakTriangles": 1081640,
+          "errors": []
+        }
+      }
+    }
+  },
+  "servedBuildAssets": {
+    "/assets/index-BSNzNIQQ.js": {
+      "sha256": "8fb494f43c0713aff860fad88f51c529170acaf680049753f077947c06ce6d25",
+      "matchesBuild": true
+    },
+    "/assets/index-BwjPk5zl.css": {
+      "sha256": "d68c2b5e29bfe9a03eb30390b4a1dce2a812aee6551656a059f92c6ae3f1d706",
+      "matchesBuild": true
+    }
+  },
+  "publicDeployment": false,
+  "giantPose": {
+    "id": "ZkJX5_rsr",
+    "rodVisible": false,
+    "fishLength": 4,
+    "fishY": 3.014318186677799,
+    "arms": [-2.92, -2.92]
+  },
+  "artifacts": [
+    "docs/images/experience-v5-desktop.png",
+    "docs/images/experience-v5-portrait.png",
+    "docs/images/experience-v5-landscape.png",
+    "docs/images/experience-v5-giant.png",
+    ".local/upgrade-v5/fishing-effects.webm"
+  ]
+}

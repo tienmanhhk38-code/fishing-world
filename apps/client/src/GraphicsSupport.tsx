@@ -3,6 +3,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { create } from "zustand";
 import { controls, send, useGame, world } from "./network";
 import { motionPose } from "./motion-client";
+import { Box3, Vector3 } from "three";
 const useGraphics = create<{ error: string }>(() => ({ error: "" }));
 export class GraphicsBoundary extends Component<
   { children: ReactNode },
@@ -46,11 +47,20 @@ declare global {
         rendered: import("@fishing/shared").Player;
       } | null;
       players: () => import("@fishing/shared").Player[];
+      presentations: () => {
+        id: string;
+        rodVisible: boolean;
+        fishLength: number;
+        fishY: number;
+        arms: number[];
+        fishJoints: { joint: number; y: number; z: number }[];
+        fishLod: string;
+      }[];
     };
   }
 }
 export function GraphicsLifecycle() {
-  const { gl, invalidate, camera } = useThree(),
+  const { gl, invalidate, camera, scene } = useThree(),
     last = useRef(0);
   useEffect(() => {
     const lost = (event: Event) => {
@@ -79,6 +89,38 @@ export function GraphicsLifecycle() {
       const context = gl.getContext(),
         extension = context.getExtension("WEBGL_debug_renderer_info");
       window.__fishingDiagnostics = {
+        presentations: () =>
+          Array.from(world.values(), (p) => {
+            const actor = scene.getObjectByName(`actor:${p.id}`),
+              fish = actor?.getObjectByName("held-fish");
+            const bounds = fish ? new Box3().setFromObject(fish) : undefined;
+            const size = bounds?.getSize(new Vector3());
+            const fishJoints: { joint: number; y: number; z: number }[] = [];
+            let fishLod = "";
+            fish?.traverse((o) => {
+              if (o.name.startsWith("fish-lod-") && o.visible) fishLod = o.name;
+              if (
+                o.userData.fishJoint !== undefined &&
+                o.parent?.parent?.visible !== false
+              )
+                fishJoints.push({
+                  joint: o.userData.fishJoint,
+                  y: o.rotation.y,
+                  z: o.rotation.z,
+                });
+            });
+            return {
+              id: p.id,
+              fishJoints,
+              fishLod,
+              rodVisible: actor?.getObjectByName("held-rod")?.visible ?? false,
+              fishLength: size ? Math.max(size.x, size.y, size.z) : 0,
+              fishY: fish?.getWorldPosition(new Vector3()).y ?? 0,
+              arms: ["leftArm", "rightArm"].map(
+                (n) => actor?.getObjectByName(n)?.rotation.x ?? 0,
+              ),
+            };
+          }),
         players: () =>
           Array.from(world.values(), (p) => ({ ...motionPose(p) })),
         localPlayer: () => {

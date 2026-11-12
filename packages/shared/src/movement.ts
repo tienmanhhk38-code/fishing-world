@@ -25,8 +25,11 @@ export function simulateMovement(
   dt: number,
 ): Motion {
   let { x, z, y, vy, grounded, yaw } = state;
+  // A running takeoff keeps its horizontal pace until landing, even when
+  // Shift is released while the jump is in progress.
+  const sprinting = !!input.sprint || (!state.grounded && state.running);
   const length = Math.hypot(input.x, input.z),
-    speed = input.sprint ? RUN_SPEED : 4.4;
+    speed = sprinting ? RUN_SPEED : 4.4;
   const steps = Math.max(1, Math.ceil(dt / (1 / 60))),
     step = Math.min(0.1, Math.max(0, dt)) / steps;
   for (let i = 0; i < steps; i++) {
@@ -58,6 +61,6 @@ export function simulateMovement(
     grounded,
     yaw,
     moving,
-    running: moving && !!input.sprint,
+    running: moving && sprinting,
   };
 }

@@ -36,7 +36,7 @@ function watch(room: Room) {
   let players: Player[] = [];
   room.onMessage("*", () => {});
   room.onMessage("WORLD", (value) => {
-    players = value;
+    players = value.filter((p: Player) => !p.kind || p.kind === "player");
   });
   room.onMessage("PING", (nonce) => room.send("PONG", nonce));
   return () => players;
@@ -161,8 +161,13 @@ test("teleport gates, freshwater reward and reconnect after commit", async () =>
         )
       ).ok,
     ).toBe(false);
-    const saved = await db.fishingRound.findUniqueOrThrow({where:{id:started.roundId}});
-    await db.fishingRound.update({where:{id:started.roundId},data:{plan:{...(saved.plan as any),escape:false,reelMs:450}}});
+    const saved = await db.fishingRound.findUniqueOrThrow({
+      where: { id: started.roundId },
+    });
+    await db.fishingRound.update({
+      where: { id: started.roundId },
+      data: { plan: { ...(saved.plan as any), escape: false, reelMs: 450 } },
+    });
     await bite;
     const result = nextMessage(room, "FISH_RESULT");
     await command(

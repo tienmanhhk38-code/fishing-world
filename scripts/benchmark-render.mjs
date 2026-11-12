@@ -21,9 +21,12 @@ const browser = await chromium.launch({
   ],
 });
 try {
-  const sdk = new Client(base.replace(/^http/, "ws"), {
-    headers: { Origin: base },
-  });
+  const sdk = new Client(
+    process.env.BENCH_SOCKET_URL ?? base.replace(/^http/, "ws"),
+    {
+      headers: { Origin: base },
+    },
+  );
   for (let i = 0; i < 19; i++) {
     const { ticket } = await (
       await fetch(base + "/api/guest", { headers: { Origin: base } })
@@ -117,7 +120,11 @@ try {
   await page.getByRole("button", { name: "Vào phòng", exact: true }).click();
   await page.getByRole("button", { name: "Thả câu" }).waitFor();
   await page.waitForFunction(
-    () => document.querySelectorAll(".nameplate").length === 20,
+    () =>
+      window.__fishingDiagnostics
+        ?.players()
+        .filter((p) => !p.kind || p.kind === "player").length === 20 &&
+      document.querySelectorAll(".nameplate").length >= 20,
   );
   const readyMs = performance.now() - loadStarted,
     views = [];

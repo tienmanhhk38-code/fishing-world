@@ -73,6 +73,9 @@ export function QuestPanel({ onClose }: { onClose: () => void }) {
             <X />
           </button>
         </div>
+        <p className="npc-greeting">
+          Linh: Chào bạn! Hoàn thành những việc này rồi ghé nhận quà nhé.
+        </p>
         <div className="quest-tabs">
           <button
             aria-pressed={tab === "intro"}

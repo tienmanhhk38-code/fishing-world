@@ -10,6 +10,7 @@ import {
   WORLD_SCALE,
   ISLAND_OUTLINE,
   landHeightAt,
+  onIsland,
 } from "@fishing/shared";
 import { useSettings } from "./settings";
 const SIZE = 320,
@@ -105,19 +106,40 @@ function createWaterData() {
     uv: number[] = [],
     indices: number[] = [];
   ISLAND_OUTLINE.forEach((p, i) => {
-    const inward = new T.Vector2(
-      -WORLD_SCALE - p.x,
-      -36 * WORLD_SCALE - p.z,
+    const before =
+        ISLAND_OUTLINE[(i + ISLAND_OUTLINE.length - 1) % ISLAND_OUTLINE.length],
+      after = ISLAND_OUTLINE[(i + 1) % ISLAND_OUTLINE.length];
+    const tangent = new T.Vector2(
+      after.x - before.x,
+      after.z - before.z,
     ).normalize();
-    for (const amount of [-0.35, 1.25]) {
+    const inward = new T.Vector2(-tangent.y, tangent.x);
+    if (!onIsland({ x: p.x + inward.x * 0.3, z: p.z + inward.y * 0.3 }))
+      inward.multiplyScalar(-1);
+    const amounts = [-1.4, -0.5, 0, 0.6, 1.2, 2];
+    for (const [j, amount] of amounts.entries()) {
       const x = p.x + inward.x * amount,
         z = p.z + inward.y * amount;
-      coords.push(x, landHeightAt({ x, z }) + 0.025, z);
-      uv.push(i / ISLAND_OUTLINE.length, amount < 0 ? 0 : 1);
+      coords.push(
+        x,
+        amount < 0
+          ? 0.04 + (0.21 * (amount + 1.4)) / 1.4
+          : landHeightAt({ x, z }) + 0.045,
+        z,
+      );
+      uv.push(i / ISLAND_OUTLINE.length, j / (amounts.length - 1));
     }
-    const n = i * 2,
-      next = ((i + 1) % ISLAND_OUTLINE.length) * 2;
-    indices.push(n, next, n + 1, n + 1, next, next + 1);
+    const n = i * amounts.length,
+      next = ((i + 1) % ISLAND_OUTLINE.length) * amounts.length;
+    for (let j = 0; j < amounts.length - 1; j++)
+      indices.push(
+        n + j,
+        next + j,
+        n + j + 1,
+        n + j + 1,
+        next + j,
+        next + j + 1,
+      );
   });
   const wash = new T.BufferGeometry();
   wash.setAttribute("position", new T.Float32BufferAttribute(coords, 3));
@@ -160,7 +182,7 @@ void main(){
  float phase=time*.22+noise(p*.045)*.10;
  float foamBand=0.;
  for(int i=0;i<3;i++){float age=fract(phase+float(i)/3.);float front=(1.-age)*5.;foamBand=max(foamBand,(1.-smoothstep(.04,.35,abs(shore-front)))*smoothstep(.0,.15,age)*(1.-smoothstep(.86,1.,age)));}
- float foam=foamBand*smoothstep(.18,.72,drift)*.78*mix(1.,.16,water.g);
+ float foam=foamBand*mix(.5,1.,smoothstep(.18,.72,drift))*.94*mix(1.,.16,water.g);
  float sun=pow(max(0.,dot(reflect(-normalize(vec3(-.35,.8,.45)),n),view)),160.);
  color=mix(color,vec3(.60,.83,.96),fresnel*.28)+sun*vec3(1.,.9,.64)*.7;
  float sparkle=pow(max(0.,sin(p.x*5.3+sin(p.y*4.7-time*1.3))*sin(p.y*6.8+time*.7)),28.);
@@ -240,7 +262,7 @@ export function IslandWater() {
             "varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}"
           }
           fragmentShader={
-            "uniform float time;varying vec2 vUv;void main(){float tide=.5+.5*sin(time*1.38-vUv.x*9.);float edge=tide*.85;float band=1.-smoothstep(.04,.19,abs(vUv.y-edge));float wet=(1.-smoothstep(edge,edge+.22,vUv.y))*.12;float breakup=.65+.35*sin(vUv.x*480.+time*2.);gl_FragColor=vec4(mix(vec3(.38,.61,.55),vec3(.95,.99,.92),band),max(wet,band*.35*breakup)*(1.-smoothstep(.8,1.,vUv.y)));}"
+            "uniform float time;varying vec2 vUv;void main(){float phase=time*.95-vUv.x*5.;float tide=.5+.5*sin(phase);float edge=.18+tide*.68;float band=1.-smoothstep(.012,.07,abs(vUv.y-edge));float wet=(1.-smoothstep(.65,.98,vUv.y))*.18;float sheet=(1.-smoothstep(edge,edge+.06,vUv.y))*.26;float breakup=.78+.22*sin(vUv.x*360.+time*2.);float fade=smoothstep(0.,.07,vUv.y)*(1.-smoothstep(.91,1.,vUv.y));gl_FragColor=vec4(mix(vec3(.17,.53,.57),vec3(.94,.99,.95),band),max(wet,max(sheet,band*.72*breakup))*fade);}"
           }
         />
       </mesh>

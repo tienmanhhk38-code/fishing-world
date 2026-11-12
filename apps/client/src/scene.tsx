@@ -1,4 +1,13 @@
-import { useEffect, useRef, useMemo, useState } from "react";
+import { fishWriggle } from "./fish-animation";
+import { formatFishWeight } from "@fishing/shared";
+import {
+  createFishShadowGeometry,
+  deformFishShadow,
+  shadowMouthOffset,
+} from "./fish-shadow";
+import { overheadVisible } from "@fishing/shared";
+import { NpcModel } from "./NpcModel";
+import { Suspense, useEffect, useRef, useMemo, useState } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import {
   Html,
@@ -8,6 +17,7 @@ import {
   BakeShadows,
 } from "@react-three/drei";
 import * as THREE from "three";
+import { clone as cloneSkeleton } from "three/examples/jsm/utils/SkeletonUtils.js";
 import { world, useGame, controls, send } from "./network";
 import { useSettings } from "./settings";
 import { SkyDome, PackWorld } from "./scenery";
@@ -22,7 +32,18 @@ import {
   type RodId,
 } from "@fishing/shared";
 import { EMOTES, type AppearanceId } from "@fishing/shared";
-import { emotes } from "./social-client";
+import { emotes, speech } from "./social-client";
+import {
+  NPCS,
+  within,
+  INTERACTION_RADIUS,
+  floatPresentation,
+  fishLength,
+  speciesFor,
+  isLargeFish,
+  waterAt,
+  onPlatform,
+} from "@fishing/shared";
 
 import { motionPose, predictMotion, serverNow } from "./motion-client";
 import { updateAudioPose, playSound } from "./audio";
@@ -35,7 +56,7 @@ const fishingAssets = [
   "bobber_ripples",
   "fish_shadow_uniform",
   "bite_exclamation",
-  ...SPECIES.map((species) => species.model),
+
   ...Object.values(RODS).map((rod) => rod.model),
 ].map(assetUrl);
 export function Environment() {
@@ -97,16 +118,25 @@ function Character({ id, preview = false }: { id: string; preview?: boolean }) {
     name: "",
     fish: "",
     species: "",
+    startedAt: 0,
+    animationSeed: 0,
     rodId: "wood" as RodId,
     level: 1,
     appearanceId: "sailor" as AppearanceId,
     emote: "",
+    grams: 1000,
+    chat: "",
+    bite: false,
+    kind: "player",
+    interact: false,
   });
   const nextPosition = useMemo(() => new THREE.Vector3(), []);
   const animator = useRef<CharacterAnimator | null>(null);
   const labelTime = useRef(0);
   const soundPhase = useRef<string | undefined>(undefined);
-  const remoteReelAt = useRef(0), escapeAt = useRef(0), contactShadow = useRef<THREE.Mesh>(null);
+  const remoteReelAt = useRef(0),
+    escapeAt = useRef(0),
+    contactShadow = useRef<THREE.Mesh>(null);
   const heldFish = useRef<THREE.Group>(null);
   const handPosition = useMemo(() => new THREE.Vector3(), []);
   const tip = useMemo(() => new THREE.Vector3(), []);
@@ -130,14 +160,30 @@ function Character({ id, preview = false }: { id: string; preview?: boolean }) {
       phase = p?.phase ?? (preview ? "SHOWCASING" : "IDLE"),
       moving = p?.moving ?? false;
     if (p && id !== useGame.getState().id && soundPhase.current !== phase) {
-      const sounds = { CASTING: 'cast', NIBBLING: 'nibble', BITE_WINDOW: 'bite', REELING: 'hook', RESULT: 'catch' } as const;
+      const sounds = {
+        CASTING: "cast",
+        BITE_WINDOW: "bite",
+        REELING: "hook",
+        RESULT: "catch",
+      } as const;
       const sound = sounds[phase as keyof typeof sounds];
-      if (soundPhase.current && sound) playSound(sound, {x:p.bobber?.x??p.x,y:1,z:p.bobber?.z??p.z}, true);
+      if (soundPhase.current && sound)
+        playSound(
+          sound,
+          { x: p.bobber?.x ?? p.x, y: 1, z: p.bobber?.z ?? p.z },
+          true,
+        );
     }
     soundPhase.current = phase;
-    if(p && id !== useGame.getState().id){
-      if(p.escape && p.escape.at!==escapeAt.current){escapeAt.current=p.escape.at;playSound('miss',{...p.escape.origin,y:0},true);}
-      if(phase==='REELING' && t-remoteReelAt.current>.85){remoteReelAt.current=t;playSound('reel',{x:p.x,y:1,z:p.z},true);}
+    if (p && id !== useGame.getState().id) {
+      if (p.escape && p.escape.at !== escapeAt.current) {
+        escapeAt.current = p.escape.at;
+        playSound("line-break", { ...p.escape.origin, y: 0 }, true);
+      }
+      if (phase === "REELING" && t - remoteReelAt.current > 1.05) {
+        remoteReelAt.current = t;
+        playSound("reel", { x: p.x, y: 1, z: p.z }, true);
+      }
     }
     nextPosition.set(
       p?.x ?? (size.width < size.height ? 1.1 : 4.3),
@@ -145,7 +191,13 @@ function Character({ id, preview = false }: { id: string; preview?: boolean }) {
       p?.z ?? 4,
     );
     root.current.position.copy(nextPosition);
-    if(contactShadow.current && p){contactShadow.current.position.y=(groundHeightAt(p)-p.y)/.672+.04;contactShadow.current.scale.setScalar(1-Math.min(.3,Math.max(0,p.y-groundHeightAt(p))*.2));}
+    if (contactShadow.current && p) {
+      contactShadow.current.position.y =
+        (groundHeightAt(p) - p.y) / 0.672 + 0.04;
+      contactShadow.current.scale.setScalar(
+        1 - Math.min(0.3, Math.max(0, p.y - groundHeightAt(p)) * 0.2),
+      );
+    }
     renderedPositions.set(id, root.current.position);
     const target = p?.yaw ?? 0.3;
     root.current.rotation.y +=
@@ -157,7 +209,9 @@ function Character({ id, preview = false }: { id: string; preview?: boolean }) {
     if (rig.current)
       rig.current.position.y = moving ? 0 : Math.sin(t * 2) * 0.008;
     const casting = !["IDLE", "RESULT", "SHOWCASING"].includes(phase);
-    const emote = emotes.get(id),
+    const emote =
+        emotes.get(id) ??
+        (p?.emote ? { id: p.emote, until: Date.now() + 1000 } : undefined),
       activeEmote =
         phase === "IDLE" &&
         emote &&
@@ -172,6 +226,18 @@ function Character({ id, preview = false }: { id: string; preview?: boolean }) {
       p?.running ?? false,
       p ? !p.grounded : false,
     );
+    const large =
+      phase === "SHOWCASING" && isLargeFish(p?.showcase?.grams ?? 0);
+    if (leftArm.current) leftArm.current.position.y = large ? 1.3 : 1;
+    if (rightArm.current) rightArm.current.position.y = large ? 1.3 : 1;
+    if (large) {
+      if (leftArm.current) leftArm.current.rotation.set(-2.92, 0, -0.26);
+      if (rightArm.current) rightArm.current.rotation.set(-2.92, 0, 0.26);
+    }
+    const escaped = p?.escape && serverNow() - p.escape.at < 450;
+    if (escaped && rightArm.current)
+      rightArm.current.rotation.x =
+        -1.8 + Math.min(1, (serverNow() - p!.escape!.at) / 450) * 0.9;
     if (!moving && activeEmote) {
       if (rightArm.current)
         rightArm.current.rotation.x =
@@ -186,7 +252,7 @@ function Character({ id, preview = false }: { id: string; preview?: boolean }) {
         rig.current.position.y = Math.abs(Math.sin(t * 6)) * 0.16;
     }
     if (rod.current) {
-      rod.current.visible = true;
+      rod.current.visible = !large && p?.kind !== "npc";
       rod.current.rotation.x = casting ? 1.7 : 1.25;
       rod.current.updateWorldMatrix(true, false);
       rod.current.localToWorld(tip.set(0.08, 2.02, 0));
@@ -197,55 +263,113 @@ function Character({ id, preview = false }: { id: string; preview?: boolean }) {
       heldFish.current &&
       leftArm.current
     ) {
-      leftArm.current.updateWorldMatrix(true, false);
-      leftArm.current.localToWorld(handPosition.set(-0.12, -0.38, 0.04));
-      root.current.worldToLocal(handPosition);
-      heldFish.current.position.copy(handPosition);
+      if (large && rightArm.current) {
+        leftArm.current.updateWorldMatrix(true, false);
+        rightArm.current.updateWorldMatrix(true, false);
+        leftArm.current.localToWorld(handPosition.set(-0.12, -0.38, 0.04));
+        rightArm.current.localToWorld(tip.set(0.12, -0.38, 0.04));
+        handPosition.add(tip).multiplyScalar(0.5);
+        root.current.worldToLocal(handPosition);
+        handPosition.y +=
+          heldFish.current.getObjectByName("carried-fish")?.userData
+            .halfHeight ?? 0.5;
+        heldFish.current.position.copy(handPosition);
+      } else {
+        leftArm.current.updateWorldMatrix(true, false);
+        leftArm.current.localToWorld(handPosition.set(-0.12, -0.38, 0.04));
+        root.current.worldToLocal(handPosition);
+        heldFish.current.position.copy(handPosition);
+      }
     }
     if (t - labelTime.current > 0.15) {
       labelTime.current = t;
-      const name = p?.name ?? "",
+      const self = world.get(useGame.getState().id);
+      const visible = !!p && overheadVisible(p, self);
+      const emoteText =
+        visible && phase === "IDLE" && emote && emote.until > Date.now()
+          ? EMOTES[emote.id].emoji
+          : "";
+      const name = visible ? (p?.name ?? "") : "",
         fish =
           p?.showcase &&
           (p.id === useGame.getState().id ||
             useSettings.getState().showOtherCatches)
-            ? `Tôi câu được ${p.showcase.species}, nặng ${(p.showcase.grams / 1000).toLocaleString("vi-VN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} kg nè!`
+            ? `Tôi câu được ${p.showcase.species}, nặng ${formatFishWeight(p.showcase.grams)} nè!`
             : "";
+      const message = speech.get(id);
+      const chat =
+        visible &&
+        message &&
+        (message.expiresAt ?? 0) > serverNow() &&
+        phase !== "BITE_WINDOW"
+          ? message.text
+          : visible &&
+              p?.kind === "bot" &&
+              p.speech &&
+              p.speech.until > serverNow() &&
+              within(p, world.get(useGame.getState().id), 20) &&
+              phase !== "BITE_WINDOW"
+            ? p.speech.text
+            : "";
+      const npc = NPCS.find((n) => id === `npc:${n.id}`);
+      const interact =
+        !!npc &&
+        !!self &&
+        self.phase === "IDLE" &&
+        within(self, npc, INTERACTION_RADIUS) &&
+        useGame.getState().connected;
       setLabel((prev) =>
         prev.name === name &&
+        prev.kind === (p?.kind ?? "player") &&
         prev.fish === fish &&
+        prev.startedAt === (p?.showcase?.startedAt ?? 0) &&
+        prev.species === (p?.showcase?.species ?? "") &&
+        prev.grams === (p?.showcase?.grams ?? 1000) &&
+        prev.chat === chat &&
+        prev.bite === (phase === "BITE_WINDOW") &&
+        prev.interact === interact &&
         prev.rodId === (p?.rodId ?? "wood") &&
         prev.level === (p?.level ?? 1) &&
         prev.appearanceId ===
           (p?.appearanceId ??
             useGame.getState().profile?.appearanceId ??
             "sailor") &&
-        prev.emote ===
-          (phase === "IDLE" && emote && emote.until > Date.now()
-            ? EMOTES[emote.id].emoji
-            : "")
+        prev.emote === emoteText
           ? prev
           : {
               name,
+              grams: p?.showcase?.grams ?? 1000,
+              chat,
+              bite: phase === "BITE_WINDOW",
+              kind: p?.kind ?? "player",
+              interact,
               fish,
               species: p?.showcase?.species ?? "",
+              startedAt: p?.showcase?.startedAt ?? 0,
+              animationSeed: p?.showcase?.animationSeed ?? 0,
               rodId: p?.rodId ?? "wood",
               level: p?.level ?? 1,
               appearanceId:
                 p?.appearanceId ??
                 useGame.getState().profile?.appearanceId ??
                 "sailor",
-              emote:
-                phase === "IDLE" && emote && emote.until > Date.now()
-                  ? EMOTES[emote.id].emoji
-                  : "",
+              emote: emoteText,
             },
       );
     }
   }, -1);
   return (
-    <group ref={root} position={[4.3, 0.72, 4]} scale={preview ? 1.45 : 0.672}>
-      <mesh ref={contactShadow} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.04, 0]}>
+    <group
+      ref={root}
+      name={`actor:${id}`}
+      position={[4.3, 0.72, 4]}
+      scale={preview ? 1.45 : 0.672}
+    >
+      <mesh
+        ref={contactShadow}
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, 0.04, 0]}
+      >
         <circleGeometry args={[0.55, 24]} />
         <meshBasicMaterial
           color="#65412d"
@@ -255,49 +379,111 @@ function Character({ id, preview = false }: { id: string; preview?: boolean }) {
         />
       </mesh>
       <group ref={rig}>
-        <CharacterModel
-          animator={animator}
-          leftArm={leftArm}
-          rightArm={rightArm}
-          leftLeg={leftLeg}
-          rightLeg={rightLeg}
-          rod={rod}
-          rodId={label.rodId}
-          appearanceId={label.appearanceId}
-        />
+        {label.kind === "npc" ? (
+          <NpcModel role={id.slice(4)} />
+        ) : (
+          <CharacterModel
+            animator={animator}
+            leftArm={leftArm}
+            rightArm={rightArm}
+            leftLeg={leftLeg}
+            rightLeg={rightLeg}
+            rod={rod}
+            rodId={label.rodId}
+            appearanceId={label.appearanceId}
+          />
+        )}
       </group>
       {(preview || label.fish) && (
-        <group ref={heldFish}>
+        <group ref={heldFish} name="held-fish">
           <group
-            position={[0, -0.45, 0]}
-            rotation={[0, 0, Math.PI / 2]}
-            scale={0.85}
+            position={[0, isLargeFish(label.grams) ? 0 : -0.35, 0]}
+            rotation={[0, 0, isLargeFish(label.grams) ? 0 : Math.PI / 2]}
           >
-            <FishModel species={label.species} />
+            <Suspense fallback={null}>
+              <FishModel
+                species={label.species}
+                grams={label.grams}
+                startedAt={label.startedAt}
+                animationSeed={label.animationSeed}
+              />
+            </Suspense>
           </group>
         </group>
       )}
       {label.name && (
         <Html
-          position={[0, 3.45, 0]}
+          position={[0, label.fish && isLargeFish(label.grams) ? 5.6 : 3.45, 0]}
           center
           zIndexRange={[5, 0]}
           style={{ pointerEvents: "none" }}
         >
-          <div className="nameplate">
-            <i>{label.level}</i>
+          <div
+            className={`nameplate ${label.kind === "npc" ? "resident-nameplate" : ""}`}
+          >
+            {label.kind !== "npc" && <i>{label.level}</i>}
             {label.name}
+            {label.kind === "npc" && (
+              <small className="npc-role">
+                {NPCS.find((n) => id === `npc:${n.id}`)?.role}
+              </small>
+            )}
           </div>
+        </Html>
+      )}
+      {label.interact && (
+        <Html position={[0, 4.4, 0]} center zIndexRange={[12, 7]}>
+          <button
+            className="npc-interaction"
+            onPointerDown={(e) => e.stopPropagation()}
+            onClick={() =>
+              window.dispatchEvent(
+                new CustomEvent("fishing:npc", { detail: id.slice(4) }),
+              )
+            }
+          >
+            {NPCS.find((n) => id === `npc:${n.id}`)?.action}
+          </button>
+        </Html>
+      )}
+      {label.bite && (
+        <Html
+          position={[0, 4.4, 0]}
+          center
+          zIndexRange={[14, 9]}
+          style={{ pointerEvents: "none" }}
+        >
+          <div className="head-bite" aria-label="Cá cắn câu">
+            !
+          </div>
+        </Html>
+      )}
+      {label.chat && (
+        <Html
+          position={[
+            0,
+            label.fish ? (isLargeFish(label.grams) ? 8.5 : 6.2) : 4.65,
+            0,
+          ]}
+          center
+          zIndexRange={[10, 9]}
+          style={{ pointerEvents: "none" }}
+        >
+          <div className="speech-bubble">{label.chat}</div>
         </Html>
       )}
       {label.fish && (
         <>
-          <Html position={[0, 4.4, 0]} center zIndexRange={[5, 0]}>
+          <Html
+            position={[0, isLargeFish(label.grams) ? 7.1 : 4.4, 0]}
+            center
+            zIndexRange={[8, 6]}
+          >
             <div className="showcase">{label.fish}</div>
           </Html>
         </>
       )}
-      {label.emote && (
+      {label.emote && !label.chat && !label.bite && (
         <Html
           position={[0, 4.25, 0]}
           center
@@ -316,107 +502,296 @@ function Character({ id, preview = false }: { id: string; preview?: boolean }) {
     </group>
   );
 }
-function FishModel({ species }: { species?: string }) {
+function FishModel({
+  species,
+  grams = 1000,
+  startedAt = 0,
+  animationSeed = 0,
+}: {
+  species?: string;
+  grams?: number;
+  startedAt?: number;
+  animationSeed?: number;
+}) {
+  const { scene } = useGLTF(assetUrl(fishModelId(species)));
+  const instance = useMemo(() => {
+    const copy = cloneSkeleton(scene),
+      box = new THREE.Box3().setFromObject(copy);
+    const center = box.getCenter(new THREE.Vector3()),
+      size = box.getSize(new THREE.Vector3());
+    for (const name of ["fish-lod-high", "fish-lod-low"]) {
+      const meshes: THREE.SkinnedMesh[] = [];
+      copy.getObjectByName(name)?.traverse((o) => {
+        if (o instanceof THREE.SkinnedMesh) meshes.push(o);
+      });
+      for (const mesh of meshes.slice(1)) mesh.skeleton = meshes[0].skeleton;
+    }
+    copy.position.sub(center);
+    return { copy, length: Math.max(size.x, size.y, size.z), height: size.y };
+  }, [scene]);
+  useEffect(
+    () => () => {
+      const skeletons = new Set<THREE.Skeleton>();
+      instance.copy.traverse((o) => {
+        if (o instanceof THREE.SkinnedMesh) skeletons.add(o.skeleton);
+      });
+      skeletons.forEach((s) => s.dispose());
+    },
+    [instance],
+  );
+  const definition = speciesFor(species ?? "") ?? SPECIES[0];
+  const bones = useMemo(() => {
+    const result: THREE.Bone[] = [];
+    instance.copy.traverse((o) => {
+      if (o instanceof THREE.Bone) result.push(o);
+    });
+    return result;
+  }, [instance]);
+  useFrame(({ camera }) => {
+    const angles = fishWriggle(
+      serverNow(),
+      startedAt,
+      animationSeed,
+      useSettings.getState().reducedMotion,
+    );
+    const mammal = ["dolphin", "orca", "whale"].includes(
+      definition.shape ?? "",
+    );
+    for (const b of bones) {
+      const i = Number(b.userData.fishJoint ?? 0);
+      b.rotation.set(0, 0, 0);
+      if (b.userData.fishFin)
+        b.rotation.x =
+          Math.sin((serverNow() - startedAt) * 0.007 + animationSeed) *
+          (useSettings.getState().reducedMotion ? 0.025 : 0.12) *
+          b.userData.fishFin;
+      else if (i > 0) b.rotation[mammal ? "z" : "y"] = angles[i] ?? 0;
+    }
+    const low =
+      useSettings.getState().quality !== "high" ||
+      camera.position.distanceTo(
+        instance.copy.getWorldPosition(new THREE.Vector3()),
+      ) > 18;
+    instance.copy.traverse((o) => {
+      if (o.name === "fish-lod-low") o.visible = low;
+      if (o.name === "fish-lod-high") o.visible = !low;
+    });
+  });
+
   return (
-    <Model id={fishModelId(species)} scale={1.1} rotation={[0, 0, -0.2]} />
+    <group
+      name="carried-fish"
+      userData={{
+        halfHeight:
+          (instance.height * fishLength(definition, grams)) /
+          0.672 /
+          instance.length /
+          2,
+      }}
+      scale={fishLength(definition, grams) / 0.672 / instance.length}
+    >
+      <primitive object={instance.copy} dispose={null} />
+    </group>
+  );
+}
+const shadowMaterial = new THREE.MeshBasicMaterial({
+  color: "#173f48",
+  transparent: true,
+  opacity: 0.48,
+  depthWrite: false,
+  side: THREE.DoubleSide,
+});
+function FishShadow() {
+  const geometry = useMemo(createFishShadowGeometry, []);
+  const base = useMemo(
+    () => new Float32Array(geometry.getAttribute("position").array),
+    [geometry],
+  );
+  useEffect(
+    () => () => {
+      geometry.dispose();
+    },
+    [geometry],
+  );
+  useFrame(() =>
+    deformFishShadow(
+      geometry,
+      base,
+      useSettings.getState().reducedMotion ? 0 : Math.sin(serverNow() * 0.012),
+    ),
+  );
+  return (
+    <mesh
+      name="fish-silhouette"
+      geometry={geometry}
+      material={shadowMaterial}
+    />
   );
 }
 function Bobber({ id }: { id: string }) {
-  useGLTF(assetUrl("bite_exclamation"));
   const group = useRef<THREE.Group>(null),
     float = useRef<THREE.Group>(null),
     shadow = useRef<THREE.Group>(null),
-    ring = useRef<THREE.Group>(null),
-    line = useRef<THREE.Line>(null);
-  const [bite, setBite] = useState(false);
-  const bang = useRef<THREE.Group>(null);
+    ring = useRef<THREE.Group>(null);
+  const nibbleAt = useRef(0);
   const lineObj = useMemo(
     () =>
-      new THREE.Line(
+      new THREE.LineSegments(
         new THREE.BufferGeometry().setAttribute(
           "position",
-          new THREE.BufferAttribute(new Float32Array(17 * 3), 3),
+          new THREE.BufferAttribute(new Float32Array(32 * 3), 3),
         ),
         new THREE.LineBasicMaterial({
           color: "#edf7e7",
           transparent: true,
-          opacity: 0.7,
+          opacity: 0.72,
         }),
       ),
     [],
   );
-  useFrame(({ clock, camera }) => {
+  useEffect(
+    () => () => {
+      lineObj.geometry.dispose();
+      (lineObj.material as THREE.Material).dispose();
+    },
+    [lineObj],
+  );
+  useFrame(() => {
     const p = world.get(id);
     if (!group.current) return;
-    const phase = p?.phase ?? "IDLE";
-    const escaping = p?.escape && serverNow() - p.escape.at < 900;
+    const now = serverNow(),
+      phase = p?.phase ?? "IDLE";
+    const elapsedEscape = p?.escape ? now - p.escape.at : 1000;
+    const escaping = elapsedEscape >= 0 && elapsedEscape < 900;
     group.current.visible =
       !!p &&
       (!["IDLE", "RESULT", "CASTING", "SHOWCASING"].includes(phase) ||
-        !!escaping);
-    if (!p) return;
-    const t = clock.elapsedTime;
-    let position = p.reel ? reelPosition(p.reel, serverNow()) : p.bobber;
-    if (escaping && p.escape) {
-      const elapsed = (serverNow() - p.escape.at) / 900,
-        dx = position.x - p.x,
-        dz = position.z - p.z,
-        d = Math.max(1, Math.hypot(dx, dz));
-      position = {
-        x: position.x + (dx / d) * elapsed * 2,
-        z: position.z + (dz / d) * elapsed * 2,
-      };
-    }
+        escaping);
+    if (!p || !group.current.visible) return;
+    const elapsed = Math.max(0, now - (p.phaseStartedAt ?? now));
+    const pose = floatPresentation(
+      phase,
+      elapsed,
+      p.phaseDurationMs ?? 300,
+      (p.motionSeed ?? 0) +
+        ((((p.phaseStartedAt ?? now) / 1000) * 1.8) % (Math.PI * 2)),
+    );
+    const position =
+      escaping && p.escape
+        ? p.escape.origin
+        : p.reel
+          ? reelPosition(p.reel, now)
+          : p.bobber;
     group.current.position.set(position.x, waterHeightAt(position), position.z);
-    if (float.current) float.current.visible = phase !== "REELING" && !escaping;
-
-    if (float.current)
-      float.current.position.y =
-        phase === "BITE_WINDOW"
-          ? -0.6
-          : phase === "REELING"
-            ? 0.2
-            : Math.sin(t * (phase === "NIBBLING" ? 24 : 2)) *
-              (phase === "NIBBLING" ? 0.12 : 0.025);
+    if (float.current) {
+      float.current.visible = phase !== "REELING" && !escaping;
+      float.current.position.set(
+        phase === "BITE_WINDOW" ? Math.sin(elapsed * 0.1) * 0.025 : 0,
+        pose.dip,
+        0,
+      );
+      float.current.rotation.z =
+        phase === "BITE_WINDOW" && elapsed < 180
+          ? Math.sin(elapsed * 0.12) * 0.14
+          : 0;
+    }
+    if (
+      phase === "NIBBLING" &&
+      elapsed >= pose.contactMs &&
+      nibbleAt.current !== p.phaseStartedAt
+    ) {
+      nibbleAt.current = p.phaseStartedAt ?? now;
+      playSound(
+        "nibble",
+        { ...position, y: waterHeightAt(position) },
+        id !== useGame.getState().id,
+      );
+    }
     if (shadow.current) {
       shadow.current.visible =
-        ["APPROACHING", "NIBBLING", "REELING"].includes(phase) || !!escaping;
+        ["APPROACHING", "NIBBLING", "BITE_WINDOW", "REELING"].includes(phase) ||
+        escaping;
       shadow.current.scale.setScalar(
         (p.shadowScale ?? 1) *
-          (escaping
-            ? Math.max(0.05, 1 - (serverNow() - p.escape!.at) / 900)
-            : 1),
+          (escaping ? Math.max(0.02, 1 - elapsedEscape / 900) : 1),
       );
-      shadow.current.position.x = Math.sin(t * 1.5) * 0.7;
-      shadow.current.position.z = Math.cos(t * 1.5) * 0.7;
+      let dx = phase === "REELING" ? 0 : pose.x,
+        dz = phase === "REELING" ? 0 : pose.z;
+      if (escaping) {
+        const d = Math.max(0.1, Math.hypot(position.x - p.x, position.z - p.z));
+        dx = ((position.x - p.x) / d) * elapsedEscape * 0.005;
+        dz = ((position.z - p.z) / d) * elapsedEscape * 0.005;
+      }
+      for (let blend = 1; blend >= 0; blend -= 0.1) {
+        const candidate = {
+          x: position.x + dx * blend,
+          z: position.z + dz * blend,
+        };
+        if (
+          waterAt(candidate) === waterAt(position) &&
+          !onPlatform(candidate)
+        ) {
+          dx *= blend;
+          dz *= blend;
+          break;
+        }
+      }
+      shadow.current.position.set(dx, 0.025, dz);
+      shadow.current.rotation.y = escaping ? Math.atan2(dx, dz) : pose.yaw;
+      if (p.reel && !escaping) {
+        const before = reelPosition(p.reel, now - 50),
+          after = reelPosition(p.reel, now + 50);
+        shadow.current.rotation.y = Math.atan2(
+          after.x - before.x,
+          after.z - before.z,
+        );
+      }
+    }
+    let mouthX = 0,
+      mouthZ = 0;
+    if (shadow.current) {
+      const offset = shadowMouthOffset(
+        shadow.current.rotation.y,
+        shadow.current.scale.x,
+      );
+      // The path is the mouth path; the body follows behind that contact point.
+      shadow.current.position.x -= offset.x;
+      shadow.current.position.z -= offset.z;
+      if (phase === "BITE_WINDOW" || phase === "REELING") {
+        mouthX = shadow.current.position.x + offset.x;
+        mouthZ = shadow.current.position.z + offset.z;
+      }
     }
     if (ring.current) {
-      const s = 1 + (t % 1.5) * 0.7;
+      const s = 1 + ((now / 1000) % 1.5) * 0.7;
       ring.current.scale.setScalar(s);
+      ring.current.visible = !escaping;
     }
-    const pos = lineObj.geometry.attributes.position;
-    const tip = rodTips.get(id);
+    lineObj.visible = !escaping || elapsedEscape < 400;
+    const pos = lineObj.geometry.attributes.position,
+      tip = rodTips.get(id);
     const start = tip ?? new THREE.Vector3(p.x, p.y + 2, p.z);
-    for (let i = 0; i <= 16; i++) {
-      const u = i / 16,
-        sag = Math.sin(u * Math.PI) * (phase === "REELING" ? 0.06 : 0.26);
+    for (let i = 0; i < 32; i++) {
+      let u = (Math.floor(i / 2) + (i % 2)) / 16;
+      if (escaping && Math.floor(i / 2) === 8) u = 0.5;
+      const recoil = escaping ? Math.min(1, elapsedEscape / 400) : 0;
+      const sag =
+        Math.sin(u * Math.PI) *
+        (escaping ? 0.9 : phase === "REELING" ? 0.06 : 0.26);
+      const endX = escaping ? (start.x - position.x) * recoil : mouthX;
+      const endZ = escaping ? (start.z - position.z) * recoil : mouthZ;
       pos.setXYZ(
         i,
-        (start.x - group.current.position.x) * (1 - u),
-        (start.y - group.current.position.y) * (1 - u) + 0.15 * u - sag,
-        (start.z - group.current.position.z) * (1 - u),
+        (start.x - position.x) * (1 - u) + endX * u,
+        (start.y - group.current.position.y) * (1 - u) +
+          (phase === "BITE_WINDOW" || phase === "REELING" ? 0.025 : 0.15) * u -
+          sag +
+          recoil * u,
+        (start.z - position.z) * (1 - u) + endZ * u,
       );
     }
-    if (bang.current)
-      bang.current.scale.setScalar(
-        camera.position.distanceTo(group.current.position) * 0.1,
-      );
-
     pos.needsUpdate = true;
     lineObj.geometry.computeBoundingSphere();
-    setBite((prev) =>
-      prev === (phase === "BITE_WINDOW") ? prev : phase === "BITE_WINDOW",
-    );
   });
   return (
     <group ref={group}>
@@ -426,17 +801,10 @@ function Bobber({ id }: { id: string }) {
       <group ref={ring} position={[0, 0.025, 0]}>
         <Model id="bobber_ripples" />
       </group>
-      <group ref={shadow} position={[0, 0.015, 0]}>
-        <Model id="fish_shadow_uniform" scale={1} />
+      <group ref={shadow}>
+        <FishShadow />
       </group>
-      <primitive object={lineObj} ref={line} />
-      {bite && (
-        <group ref={bang} position={[0, 0.75, 0]}>
-          <Billboard>
-            <Model id="bite_exclamation" position={[0, -0.3, 0]} />
-          </Billboard>
-        </group>
-      )}
+      <primitive object={lineObj} />
     </group>
   );
 }
@@ -558,7 +926,7 @@ function RenderLoop() {
 }
 export function Scene() {
   useGLTF(fishingAssets);
-  const count = useGame((s) => s.count),
+  const signature = useGame((s) => s.actorSignature),
     id = useGame((s) => s.id);
   const ids = Array.from(world.keys());
   return (

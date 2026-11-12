@@ -69,7 +69,9 @@ test("room codes, island map and automatic reconnect preserve one avatar", async
     )
     .not.toBe(tokenBefore);
   await expect(page.getByRole("button", { name: "Thả câu" })).toBeEnabled();
-  await expect(page.locator(".nameplate")).toHaveCount(1);
+  await expect(
+    page.locator(".nameplate").filter({ hasText: "Ngư dân" }),
+  ).toHaveCount(1);
   await expect(page.locator(".location b")).toHaveText("Làng Chài");
   await expect(page.locator(".room span").first()).toHaveText(code);
   expect(errors).toEqual([]);

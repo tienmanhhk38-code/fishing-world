@@ -330,7 +330,9 @@ export function ChatDock({
           title="Chat phòng (C)"
           onClick={() => setOpen(!open)}
         >
-          <MessageCircle size={21} />
+          <span className="chat-toggle-icon">
+            <MessageCircle size={19} />
+          </span>
           <span>{open ? "Chat phòng" : "Trò chuyện"}</span>
         </button>
       </div>

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { X, Check, UserRound, Pencil } from "lucide-react";
 import { APPEARANCES, validName, type AppearanceId } from "@fishing/shared";
 import { applyProfile, useGame } from "./network";
-import { Avatar } from "./CommunityPanel";
 
 export function AppearancePanel({ onClose }: { onClose: () => void }) {
   const profile = useGame((state) => state.profile);
@@ -47,7 +46,7 @@ export function AppearancePanel({ onClose }: { onClose: () => void }) {
       }}
     >
       <section
-        className="panel appearance-panel"
+        className="panel appearance-panel reference-popup"
         role="dialog"
         aria-modal="true"
         aria-labelledby="appearance-title"
@@ -55,7 +54,6 @@ export function AppearancePanel({ onClose }: { onClose: () => void }) {
       >
         <div className="panel-heading">
           <div>
-            <small>MỘT CHUYẾN ĐI MANG DẤU ẤN RIÊNG</small>
             <h2 id="appearance-title">
               <UserRound />
               Nhân vật của bạn
@@ -99,7 +97,11 @@ export function AppearancePanel({ onClose }: { onClose: () => void }) {
                   disabled={loading || busy}
                   onClick={() => setSelected(id)}
                 >
-                  <Avatar appearanceId={id} />
+                  <img
+                    src={`/assets/starter/thumbnails/character-${id}.png`}
+                    alt=""
+                    draggable={false}
+                  />
                   {selected === id && (
                     <i>
                       <Check size={16} />

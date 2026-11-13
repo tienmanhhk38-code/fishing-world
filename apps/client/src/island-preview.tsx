@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { Canvas, useThree } from "@react-three/fiber";
 import { Environment } from "./scene";
 import { useSettings } from "./settings";
+import { LIGHTHOUSE, POND_CENTER } from "@fishing/shared";
 useSettings.setState({ quality: "high" });
 function Controls() {
   const { camera, invalidate } = useThree();
@@ -25,6 +26,22 @@ function Controls() {
           village: [
             [-9, 5, -28],
             [-6, 1, 5],
+          ],
+          dock: [
+            [8, 3.8, 12],
+            [-7, 1, 1],
+          ],
+          lighthouse: [
+            [LIGHTHOUSE.x + 16, 20, LIGHTHOUSE.z + 12],
+            [LIGHTHOUSE.x, 5, LIGHTHOUSE.z],
+          ],
+          "map-village": [
+            [-9, 6, -28],
+            [-5, 1, -49],
+          ],
+          "map-pond": [
+            [POND_CENTER.x + 10, 26, POND_CENTER.z + 18],
+            [POND_CENTER.x, 0, POND_CENTER.z],
           ],
           pond: [
             [35, 13, -18],

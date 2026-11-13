@@ -294,7 +294,8 @@ h1 em {
   flex-direction: column;
   gap: 17px;
 }
-.side button {
+.side button,
+.chat-dock-heading .chat-toggle {
   display: flex;
   align-items: center;
   background: linear-gradient(90deg, #7059408c, #70594020);
@@ -306,7 +307,8 @@ h1 em {
   position: relative;
   min-height: 48px;
 }
-.side button > span {
+.side button > span,
+.chat-toggle-icon {
   width: 47px;
   height: 47px;
   display: grid;
@@ -316,7 +318,8 @@ h1 em {
   border: 2px solid #b6e9ee90;
   box-shadow: 0 3px 0 #244b6150;
 }
-.side button:hover > span {
+.side button:hover > span,
+.chat-toggle:hover .chat-toggle-icon {
   background: #75b6cd;
 }
 .badge {
@@ -725,6 +728,20 @@ h1 em {
   position: absolute;
   right: 15px;
   top: 15px;
+}
+main .help > .play {
+  width: fit-content;
+  min-height: 44px;
+  padding: 9px 18px;
+  margin: 18px 0 0;
+  gap: 16px;
+  justify-content: center;
+  font-size: 14px;
+  border-radius: 14px;
+}
+main .help > .play svg {
+  width: 18px;
+  height: 18px;
 }
 .gold {
   color: #ffde7d;
@@ -1356,64 +1373,70 @@ header > .logo {
   height: 29px;
 }
 .inventory-panel {
-  width: min(850px, 95vw);
+  width: min(800px, 95vw);
   max-height: 88dvh;
   padding: 22px 25px;
 }
 .inventory-panel .panel-heading h2 {
   margin: 0;
-  font-size: 28px;
+  font-size: 24px;
 }
 .inventory-panel .panel-heading {
-  margin-bottom: 18px;
+  margin-bottom: 12px;
 }
 .inventory-tabs {
   display: flex;
-  gap: 7px;
-  margin: 0 0 14px;
+  gap: 4px;
+  margin: 0 0 12px;
+  padding: 4px;
+  border: 1px solid #d8f6ff40;
+  border-radius: 15px;
+  background: #14425e26;
+  width: fit-content;
 }
 .inventory-tabs button {
-  min-height: 38px;
-  min-width: 110px;
-  border-radius: 20px;
-  padding: 7px 20px;
-  background: linear-gradient(#4a88b7, #326996);
-  border: 1px solid #8abfdf;
+  min-height: 44px;
+  min-width: 88px;
+  border-radius: 11px;
+  padding: 7px 16px;
+  background: transparent;
+  border: 1px solid transparent;
   color: #edf9ff;
-  box-shadow: inset 0 1px #def4ff44;
-  font-size: 14px;
+  box-shadow: none;
+  font-size: 13px;
 }
 .inventory-tabs button[aria-selected="true"] {
-  background: linear-gradient(#ffe879, #ffcd39);
-  color: #6d4922;
-  border-color: #fff1af;
-  box-shadow: inset 0 2px #fff5be;
+  background: #ffe08b26;
+  color: #fff0b7;
+  border-color: #ffe08b99;
+  box-shadow: none;
 }
 .inventory-content {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 200px;
-  gap: 17px;
+  grid-template-columns: minmax(0, 1fr) 220px;
+  gap: 12px;
+  align-items: start;
 }
 .inventory-panel .fish-grid {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
   align-content: start;
-  min-height: 260px;
-  max-height: 46vh;
+  min-height: 0;
+  max-height: 52dvh;
 }
 .inventory-panel .fish-grid article {
   padding: 0;
   border-radius: 13px;
-  background: linear-gradient(135deg, #90bde0, #5082ad);
-  border: 1px solid #b5dff3;
+  background: var(--popup-card-background);
+  border: 1px solid var(--popup-card-border);
   overflow: hidden;
   min-height: 85px;
 }
 .inventory-panel .fish-grid article.selected {
-  border: 2px solid #ffe06b;
+  border: 1px solid #ffe06b;
   box-shadow:
-    0 0 8px #ffd66488,
-    inset 0 0 8px #ffe3a744;
+    inset 0 0 0 1px #ffe06b,
+    inset 0 0 18px #ffe3a71f;
 }
 .fish-grid article > button {
   width: 100%;
@@ -1436,19 +1459,19 @@ header > .logo {
   text-shadow: 0 1px #456f92;
 }
 .fish-detail {
-  border: 1px solid #a2c9e875;
-  border-radius: 20px;
-  background: linear-gradient(#548cb55c, #173e6a55);
-  padding: 12px;
+  border: 1px solid var(--popup-card-border);
+  border-radius: 16px;
+  background: var(--popup-card-background);
+  padding: 14px;
   text-align: center;
 }
 .fish-detail > .asset-image {
   width: 100%;
-  height: 115px;
+  height: 90px;
   filter: drop-shadow(0 4px 7px #0d365a33);
 }
 .fish-detail h3 {
-  font-size: 22px;
+  font-size: 20px;
   margin: 3px 0 8px;
 }
 .water-badge {
@@ -1464,13 +1487,25 @@ header > .logo {
   align-items: center;
   gap: 7px;
   text-align: left;
-  margin: 15px 0 8px;
+  margin: 10px 0;
   font-size: 13px;
 }
 .fish-detail small {
+  display: block;
   letter-spacing: 0;
   font-size: 9px;
   color: #c5dfef;
+  margin: 8px 0;
+}
+.fish-detail > .rarity {
+  display: inline-flex;
+  margin: 0 0 4px;
+}
+.fish-detail .fish-price {
+  border-top: 1px solid #d8f6ff33;
+  padding-top: 10px;
+  font-size: 12px;
+  color: #fff0b7;
 }
 .saved-badge {
   display: flex;
@@ -1894,10 +1929,10 @@ header > .logo {
   border-color: #aacadd;
 }
 .area-card {
-  border: 1px solid #81b5d4;
+  border: 1px solid var(--popup-card-border);
   border-radius: 20px;
   padding: 20px 18px;
-  background: linear-gradient(#5486ac55, #193f68aa);
+  background: var(--popup-card-background);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -1926,14 +1961,14 @@ header > .logo {
   color: #ffdfa2;
 }
 .area-card .play {
-  margin: 23px 0 0;
-  min-height: 48px;
-  width: 100%;
-  padding: 10px 15px;
+  margin: 16px 0 0;
+  min-height: 44px;
+  width: fit-content;
+  padding: 8px 16px;
   gap: 8px;
   justify-content: center;
-  font-size: 16px;
-  border-radius: 25px;
+  font-size: 13px;
+  border-radius: 14px;
 }
 .area-card .panel-error {
   margin: 15px 0 0;
@@ -2170,6 +2205,25 @@ header > .logo {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
   min-height: 260px;
+}
+.inventory-panel .equipment-list {
+  min-height: 0;
+}
+.inventory-panel .equipment-list .owned-equipment {
+  min-height: 0;
+  padding: 12px;
+  background: var(--popup-card-background);
+  border-color: var(--popup-card-border);
+}
+.inventory-panel .equipment-list .owned-equipment .asset-image {
+  height: 90px;
+}
+.inventory-panel .owned-equipment h3 {
+  font-size: 15px;
+  margin: 8px 0;
+}
+.inventory-panel .owned-equipment p {
+  font-size: 12px;
 }
 .equipment-list .owned-equipment {
   min-height: 240px;
@@ -2525,6 +2579,10 @@ header > .logo {
 .fish-actions .showcase-action:disabled {
   cursor: default;
   opacity: 0.55;
+}
+.inventory-panel .fish-actions :is(.showcase-action, .sell-one) {
+  font-size: 12px;
+  padding: 8px 6px;
 }
 .inventory-panel .fish-detail .rarity.mythic {
   display: inline-flex;

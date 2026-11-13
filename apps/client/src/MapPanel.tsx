@@ -23,7 +23,7 @@ export function MapPanel({ onClose }: { onClose: () => void }) {
   return (
     <div className="overlay" onClick={onClose}>
       <section
-        className="panel map-panel"
+        className="panel map-panel reference-popup"
         role="dialog"
         aria-modal="true"
         aria-labelledby="map-title"
@@ -75,9 +75,16 @@ export function MapPanel({ onClose }: { onClose: () => void }) {
           <aside className="area-card">
             <span className="area-water">{area.water}</span>
             <h3>{destination.name}</h3>
+            {destination.open && (
+              <img
+                className="destination-preview"
+                src={`/assets/ui/destinations/${selected}.png`}
+                alt={`Phong cảnh ${destination.name}`}
+              />
+            )}
             <p>
               {destination.open
-                ? `Khám phá ${destination.name.toLocaleLowerCase("vi-VN")} trên đảo. Dịch chuyển trong phòng hiện tại.`
+                ? `Khám phá ${destination.name.toLocaleLowerCase("vi-VN")} trên đảo.`
                 : area.description}
             </p>
             <small>

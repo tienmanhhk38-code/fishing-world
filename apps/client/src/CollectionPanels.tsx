@@ -1,5 +1,5 @@
 import { formatFishWeight } from "@fishing/shared";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   BookOpen,
   Check,
@@ -7,6 +7,8 @@ import {
   LockKeyhole,
   ShoppingBasket,
   Trophy,
+  Fish,
+  MapPin,
   X,
 } from "lucide-react";
 import {
@@ -22,11 +24,18 @@ import {
 import { useGame } from "./network";
 import { useEconomy, transact } from "./economy-client";
 import { AssetImage } from "./InventoryPanel";
+import { DetailStat } from "./PopupParts";
 
-export function ShopPanel({ onClose }: { onClose: () => void }) {
+export function ShopPanel({
+  onClose,
+  initialTab = "rods",
+}: {
+  onClose: () => void;
+  initialTab?: "rods" | "baits";
+}) {
   const profile = useGame((state) => state.profile)!;
   const economy = useEconomy();
-  const [tab, setTab] = useState<"rods" | "baits">("rods"),
+  const [tab, setTab] = useState<"rods" | "baits">(initialTab),
     [quantity, setQuantity] = useState(10);
   const blocked = economy.busy || economy.pending,
     level = levelProgress(profile.xp).level;
@@ -203,10 +212,11 @@ export function AlbumPanel({ onClose }: { onClose: () => void }) {
   const profile = useGame((state) => state.profile)!;
   const [filter, setFilter] = useState("all"),
     [selected, setSelected] = useState(SPECIES[0].id);
+  const grid = useRef<HTMLDivElement>(null);
   const entries = new Map(
     profile.album.map((entry) => [entry.speciesId, entry]),
   );
-  const visible = SPECIES.filter(
+  const filtered = SPECIES.filter(
       (species) => filter === "all" || species.area === filter,
     ),
     species = SPECIES.find((item) => item.id === selected)!,
@@ -214,7 +224,7 @@ export function AlbumPanel({ onClose }: { onClose: () => void }) {
   return (
     <div className="overlay" onClick={onClose}>
       <section
-        className="panel album-panel"
+        className="panel album-panel reference-popup"
         role="dialog"
         aria-modal="true"
         aria-labelledby="album-title"
@@ -248,6 +258,7 @@ export function AlbumPanel({ onClose }: { onClose: () => void }) {
               aria-selected={filter === tab.id}
               onClick={() => {
                 setFilter(tab.id);
+                if (grid.current) grid.current.scrollTop = 0;
                 setSelected(
                   SPECIES.find(
                     (item) => tab.id === "all" || item.area === tab.id,
@@ -260,12 +271,19 @@ export function AlbumPanel({ onClose }: { onClose: () => void }) {
           ))}
         </div>
         <div className="inventory-content">
-          <div className="album-grid">
-            {visible.map((item) => (
+          <div
+            className="album-grid"
+            ref={grid}
+            role="region"
+            aria-label="Danh sách loài cá"
+            tabIndex={0}
+          >
+            {filtered.map((item) => (
               <button
                 key={item.id}
                 className={`${selected === item.id ? "selected" : ""} ${entries.has(item.id) ? "" : "undiscovered"}`}
                 onClick={() => setSelected(item.id)}
+                aria-pressed={selected === item.id}
                 aria-label={
                   entries.has(item.id) ? item.name : "Loài chưa khám phá"
                 }
@@ -283,11 +301,17 @@ export function AlbumPanel({ onClose }: { onClose: () => void }) {
                 <span className={`rarity ${species.rarity}`}>
                   {RARITIES[species.rarity]}
                 </span>
-                <p>Đã bắt {entry.count} con</p>
-                <p>
-                  <Trophy size={17} /> {formatFishWeight(entry.recordGrams)}
-                </p>
-                <p>{AREAS[species.area].name}</p>
+                <div className="detail-stats">
+                  <DetailStat icon={Fish} label="Đã bắt">
+                    {entry.count} con
+                  </DetailStat>
+                  <DetailStat icon={Trophy} label="Kỷ lục">
+                    {formatFishWeight(entry.recordGrams)}
+                  </DetailStat>
+                  <DetailStat icon={MapPin} label="Nơi bắt">
+                    {AREAS[species.area].name}
+                  </DetailStat>
+                </div>
               </>
             ) : (
               <div className="empty">
@@ -300,6 +324,11 @@ export function AlbumPanel({ onClose }: { onClose: () => void }) {
             )}
           </aside>
         </div>
+        <footer className="album-footer">
+          <span className="fish-count">
+            <Fish /> {SPECIES.length} loài cá
+          </span>
+        </footer>
       </section>
     </div>
   );

@@ -31,6 +31,14 @@ export function createFish(id: string) {
     shape: source.shape ?? originalShapes[source.id],
   };
   if (!species) throw new Error(`Unknown fish ${id}`);
+  // New additions use fewer body rings while retaining both rigged LODs.
+  const compact = [
+    "marbled_eel",
+    "sturgeon",
+    "amberjack",
+    "bluefin_tuna",
+    "oarfish",
+  ].includes(species.id);
   const root = new T.Group();
   const mammal = ["dolphin", "orca", "whale"].includes(species.shape ?? "");
   const shark = species.shape === "shark";
@@ -180,8 +188,8 @@ export function createFish(id: string) {
               : mammal
                 ? 0.25
                 : 0.24;
-    const rings = low ? 22 : 48,
-      sides = low ? 10 : 24,
+    const rings = compact ? (low ? 12 : 20) : low ? 22 : 48,
+      sides = compact ? (low ? 8 : 10) : low ? 10 : 24,
       pos: number[] = [],
       colors: number[] = [],
       idx: number[] = [];
@@ -344,7 +352,11 @@ export function createFish(id: string) {
       g.rotateX(Math.PI / 2);
       g.translate(0, -height * 0.3, sign * width * 0.45);
       add(g, finMat, "pectoral");
-      const eye = new T.SphereGeometry(0.025, low ? 8 : 12, 8);
+      const eye = new T.SphereGeometry(
+        0.025,
+        compact ? (low ? 6 : 8) : low ? 8 : 12,
+        compact ? 6 : 8,
+      );
       eye.scale(1, 1, 0.5);
       eye.translate(0.48, height * 0.3, sign * width * 0.72);
       add(eye, eyeMat, "eye");

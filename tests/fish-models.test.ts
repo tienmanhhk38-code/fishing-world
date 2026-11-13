@@ -9,7 +9,7 @@ import {
 import { selectCatch } from "../apps/server/src/catch-selection";
 import { fishWriggle } from "../apps/client/src/fish-animation";
 
-describe("35 rigged fish and mythic encounters", () => {
+describe("40 rigged fish and mythic encounters", () => {
   it("ships two skinned LODs with bounded triangles and normalized weights for every species", () => {
     for (const s of SPECIES) {
       const b = readFileSync(

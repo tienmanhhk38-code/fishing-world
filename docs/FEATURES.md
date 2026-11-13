@@ -10,7 +10,7 @@ Vào lobby → chọn/tạo phòng → đi tới nước → thả câu → ch�
 | Khám phá | Bãi Biển và Làng Chài; 5 điểm đến mở: beach, dock, village, pond, lighthouse; coral/mystery đang khóa | shared `world.ts`, client `MapPanel.tsx` |
 | Di chuyển | Đi/chạy/nhảy, collision, camera xoay; keyboard và joystick/nút cảm ứng; prediction và reconciliation | shared `movement.ts`, client `motion-client.ts`, `scene.tsx` |
 | Câu cá | Thả tại vị trí hợp lệ gần nước lộ thiên; nhấp giả, cửa sổ giật theo độ hiếm, kéo tự động và xác suất đứt dây | server `fishing.ts`, `catch-selection.ts`, shared `fishing-rules.ts` |
-| Bộ sưu tập | 35 loài, 5 rarity: common/uncommon/rare/legendary/mythic; túi cá chưa bán, album và kỷ lục cân nặng | shared `catalog.ts`, client `InventoryPanel.tsx`, `CollectionPanels.tsx` |
+| Bộ sưu tập | 40 loài (15 nước ngọt, 25 biển), 5 rarity: common/uncommon/rare/legendary/mythic; túi cá chưa bán, album và kỷ lục cân nặng | shared `catalog.ts`, client `InventoryPanel.tsx`, `CollectionPanels.tsx` |
 | Kinh tế | Xu, XP, cấp 1–10; 3 cần và 3 loại mồi; bán một/toàn bộ cá qua sale quote, mua và trang bị | server `economy.ts`, client `economy-client.ts` |
 | Nhiệm vụ | Intro, daily, tutorial; server kiểm tra tiến độ và chống nhận thưởng trùng; đổi ngày theo UTC+7 | shared/server `quests.ts`, client `QuestPanel.tsx`, `ProgressPanels.tsx` |
 | Khoe cá | Khoe cá đang sở hữu, đổi/cất cá; bán con đang khoe sẽ cất; tư thế hai tay từ 10 kg; không cấp thêm thưởng | server `index.ts`, client `HarborCharacter.tsx`, `fish-animation.ts` |
@@ -23,6 +23,10 @@ Vào lobby → chọn/tạo phòng → đi tới nước → thả câu → ch�
 Các đường dẫn rút gọn `client`, `server`, `shared` lần lượt thuộc `apps/client/src/`, `apps/server/src/`, `packages/shared/src/`.
 
 ## Điều kiện gameplay đáng chú ý
+
+Catalog bổ sung cá chình bông (nước ngọt, hiếm, 1–25 kg), cá tầm (nước ngọt, cực hiếm, 5–100 kg), cá cam (biển, hiếm, 1–40 kg), cá ngừ vây xanh (biển, cực hiếm, 20–300 kg) và cá mái chèo (biển, cực hiếm, 10–200 kg). Đây là khoảng khối lượng cấu hình trong game; các loài dùng quy tắc thưởng và mồi theo bậc hiếm hiện có.
+
+Các popup Bản đồ, Túi đồ, Album cá, Nhiệm vụ, Cách chơi và Nhân vật dùng hệ Glass UI trong client `popup-design.css`. Túi cá và album hiển thị danh sách cuộn trong khung 4 hàng, bằng chiều cao preview bên phải trên bố cục hai cột; tab Cần câu có khung xem trước và chọn cần đã sở hữu. Nút cửa hàng trong túi đồ chỉ mở được khi người chơi đứng gần Cô Sáu và đang rảnh. Hướng dẫn Cách chơi trình bày thành ba bước; dữ liệu cá, phần thưởng và trạng thái khóa vẫn lấy từ server.
 
 - Phím `F` thực hiện “Câu tiếp” khi popup kết quả đang mở. `C` mở/đóng chat phòng; `Enter` mở chat gần và gửi khi đang nhập, `Escape` đóng chat gần. Phím gameplay không chạy khi đang gõ trong ô nhập. Chat gần không phủ nền tối; focus input có viền xanh.
 - Mồi `dough` vô hạn (`baitCounts.dough = -1`); `worm`/`shrimp` bị trừ lúc bắt đầu lượt. Mua/mở shop cần đang `IDLE`, kết nối và trong 3 m tới Cô Sáu.

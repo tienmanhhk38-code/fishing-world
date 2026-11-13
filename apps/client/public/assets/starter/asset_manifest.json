@@ -1,7 +1,7 @@
 {
   "pack": "Fishing World 3D prototype v1",
   "source": "Original procedural meshes, generated with Blender; no third-party models or textures",
-  "asset_count": 39,
+  "asset_count": 44,
   "assets": [
     {
       "id": "island_base",
@@ -14,7 +14,7 @@
       "meters": true,
       "dimensions_blender_xyz": [
         13.315,
-        10.0,
+        10,
         1.8
       ]
     },
@@ -28,7 +28,7 @@
       "gltf_up_axis": "Y",
       "meters": true,
       "dimensions_blender_xyz": [
-        2.0,
+        2,
         3.01,
         1.25
       ]
@@ -43,8 +43,8 @@
       "gltf_up_axis": "Y",
       "meters": true,
       "dimensions_blender_xyz": [
-        3.0,
-        3.0,
+        3,
+        3,
         1.25
       ]
     },
@@ -104,7 +104,7 @@
       "meters": true,
       "dimensions_blender_xyz": [
         1.513,
-        1.0,
+        1,
         0.9
       ]
     },
@@ -118,9 +118,9 @@
       "gltf_up_axis": "Y",
       "meters": true,
       "dimensions_blender_xyz": [
-        3.0,
+        3,
         2.6,
-        3.0
+        3
       ]
     },
     {
@@ -553,8 +553,8 @@
       "gltf_up_axis": "Y",
       "meters": true,
       "dimensions_blender_xyz": [
-        10.0,
-        10.0,
+        10,
+        10,
         0.05
       ]
     },
@@ -587,6 +587,61 @@
         0.17,
         0.765
       ]
+    },
+    {
+      "id": "fish_extra_marbled_eel",
+      "category": "fish",
+      "file": "models/fish_extra_marbled_eel.glb",
+      "thumbnail": "thumbnails/fish_extra_marbled_eel.png",
+      "source": "apps/client/src/art/fish-author.ts",
+      "status": "rigged_lod",
+      "gltf_up_axis": "Y",
+      "materials": 4,
+      "triangles": 1904
+    },
+    {
+      "id": "fish_extra_sturgeon",
+      "category": "fish",
+      "file": "models/fish_extra_sturgeon.glb",
+      "thumbnail": "thumbnails/fish_extra_sturgeon.png",
+      "source": "apps/client/src/art/fish-author.ts",
+      "status": "rigged_lod",
+      "gltf_up_axis": "Y",
+      "materials": 4,
+      "triangles": 1904
+    },
+    {
+      "id": "fish_extra_amberjack",
+      "category": "fish",
+      "file": "models/fish_extra_amberjack.glb",
+      "thumbnail": "thumbnails/fish_extra_amberjack.png",
+      "source": "apps/client/src/art/fish-author.ts",
+      "status": "rigged_lod",
+      "gltf_up_axis": "Y",
+      "materials": 4,
+      "triangles": 1904
+    },
+    {
+      "id": "fish_extra_bluefin_tuna",
+      "category": "fish",
+      "file": "models/fish_extra_bluefin_tuna.glb",
+      "thumbnail": "thumbnails/fish_extra_bluefin_tuna.png",
+      "source": "apps/client/src/art/fish-author.ts",
+      "status": "rigged_lod",
+      "gltf_up_axis": "Y",
+      "materials": 4,
+      "triangles": 1904
+    },
+    {
+      "id": "fish_extra_oarfish",
+      "category": "fish",
+      "file": "models/fish_extra_oarfish.glb",
+      "thumbnail": "thumbnails/fish_extra_oarfish.png",
+      "source": "apps/client/src/art/fish-author.ts",
+      "status": "rigged_lod",
+      "gltf_up_axis": "Y",
+      "materials": 4,
+      "triangles": 1904
     }
   ]
 }

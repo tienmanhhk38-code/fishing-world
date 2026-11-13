@@ -1,3 +1,4 @@
+import { HelpPanel } from "./HelpPanel";
 import { installViewportSizing } from "./viewport";
 import { formatFishWeight } from "@fishing/shared";
 import React, { useEffect, useState, useRef, Suspense } from "react";
@@ -48,6 +49,8 @@ import "./coastal.css";
 import "./experience.css";
 import "./responsive.css";
 import "./popup-mobile.css";
+import "./popup-design.css";
+import "./scrollbars.css";
 import { QuestPanel } from "./QuestPanel";
 import { useSettings } from "./settings";
 import { ShopPanel, AlbumPanel } from "./CollectionPanels";
@@ -201,6 +204,7 @@ function App() {
   const settings = useSettings();
   const drag = useRef<{ id: number; x: number; y: number } | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [shopTab, setShopTab] = useState<"rods" | "baits">("rods");
   const [shopOpen, setShopOpen] = useState(false),
     [albumOpen, setAlbumOpen] = useState(false);
   const [configOpen, setConfigOpen] = useState(false);
@@ -417,7 +421,9 @@ function App() {
     const onCompositionEnd = () => {
       if (
         !chatFocused &&
-        !(document.activeElement as HTMLElement)?.matches("input,textarea,select")
+        !(document.activeElement as HTMLElement)?.matches(
+          "input,textarea,select",
+        )
       ) {
         clear();
       }
@@ -946,7 +952,7 @@ function App() {
         <AppearancePanel onClose={() => setAppearanceOpen(false)} />
       )}
       {shopOpen && game.profile && (
-        <ShopPanel onClose={() => setShopOpen(false)} />
+        <ShopPanel initialTab={shopTab} onClose={() => setShopOpen(false)} />
       )}
       {albumOpen && game.profile && (
         <AlbumPanel onClose={() => setAlbumOpen(false)} />
@@ -958,49 +964,32 @@ function App() {
         </>
       )}
       {bag && game.profile && (
-        <InventoryPanel profile={game.profile} onClose={() => setBag(false)} />
+        <InventoryPanel
+          profile={game.profile}
+          onClose={() => setBag(false)}
+          canVisitShop={
+            game.connected &&
+            game.phase === "IDLE" &&
+            canShop(world.get(game.id))
+          }
+          onShop={(tab) => {
+            if (
+              !game.connected ||
+              game.phase !== "IDLE" ||
+              !canShop(world.get(game.id))
+            )
+              return;
+            void transact({ action: "viewShop" })
+              .then(() => {
+                setShopTab(tab);
+                setBag(false);
+                setShopOpen(true);
+              })
+              .catch(() => {});
+          }}
+        />
       )}
-      {help && (
-        <div className="overlay" onClick={() => setHelp(false)}>
-          <section
-            className="panel help"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="help-title"
-            onKeyDown={(e) => {
-              if (e.key === "Escape") setHelp(false);
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              className="close icon"
-              onClick={() => setHelp(false)}
-              aria-label="Đóng hướng dẫn"
-            >
-              <X />
-            </button>
-            <small>CHẬM MỘT CHÚT, VUI MỘT NGÀY</small>
-            <h2 id="help-title">Cùng ra bến câu</h2>
-            <p className="npc-greeting">
-              Chú Hải: Chào bạn! Đến sát bờ nước, chờ phao chìm rồi hãy giật
-              nhé.
-            </p>
-            <p>
-              Tới gần bờ biển, bờ hồ hoặc bến rồi bấm <b>Thả câu</b> hoặc F.
-              Shift để chạy, Space để nhảy.
-            </p>
-            <p>Bóng cá xuất hiện và phao nhấp nhẹ? Hãy kiên nhẫn.</p>
-            <p>
-              Khi phao chìm và hiện <b className="gold">!</b>, bạn có{" "}
-              <b>0,4–0,9 giây tùy độ hiếm</b> để bấm Giật cần. Cá sẽ tự được kéo
-              lên!
-            </p>
-            <button className="play" onClick={() => setHelp(false)}>
-              Ra bến thôi <ArrowRight />
-            </button>
-          </section>
-        </div>
-      )}
+      {help && <HelpPanel onClose={() => setHelp(false)} />}
     </main>
   );
 }

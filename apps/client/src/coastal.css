@@ -71,7 +71,8 @@
   .location-icon {
     background: #3c9db599;
   }
-  .side button {
+  .side button,
+  .chat-dock-heading .chat-toggle {
     font-size: 12px;
     border: 1px solid #bceaf25e;
     border-radius: 15px;
@@ -85,15 +86,18 @@
       background 0.18s,
       transform 0.18s;
   }
-  .side button:hover {
+  .side button:hover,
+  .chat-dock-heading .chat-toggle:hover {
     background: #226b8ee8;
   }
-  .side button > span {
+  .side button > span,
+  .chat-toggle .chat-toggle-icon {
     background: #3893ac70;
     border: 0;
     box-shadow: none;
   }
-  .side button svg {
+  .side button svg,
+  .chat-toggle svg {
     color: #d7faf5;
   }
   .room {

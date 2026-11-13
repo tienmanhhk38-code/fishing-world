@@ -4,6 +4,7 @@ import {
   RODS,
   fishPrice,
   levelProgress,
+  FISHING_RULES,
 } from "../packages/shared/src/index";
 import { selectCatch } from "../apps/server/src/catch-selection";
 function randomGenerator() {
@@ -14,15 +15,61 @@ function randomGenerator() {
   };
 }
 describe("M3 catalog and progression", () => {
-  it("has thirty-five unique species with freshwater giants", () => {
-    expect(SPECIES).toHaveLength(35);
-    expect(new Set(SPECIES.map((item) => item.id)).size).toBe(35);
-    expect(new Set(SPECIES.map((item) => item.model)).size).toBe(35);
+  it("has forty unique species with freshwater giants", () => {
+    expect(SPECIES).toHaveLength(40);
+    expect(new Set(SPECIES.map((item) => item.id)).size).toBe(40);
+    expect(new Set(SPECIES.map((item) => item.model)).size).toBe(40);
     expect(
       ["common", "uncommon", "rare", "legendary", "mythic"].map(
         (rarity) => SPECIES.filter((item) => item.rarity === rarity).length,
       ),
-    ).toEqual([10, 9, 7, 4, 5]);
+    ).toEqual([10, 9, 9, 7, 5]);
+    expect(SPECIES.filter((s) => s.area === "village")).toHaveLength(15);
+    expect(SPECIES.filter((s) => s.area === "beach")).toHaveLength(25);
+  });
+  it("can select each added species in its configured water and weight range", () => {
+    for (const id of [
+      "marbled_eel",
+      "sturgeon",
+      "amberjack",
+      "bluefin_tuna",
+      "oarfish",
+    ]) {
+      const species = SPECIES.find((s) => s.id === id)!;
+      const tiers = [
+        ...new Set(
+          SPECIES.filter((s) => s.area === species.area).map((s) => s.rarity),
+        ),
+      ];
+      const tierWeights = tiers.map((r) =>
+        r === "common" && species.area === "beach"
+          ? 69.9
+          : FISHING_RULES[r].encounter,
+      );
+      const index = tiers.indexOf(species.rarity);
+      const tierRoll =
+        (tierWeights.slice(0, index).reduce((a, b) => a + b, 0) +
+          tierWeights[index] / 2) /
+        tierWeights.reduce((a, b) => a + b, 0);
+      const pool = SPECIES.filter(
+        (s) => s.area === species.area && s.rarity === species.rarity,
+      );
+      const offset = pool
+        .slice(0, pool.indexOf(species))
+        .reduce((a, s) => a + s.weight, 0);
+      const speciesRoll =
+        (offset + species.weight / 2) / pool.reduce((a, s) => a + s.weight, 0);
+      const draws = [tierRoll, speciesRoll, 0.5, 0.5];
+      const caught = selectCatch(
+        species.area,
+        "wood",
+        "dough",
+        () => draws.shift()!,
+      );
+      expect(caught.species.id).toBe(id);
+      expect(caught.grams).toBeGreaterThanOrEqual(species.minGrams);
+      expect(caught.grams).toBeLessThanOrEqual(species.maxGrams);
+    }
   });
   it("uses cumulative XP thresholds and caps level ten", () => {
     expect(levelProgress(49).level).toBe(1);

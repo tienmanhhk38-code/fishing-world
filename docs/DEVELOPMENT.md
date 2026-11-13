@@ -63,13 +63,18 @@ Chọn spec theo phạm vi: `protocol/world/free-fishing/sprint-jump` cho moveme
 
 CI trong [checks.yml](../.github/workflows/checks.yml) tạo PostgreSQL riêng, generate/migrate, build, audit dependency, unit test, bật app rồi chạy browser/cross-browser/latency. Báo cáo lịch sử trong docs không thay cho kết quả chạy ở commit hiện tại.
 
+`pnpm exec playwright test tests/browser/popup-design.spec.ts` kiểm tra riêng các popup Glass UI bằng component thật và API mô phỏng: responsive, tab, danh sách cuộn 4 hàng, chọn/trang bị vật phẩm, xem giá bán, nhiệm vụ và nhân vật. Spec này cần Vite đang chạy ở base URL của Playwright, không cần backend/database; kết quả không xác nhận giao dịch thật.
+
 ## Làm việc với asset
 
 - Model nguồn: `apps/client/src/art/harbor-author.ts`, `fish-author.ts`. Đầu ra: `public/assets/harbor-v2/` và `public/assets/starter/models/`, kèm thumbnail/manifest.
 - Khi Vite ở 5173 và đã cài Chromium, dùng `node scripts/build-harbor-assets.mjs` hoặc `node scripts/build-fish-assets.mjs` nếu cần tái tạo. Các script ghi đè asset; kiểm tra diff sau khi chạy.
 - Xem model bằng `/asset-preview.html`, cảnh đảo bằng `/island-preview.html` trên Vite development. Các trang này không được khai báo thành input riêng trong cấu hình production build.
+- Khi chỉ thêm một số loài, truyền model ID vào `node scripts/build-fish-assets.mjs fish_extra_marbled_eel fish_extra_sturgeon` để chỉ tạo GLB/thumbnail cho các ID đó. Không truyền ID sẽ tái tạo toàn bộ cá.
 - `scripts/generate-audio.py`, `generate-reel-machine.py` tạo WAV; MP3 hiện có và `music-track.ts` quyết định nhạc theo cảnh. Không tự đổi tên/mapping vì tên file đang được hoán đổi có chủ ý.
 - Kiểm tra geometry/skin/LOD bằng unit tests liên quan và `scripts/check-fish-assets.mjs`; quy trình cá chi tiết ở [FISH-V6](FISH-V6.md).
+
+Ảnh phong cảnh trong popup Bản đồ được chụp từ scene và model hiện có bằng `node scripts/capture-destination-previews.mjs` khi Vite đang chạy (mặc định `http://127.0.0.1:5173`, có thể đổi bằng `PREVIEW_BASE_URL`). Script chỉ ghi `apps/client/public/assets/ui/destinations/*.png`, không kết nối phòng game hay database. Camera nguồn nằm ở `apps/client/src/island-preview.tsx`; chỉ chụp lại khi thay cảnh hoặc ảnh preview.
 
 ## Chẩn đoán nhanh
 

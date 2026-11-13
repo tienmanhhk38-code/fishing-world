@@ -5,6 +5,10 @@
   --safe-bottom: max(16px, env(safe-area-inset-bottom));
   --safe-left: max(16px, env(safe-area-inset-left));
   --glass: rgba(20, 66, 94, 0.4);
+  --glass-field-background: linear-gradient(135deg, #bdefff26, #14425e33);
+  --glass-field-hover: linear-gradient(135deg, #bdefff40, #14425e4d);
+  --popup-card-background: linear-gradient(#5486ac55, #193f68aa);
+  --popup-card-border: #81b5d4;
 }
 html,
 body,
@@ -142,6 +146,49 @@ main .panel textarea,
 main .panel select {
   background-color: #103e60c9;
   color: #fff;
+}
+main .settings-panel .setting-row select {
+  width: 104px;
+  min-width: 104px;
+  min-height: 44px;
+  padding: 6px 10px;
+  border: 1px solid #c2eef199;
+  border-radius: 12px;
+  background: var(--glass-field-background);
+  color: #f0fdff;
+  color-scheme: dark;
+  box-shadow: inset 0 1px #ffffff30;
+  backdrop-filter: blur(8px) saturate(130%);
+  -webkit-backdrop-filter: blur(8px) saturate(130%);
+  font-size: 13px;
+  flex-shrink: 0;
+}
+main .settings-panel .setting-row select:hover {
+  background: var(--glass-field-hover);
+}
+main .shop-panel .bait-quantity input {
+  width: 80px;
+  min-height: 44px;
+  padding: 8px 10px;
+  border: 1px solid #c2eef199;
+  border-radius: 12px;
+  background: var(--glass-field-background);
+  color: #f0fdff;
+  color-scheme: dark;
+  box-shadow: inset 0 1px #ffffff30;
+  backdrop-filter: blur(8px) saturate(130%);
+  -webkit-backdrop-filter: blur(8px) saturate(130%);
+}
+main .shop-panel .bait-quantity input:hover {
+  background: var(--glass-field-hover);
+}
+main .shop-panel .bait-quantity input:focus-visible {
+  outline: 2px solid #a0e7fb;
+  outline-offset: 2px;
+}
+main .settings-panel .setting-row select option {
+  background: #174f6d;
+  color: #f0fdff;
 }
 main .panel > p,
 main .panel > small,
@@ -1049,13 +1096,18 @@ main:not(.lobby).chat-typing .movement-buttons {
   height: 44px;
   min-height: 44px;
   max-height: 44px;
-  background: rgba(16, 62, 96, 0.94);
-  color: white;
-  border: 1.5px solid #a0e7fb;
+  background: linear-gradient(135deg, #bdefff26, #14425e33);
+  color: #f0fdff;
+  border: 1.5px solid #c2eef199;
   border-radius: 22px;
   padding: 0 45px 0 16px;
   font-size: 14px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 4px 16px #07365330;
+  backdrop-filter: blur(8px) saturate(130%);
+  -webkit-backdrop-filter: blur(8px) saturate(130%);
+}
+.nearby-layer input::placeholder {
+  color: #e3f6fb;
 }
 .nearby-layer input:focus {
   outline: 2px solid #a0e7fb;
@@ -1064,7 +1116,9 @@ main:not(.lobby).chat-typing .movement-buttons {
 .nearby-layer .chat-input-wrap small {
   position: absolute;
   right: 14px;
-  color: #a0d8ef;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #d3e9ee;
   font-size: 10px;
   pointer-events: none;
 }

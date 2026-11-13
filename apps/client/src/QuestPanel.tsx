@@ -1,7 +1,18 @@
 import { useEffect, useState } from "react";
-import { X, Check, Gift, Flag } from "lucide-react";
+import {
+  X,
+  Gift,
+  Flag,
+  Fish,
+  Droplet,
+  Store,
+  Coins,
+  Worm,
+  LockKeyhole,
+} from "lucide-react";
 import { useGame, applyProfile } from "./network";
 import { playSound } from "./audio";
+import { RodGlyph, RunningGlyph } from "./PopupParts";
 export function QuestPanel({ onClose }: { onClose: () => void }) {
   const profile = useGame((s) => s.profile),
     [tab, setTab] = useState<"intro" | "daily">("intro"),
@@ -51,7 +62,9 @@ export function QuestPanel({ onClose }: { onClose: () => void }) {
         result = null;
       }
       if (!response.ok)
-        throw Error(result?.error ?? "Chưa nhận được phần thưởng. Hãy thử lại.");
+        throw Error(
+          result?.error ?? "Chưa nhận được phần thưởng. Hãy thử lại.",
+        );
       applyProfile(result.profile);
       setMessage(result.message);
       playSound("click");
@@ -64,7 +77,7 @@ export function QuestPanel({ onClose }: { onClose: () => void }) {
   return (
     <div className="overlay" onClick={onClose}>
       <section
-        className="panel quest-panel"
+        className="panel quest-panel reference-popup"
         role="dialog"
         aria-modal="true"
         aria-label="Nhiệm vụ"
@@ -103,16 +116,55 @@ export function QuestPanel({ onClose }: { onClose: () => void }) {
         )}
         <div className="quest-list">
           {quests.map((q) => (
-            <article key={q.id} className={q.claimed ? "claimed" : ""}>
+            <article
+              key={q.id}
+              className={
+                q.claimed
+                  ? "claimed"
+                  : !q.available
+                    ? "locked"
+                    : q.progress >= q.goal
+                      ? "ready"
+                      : ""
+              }
+            >
               <div className="quest-icon">
-                {q.claimed ? <Check /> : <Flag />}
+                {q.metric === "moveJump" ? (
+                  <RunningGlyph />
+                ) : q.metric === "caught" ? (
+                  <Fish />
+                ) : q.metric === "fresh" ? (
+                  <Droplet />
+                ) : q.metric === "sold" ? (
+                  <Store />
+                ) : (
+                  <RodGlyph />
+                )}
               </div>
-              <div>
-                <h3>{q.title}</h3>
-                <progress value={q.progress} max={q.goal} />
-                <small>
-                  {q.progress}/{q.goal} · {q.coins} Xu · {q.xp} XP
-                  {q.worms ? ` · ${q.worms} mồi giun` : ""}
+              <div className="quest-info">
+                <div className="quest-title-row">
+                  <h3>{q.title}</h3>
+                  <span>
+                    {q.progress}/{q.goal}
+                  </span>
+                </div>
+                <progress
+                  aria-label={`Tiến độ: ${q.title}`}
+                  value={q.progress}
+                  max={q.goal}
+                />
+                <small className="quest-rewards">
+                  <span>
+                    <Coins aria-hidden="true" /> {q.coins} Xu
+                  </span>
+                  <span>
+                    <b>XP</b> {q.xp} XP
+                  </span>
+                  {q.worms ? (
+                    <span>
+                      <Worm aria-hidden="true" /> {q.worms} mồi giun
+                    </span>
+                  ) : null}
                 </small>
               </div>
               <button
@@ -127,7 +179,9 @@ export function QuestPanel({ onClose }: { onClose: () => void }) {
                 ) : q.claimed ? (
                   "Đã nhận"
                 ) : !q.available ? (
-                  "Chưa mở"
+                  <>
+                    <LockKeyhole size={16} /> Chưa mở
+                  </>
                 ) : (
                   <>
                     <Gift size={16} /> Nhận

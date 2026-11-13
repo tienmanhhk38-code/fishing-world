@@ -300,6 +300,9 @@
   .panel .setting-row select {
     min-width: 100px;
   }
+  main .settings-panel .setting-row select {
+    font-size: 16px;
+  }
   .panel .range-field {
     gap: 4px;
     flex-shrink: 0;
@@ -319,15 +322,40 @@
     margin-top: 10px;
     padding-top: 8px;
   }
+  .panel .lobby-exit > .play {
+    min-width: 128px;
+  }
   .panel .quest-list article {
-    grid-template-columns: 18px minmax(0, 1fr) 90px;
+    grid-template-columns: 24px minmax(0, 1fr) 80px;
     gap: 8px;
     padding: 8px;
     border-radius: 14px;
   }
   .panel .quest-list h3 {
-    font-size: 14px;
-    margin: 0 0 4px;
+    font-size: 12px;
+    margin: 0;
+  }
+  .panel .quest-icon {
+    width: 24px;
+    height: 28px;
+    border-radius: 8px;
+  }
+  .panel .quest-title-row {
+    align-items: start;
+    gap: 4px;
+  }
+  .panel .quest-title-row > span {
+    font-size: 9px;
+    padding-top: 2px;
+  }
+  .panel .quest-tabs {
+    margin: 8px 0;
+  }
+  .panel .quest-rewards {
+    gap: 4px;
+  }
+  .panel .quest-rewards > span {
+    padding: 1px 4px;
   }
   .panel .quest-list small {
     font-size: 10px;
@@ -571,7 +599,7 @@
   }
   .panel.help > .play {
     margin: 8px 0 0;
-    width: 100%;
+    width: fit-content;
   }
   main .result {
     position: absolute;
@@ -661,6 +689,10 @@
   }
   .panel .inventory-tabs button {
     flex: 1;
+    white-space: nowrap;
+  }
+  .panel .inventory-tabs {
+    width: 100%;
   }
   .inventory-panel .fish-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));

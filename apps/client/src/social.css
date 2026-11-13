@@ -398,20 +398,19 @@
   align-items: center;
   gap: 8px;
 }
-.chat-dock-heading > button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 48px;
-  border: 1px solid #9edcf2;
-  background: linear-gradient(#428bb1, #23668f);
-  color: #f5fcff;
-  border-radius: 24px;
-  padding: 9px 15px;
-  gap: 8px;
-}
 .chat-dock-heading .chat-toggle {
+  min-height: 44px;
+  padding: 4px 8px;
+  gap: 8px;
   font-size: 12px;
+  line-height: 1.2;
+  color: #f5fcff;
+  white-space: nowrap;
+}
+.chat-toggle .chat-toggle-icon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
 }
 .chat-dock-heading .community-open {
   padding: 7px 12px;
@@ -692,7 +691,7 @@
   .chat-dock-heading .chat-toggle {
     font-size: 10px;
   }
-  .fishing .chat-dock-heading .chat-toggle > span {
+  .fishing .chat-dock-heading .chat-toggle > span:not(.chat-toggle-icon) {
     display: none;
   }
   .hud-emotes .emote-tray button {

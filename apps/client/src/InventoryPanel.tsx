@@ -2,8 +2,12 @@ import { useState, useEffect } from "react";
 import {
   Backpack,
   Check,
-  ChevronLeft,
   ChevronRight,
+  Coins,
+  Store,
+  ShoppingCart,
+  Waves,
+  Worm,
   Fish,
   MapPin,
   Weight,
@@ -25,6 +29,7 @@ import { useGame, send } from "./network";
 import { SaleConfirmation } from "./ProgressPanels";
 import { useEconomy, transact, quoteSale } from "./economy-client";
 import { fishModelId } from "./assets";
+import { DetailStat, RodGlyph } from "./PopupParts";
 
 export function AssetImage({
   id,
@@ -48,9 +53,13 @@ export function AssetImage({
 export function InventoryPanel({
   profile,
   onClose,
+  onShop,
+  canVisitShop = false,
 }: {
   profile: Profile;
   onClose: () => void;
+  onShop?: (tab: "rods" | "baits") => void;
+  canVisitShop?: boolean;
 }) {
   const fish = profile.fish;
   const economy = useEconomy();
@@ -81,16 +90,13 @@ export function InventoryPanel({
     } catch {}
   }
   const [tab, setTab] = useState("fish"),
-    [page, setPage] = useState(0),
     [selectedId, setSelectedId] = useState("");
-  const pages = Math.max(1, Math.ceil(fish.length / 12));
-  const pageIndex = Math.min(page, pages - 1);
-  const visible = fish.slice(pageIndex * 12, pageIndex * 12 + 12);
-  const selected = visible.find((item) => item.id === selectedId) ?? visible[0];
+  const [selectedRod, setSelectedRod] = useState<RodId>(profile.equippedRod);
+  const selected = fish.find((item) => item.id === selectedId) ?? fish[0];
   return (
     <div className="overlay" onClick={onClose}>
       <section
-        className="panel inventory-panel"
+        className="panel inventory-panel reference-popup"
         role="dialog"
         aria-modal="true"
         aria-labelledby="inventory-title"
@@ -129,9 +135,14 @@ export function InventoryPanel({
         </div>
         {tab === "fish" ? (
           <div className="inventory-content">
-            <div className="fish-grid">
-              {visible.length ? (
-                visible.map((item) => (
+            <div
+              className="fish-grid"
+              role="region"
+              aria-label="Cá trong túi"
+              tabIndex={0}
+            >
+              {fish.length ? (
+                fish.map((item) => (
                   <article
                     key={item.id}
                     className={selected.id === item.id ? "selected" : ""}
@@ -142,6 +153,11 @@ export function InventoryPanel({
                       aria-pressed={selected.id === item.id}
                     >
                       <AssetImage id={fishModelId(item.species)} />
+                      {selected.id === item.id && (
+                        <i className="selection-check">
+                          <Check />
+                        </i>
+                      )}
                       <b>{formatFishWeight(item.grams)}</b>
                     </button>
                   </article>
@@ -158,24 +174,23 @@ export function InventoryPanel({
               <aside className="fish-detail">
                 <AssetImage id={fishModelId(selected.species)} />
                 <h3>{selected.species}</h3>
-                <span className="water-badge">
-                  {AREAS[selected.area ?? "beach"].water}
-                </span>
-                <p>
-                  <Weight size={16} /> {formatFishWeight(selected.grams)}
-                </p>
-                <p>
-                  <MapPin size={16} /> {AREAS[selected.area ?? "beach"].name}
-                </p>
-                <small>
-                  {new Date(selected.caughtAt).toLocaleString("vi-VN")}
-                </small>
                 <span className={`rarity ${selected.rarity ?? "common"}`}>
                   {RARITIES[selected.rarity ?? "common"]}
                 </span>
-                <p className="fish-price">
-                  Giá bán {selected.saleValue?.toLocaleString("vi-VN")} Xu
-                </p>
+                <div className="fish-water">
+                  <Waves size={16} /> {AREAS[selected.area ?? "beach"].water}
+                </div>
+                <div className="detail-stats">
+                  <DetailStat icon={Weight} label="Khối lượng">
+                    {formatFishWeight(selected.grams)}
+                  </DetailStat>
+                  <DetailStat icon={MapPin} label="Nơi bắt">
+                    {AREAS[selected.area ?? "beach"].name}
+                  </DetailStat>
+                  <DetailStat icon={Coins} label="Giá bán">
+                    {selected.saleValue?.toLocaleString("vi-VN")} Xu
+                  </DetailStat>
+                </div>
                 <div className="fish-actions">
                   <button
                     className="showcase-action"
@@ -208,95 +223,110 @@ export function InventoryPanel({
               </aside>
             )}
           </div>
+        ) : tab === "rod" ? (
+          <div className="rod-layout">
+            <div className="rod-preview">
+              <AssetImage id={RODS[selectedRod].model} />
+              <h3>{RODS[selectedRod].name}</h3>
+            </div>
+            <div className="rod-details">
+              <h3>{RODS[selectedRod].name}</h3>
+              <span className="water-badge">
+                Luck +{Math.round(RODS[selectedRod].luck * 100)}%
+              </span>
+              <p>
+                {selectedRod === "wood"
+                  ? "Cần câu khởi đầu cho chuyến đi đầu tiên."
+                  : selectedRod === "bamboo"
+                    ? "Cần tre nhẹ nhàng, thêm may mắn cho mỗi lượt câu."
+                    : "Cần carbon cho những chuyến câu đầy thử thách."}
+              </p>
+              {profile.ownedRods.length > 1 && (
+                <div className="rod-picker" aria-label="Cần câu đã sở hữu">
+                  {profile.ownedRods.map((id) => (
+                    <button
+                      key={id}
+                      aria-pressed={selectedRod === id}
+                      onClick={() => setSelectedRod(id)}
+                    >
+                      {RODS[id].name}
+                    </button>
+                  ))}
+                </div>
+              )}
+              <button
+                className={`equip-button ${profile.equippedRod === selectedRod ? "equipped" : ""}`}
+                disabled={blocked || profile.equippedRod === selectedRod}
+                onClick={() =>
+                  void transact({
+                    action: "equipRod",
+                    itemId: selectedRod,
+                  }).catch(() => {})
+                }
+              >
+                {profile.equippedRod === selectedRod ? (
+                  <>
+                    <Check /> Đang dùng
+                  </>
+                ) : (
+                  "Trang bị"
+                )}
+              </button>
+            </div>
+          </div>
         ) : (
-          <div className="equipment-list">
-            {tab === "rod"
-              ? profile.ownedRods.map((id) => (
-                  <article className="owned-equipment" key={id}>
-                    <AssetImage id={RODS[id].model} />
-                    <h3>{RODS[id].name}</h3>
-                    <p>Luck +{Math.round(RODS[id].luck * 100)}%</p>
-                    <button
-                      disabled={blocked || profile.equippedRod === id}
-                      onClick={() =>
-                        void transact({ action: "equipRod", itemId: id }).catch(
-                          () => {},
-                        )
-                      }
-                    >
-                      {profile.equippedRod === id ? (
-                        <>
-                          <Check size={16} /> Đang dùng
-                        </>
-                      ) : (
-                        "Trang bị"
-                      )}
-                    </button>
-                  </article>
-                ))
-              : (Object.keys(BAITS) as BaitId[]).map((id) => (
-                  <article className="owned-equipment" key={id}>
-                    <AssetImage id={BAITS[id].model} />
-                    <h3>{BAITS[id].name}</h3>
-                    <p>
-                      {id === "dough"
-                        ? "Vô hạn"
-                        : `Còn ${profile.baitCounts[id]}`}
-                    </p>
-                    <button
-                      disabled={
-                        blocked ||
-                        profile.equippedBait === id ||
-                        (id !== "dough" && profile.baitCounts[id] < 1)
-                      }
-                      onClick={() =>
-                        void transact({
-                          action: "equipBait",
-                          itemId: id,
-                        }).catch(() => {})
-                      }
-                    >
-                      {profile.equippedBait === id ? (
-                        <>
-                          <Check size={16} /> Đang dùng
-                        </>
-                      ) : (
-                        "Trang bị"
-                      )}
-                    </button>
-                  </article>
-                ))}
+          <div className="equipment-list bait-list">
+            {(Object.keys(BAITS) as BaitId[]).map((id) => (
+              <article className="owned-equipment" key={id}>
+                <AssetImage id={BAITS[id].model} />
+                <h3>{BAITS[id].name}</h3>
+                <p>
+                  {id === "dough" ? "Vô hạn" : `Còn ${profile.baitCounts[id]}`}
+                </p>
+                <button
+                  className={`equip-button ${profile.equippedBait === id ? "equipped" : ""}`}
+                  disabled={
+                    blocked ||
+                    profile.equippedBait === id ||
+                    (id !== "dough" && profile.baitCounts[id] < 1)
+                  }
+                  onClick={() =>
+                    void transact({
+                      action: "equipBait",
+                      itemId: id,
+                    }).catch(() => {})
+                  }
+                >
+                  {profile.equippedBait === id ? (
+                    <>
+                      <Check size={16} /> Đang dùng
+                    </>
+                  ) : id !== "dough" && profile.baitCounts[id] < 1 ? (
+                    "Hết mồi"
+                  ) : (
+                    "Trang bị"
+                  )}
+                </button>
+              </article>
+            ))}
           </div>
         )}
 
         <footer>
           <span className="fish-count">
-            <Fish size={18} />
-            {fish.length} con cá
+            {tab === "fish" ? (
+              <Fish size={18} />
+            ) : tab === "rod" ? (
+              <RodGlyph size={18} />
+            ) : (
+              <Worm size={18} />
+            )}
+            {tab === "fish"
+              ? `${fish.length} con cá`
+              : tab === "rod"
+                ? `${profile.ownedRods.length} cần câu`
+                : `${Object.keys(BAITS).length} loại mồi`}
           </span>
-          {tab === "fish" && pages > 1 && (
-            <div className="pagination">
-              <button
-                className="icon"
-                aria-label="Trang trước"
-                disabled={pageIndex === 0}
-                onClick={() => setPage(pageIndex - 1)}
-              >
-                <ChevronLeft />
-              </button>
-              <span>
-                {pageIndex + 1} / {pages}
-              </span>
-              <button
-                className="icon"
-                aria-label="Trang sau"
-                disabled={pageIndex === pages - 1}
-                onClick={() => setPage(pageIndex + 1)}
-              >
-                <ChevronRight />
-              </button>
-            </div>
-          )}
           {tab === "fish" && (
             <button
               className="play sell-all"
@@ -304,6 +334,22 @@ export function InventoryPanel({
               onClick={() => void sell()}
             >
               Bán tất cả
+            </button>
+          )}
+          {tab !== "fish" && (
+            <button
+              className="shop-link"
+              disabled={!onShop || !canVisitShop || !!blocked}
+              title={
+                canVisitShop
+                  ? undefined
+                  : "Đến gần Cô Sáu ở Làng Chài để mua đồ"
+              }
+              onClick={() => onShop?.(tab === "rod" ? "rods" : "baits")}
+            >
+              {tab === "rod" ? <Store /> : <ShoppingCart />}
+              {tab === "rod" ? "Xem cửa hàng" : "Mua thêm mồi"}
+              <ChevronRight />
             </button>
           )}
         </footer>

@@ -261,6 +261,13 @@ main:not(.lobby) .coin-counter {
 main:not(.lobby) .location {
   top: 92px;
   left: var(--safe-left);
+  padding: 6px 12px 6px 6px;
+  gap: 8px;
+  border-radius: 26px;
+  white-space: nowrap;
+}
+main:not(.lobby) .location-icon {
+  flex-shrink: 0;
 }
 main:not(.lobby) .side {
   top: 170px;
@@ -997,7 +1004,10 @@ main:not(.lobby).chat-typing .movement-buttons {
   inset: 0;
   width: 100%;
   height: 100%;
-  background: #082d4326;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
 }
 .nearby-layer .nearby-composer {
   position: fixed;
@@ -1046,6 +1056,10 @@ main:not(.lobby).chat-typing .movement-buttons {
   padding: 0 45px 0 16px;
   font-size: 14px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+.nearby-layer input:focus {
+  outline: 2px solid #a0e7fb;
+  outline-offset: 2px;
 }
 .nearby-layer .chat-input-wrap small {
   position: absolute;

@@ -410,6 +410,7 @@ export function action() {
   const s = useGame.getState();
   if (!s.connected) return;
   if (s.phase === "IDLE") send("FISH_START");
+  else if (s.phase === "RESULT") send("FISH_CONTINUE");
   else if (
     ["WAITING", "APPROACHING", "NIBBLING", "BITE_WINDOW"].includes(s.phase)
   )

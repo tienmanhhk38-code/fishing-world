@@ -14,7 +14,7 @@ Trình duyệt ── HTTPS ── Vercel (React/Vite + /api/* proxy)
 
 Cookie khách chỉ cần tồn tại trên domain web Vercel: API proxy chuyển Cookie tới backend và trả Set-Cookie về trình duyệt. Matchmaking/WebSocket dùng ticket ngắn hạn gắn với phòng và phiên, không cần cookie bên thứ ba. Không đặt DATABASE_URL hay METRICS_TOKEN trong biến `VITE_*`.
 
-Vercel có WebSocket public beta từ 22/06/2026. Tuy nhiên bản game này giữ phòng trong bộ nhớ và có khóa độc quyền một server/database; cấu hình dưới giữ một backend sống lâu, không đưa nguyên server vào Functions tự co giãn. Muốn nhiều tiến trình cần thiết kế lại presence/driver, định tuyến phòng và khóa khôi phục trước.
+Bản game này giữ phòng trong bộ nhớ và có khóa độc quyền một server/database; cấu hình dưới giữ một backend sống lâu, không đưa nguyên server vào Functions tự co giãn. Muốn nhiều tiến trình cần thiết kế lại presence/driver, định tuyến phòng và khóa khôi phục trước.
 
 Tài liệu chính thức: [Vite](https://vercel.com/docs/frameworks/frontend/vite), [Node Functions](https://vercel.com/docs/functions/runtimes/node-js), [WebSocket beta](https://vercel.com/changelog/websocket-support-is-now-in-public-beta).
 
@@ -126,6 +126,6 @@ pnpm test:soak:beta
 
 Overlay load chỉ mở cổng quản trị trên loopback cho harness. Giữ nguyên image/container suốt phép đo, không restart/migrate, không chạy kiểm thử phá kết nối cùng lúc. Bỏ overlay bằng `compose up` cấu hình bình thường sau khi phép đo kết thúc để đóng cổng. `/internal/metrics` vẫn bị Caddy chặn; harness truy cập cổng loopback có bearer. Kết quả ghi state/metrics/report, lỗi dừng phép đo và ghi failure; không tính lượt lỗi hoặc test ngắn thành 60 phút đạt.
 
-CI trong `.github/workflows/checks.yml` khởi tạo PostgreSQL tạm, migrate, build, audit, unit test và browser test. Workflow đã được viết nhưng chưa chạy trên GitHub vì chưa push repository.
+CI trong `.github/workflows/checks.yml` khởi tạo PostgreSQL tạm, migrate, build, audit, unit test, browser/cross-browser test và latency. Trạng thái workflow thực tế phải kiểm tra trên GitHub; không suy ra từ việc file cấu hình tồn tại.
 
 Workflow cố định phiên bản action đã đối chiếu từ release chính thức: [checkout](https://github.com/actions/checkout/releases/tag/v7.0.1), [pnpm setup](https://github.com/pnpm/action-setup/releases/tag/v6.1.1), [Node setup](https://github.com/actions/setup-node/releases/tag/v7.1.0), [artifact](https://github.com/actions/upload-artifact/releases/tag/v7.0.2). Token CI chỉ có quyền đọc nội dung.

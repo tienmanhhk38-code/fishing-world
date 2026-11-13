@@ -9,7 +9,9 @@
 
 ## Giới thiệu
 
-Fishing World Online là game trình duyệt phong cách chibi, giao diện tiếng Việt, hỗ trợ máy tính và cảm ứng. Người chơi dùng phiên khách, vào cùng mã phòng, khám phá Bãi Biển/Làng Chài, câu 30 loài cá, bán lấy Xu, nâng cấp trang bị và hoàn thành nhiệm vụ. Tiến trình lưu trên PostgreSQL, không chỉ trong bộ nhớ trình duyệt.
+Fishing World Online là game trình duyệt phong cách chibi, giao diện tiếng Việt, hỗ trợ máy tính và cảm ứng. Người chơi dùng phiên khách, vào cùng mã phòng, khám phá Bãi Biển/Làng Chài, câu 35 loài cá, bán lấy Xu, nâng cấp trang bị và hoàn thành nhiệm vụ. Tiến trình lưu trên PostgreSQL, không chỉ trong bộ nhớ trình duyệt.
+
+Developer và AI Agent bắt đầu tại [mục lục tài liệu](docs/README.md) và [AGENTS.md](AGENTS.md): kiến trúc, giao thức/dữ liệu, chạy local, kiểm thử và vị trí cần sửa code.
 
 **Trạng thái:** bản beta đang phát triển, đã kiểm chứng local; chưa có URL production công khai. Hình trên là ảnh game thật. Mỹ thuật hiện là mô hình stylized procedural, chưa tái tạo toàn bộ độ chi tiết của concept.
 
@@ -18,8 +20,8 @@ Fishing World Online là game trình duyệt phong cách chibi, giao diện ti�
 - **Thế giới chung:** đảo khoảng 123 × 86 m, bến gỗ, làng, hồ nước ngọt, hải đăng, nước trong và sóng ven bờ; tối đa 20 người/phòng theo cấu hình hiện tại.
 - **Di chuyển:** đi, chạy, nhảy; dự đoán tại máy người chơi, server xác nhận input và nội suy người khác; camera xoay tự do, chế độ 30/60 FPS.
 - **Câu cá:** chỉ thả trong 2 m tới nước lộ thiên; nhấp giả, cửa sổ giật theo độ hiếm, bo cá tự động và xác suất hụt. Server chọn và xác thực toàn bộ kết quả.
-- **Tiến trình:** 30 loài/4 độ hiếm, túi cá, album/kỷ lục, XP/cấp độ, Xu, 3 cần và 3 loại mồi; giao dịch chống gửi lặp.
-- **Hoạt động:** khoe cá từ 10 kg bằng hai tay, chat thế giới/chat gần 20 m, NPC và người câu ảo, cộng đồng, mute/report và công cụ quản trị; nhiệm vụ khởi đầu và ngày, reset lúc 00:00 Việt Nam.
+- **Tiến trình:** 35 loài/5 độ hiếm, túi cá, album/kỷ lục, XP/cấp độ, Xu, 3 cần và 3 loại mồi; giao dịch chống gửi lặp.
+- **Hoạt động:** khoe cá trong túi (từ 10 kg dùng hai tay), chat trong phòng/chat gần 20 m, NPC và người câu ảo, cộng đồng, mute/report và công cụ quản trị; nhiệm vụ khởi đầu và ngày, reset lúc 00:00 Việt Nam.
 - **Trải nghiệm:** bốn ngoại hình, cài đặt đồ họa/âm lượng/camera tại lobby, nhạc streaming theo cảnh, hiệu ứng âm thanh và nút về lobby.
 - **Lưu bền vững:** chỉ nhận cá/XP sau khi kéo thành công; kết quả kéo được lưu để reconnect/restart không lấy mẫu lại; sao lưu/kiểm tra khôi phục database.
 
@@ -85,7 +87,8 @@ Database cũ đã tạo bằng `db push` phải được backup và đối chi�
 | Nhảy           | Space                              | Nút Nhảy                     |
 | Xoay camera    | Kéo chuột trên cảnh                | Kéo vùng cảnh bằng ngón khác |
 | Thả / giật câu | F hoặc nút hành động               | Nút hành động phải           |
-| Chat           | Enter; gõ bình thường trong ô chat | Nút Trò chuyện               |
+| Chat phòng     | C để mở/đóng; gõ trong ô chat      | Nút Trò chuyện               |
+| Chat gần       | Enter để mở/gửi; Escape để đóng    | Nút Chat gần                 |
 | Về lobby       | Cài đặt → Về lobby                 | Cài đặt → Về lobby           |
 
 Cửa hàng mở tại NPC Cô Sáu trong Làng Chài, trong phạm vi 3 m. Bản đồ có năm điểm đến mở; San Hô và Đảo Bí Ẩn còn khóa. Chat gần nằm cạnh nhóm biểu cảm, hiện trên đầu trong 6 giây.
@@ -130,7 +133,7 @@ Sau `pnpm build`, `pnpm --filter @fishing/server start` phục vụ cả web/API
 **Khuyến nghị:** Vercel cho frontend/proxy, Render cho backend chạy lâu dài và Neon cho PostgreSQL. Không đưa nguyên tiến trình Colyseus hiện tại vào Vercel Functions.
 
 1. Tạo Neon project/branch production và role game, cấp quyền theo `deploy/neon-grants.sql`.
-2. Tạo Render Blueprint từ `render.yaml`, nhập URL database/origin frontend và giữ cấu hình một instance + disk ngăn rolling deploy chồng tiến trình.
+2. Tạo Render Blueprint từ `render.yaml`, nhập URL database/origin frontend và giữ một instance. File hiện tại dùng `AUTO_MIGRATE=true`, không khai báo disk/pre-deploy command; cần bảo đảm dừng backend cũ trước khi khởi động bản mới trên cùng database.
 3. Import repo vào Vercel với Root Directory là **gốc repository**; đặt `VITE_GAME_SERVER_URL` và `GAME_SERVER_URL` bằng HTTPS origin của Render.
 4. Cập nhật `APP_ORIGINS` trên Render đúng URL frontend; triển khai, kiểm tra hai khách cùng phòng và reload giữ túi.
 

@@ -365,7 +365,12 @@ function App() {
         return;
       if (e.code === "Enter") {
         e.preventDefault();
-        window.dispatchEvent(new Event("fishing:chat"));
+        if (!e.repeat) window.dispatchEvent(new Event("fishing:nearby-chat"));
+        return;
+      }
+      if (e.code === "KeyC" && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        e.preventDefault();
+        if (!e.repeat) window.dispatchEvent(new Event("fishing:chat"));
         return;
       }
       const code = normalizeMovementCode(e) ?? e.code;
@@ -891,7 +896,11 @@ function App() {
               )}
               <small>Đã cất vào túi đồ</small>
               <div className="result-actions">
-                <button className="play" onClick={() => send("FISH_CONTINUE")}>
+                <button
+                  className="play"
+                  title="Câu tiếp (F)"
+                  onClick={() => send("FISH_CONTINUE")}
+                >
                   Câu tiếp
                 </button>
                 <button

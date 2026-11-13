@@ -1,6 +1,6 @@
 # Production beta: Vercel + Render + Neon
 
-Hướng dẫn này dành cho mã nguồn hiện tại, một backend Colyseus cho mỗi database. Chưa tạo dịch vụ hay deploy public thay người dùng. Tài liệu nhà cung cấp được đối chiếu ngày 11/11/2026; kiểm tra plan/giá trực tiếp trước khi mua.
+Hướng dẫn cấu hình theo source ngày 13/11/2026, một backend Colyseus cho mỗi database. Tài liệu không xác nhận trạng thái dịch vụ public hoặc giá/điều kiện plan của nhà cung cấp. Xem [kiến trúc](ARCHITECTURE.md) và [chạy local](DEVELOPMENT.md) trước khi triển khai.
 
 ## Chọn kiến trúc
 
@@ -10,7 +10,7 @@ Hướng dẫn này dành cho mã nguồn hiện tại, một backend Colyseus c
 | Node/Express/Colyseus | Render Web Service | Matchmaking HTTPS, WSS, mô phỏng, xác thực và giao dịch |
 | PostgreSQL | Neon | Cá, Xu, XP, trang bị, phiên, nhiệm vụ, lịch sử lượt kéo |
 
-Vercel đã công bố WebSocket Public Beta ngày 22/06/2026. Tuy nhiên kết nối chịu giới hạn thời lượng Function, kết nối mới không đảm bảo đến cùng instance. Backend game hiện giữ phòng trong RAM, có khóa độc quyền database và startup recovery. Vì vậy **giữ backend chạy lâu dài trên Render**; muốn tất cả trên Vercel cần thiết kế lại room routing, state/presence, lifecycle và recovery. Đây là lựa chọn cho kiến trúc code hiện tại, không phải nhận định Vercel không hỗ trợ WebSocket.
+Backend giữ phòng trong RAM, có khóa độc quyền database và startup recovery. Cấu hình repository tách backend chạy lâu dài trên Render; `api/` trên Vercel chỉ là HTTP bridge. Matchmaking/WSS đi trực tiếp tới backend. Muốn nhiều backend cần thiết kế thêm room routing, state/presence, lifecycle và recovery.
 
 Nguồn: [Vercel WebSocket](https://vercel.com/kb/guide/do-vercel-serverless-functions-support-websocket-connections), [Render WebSocket](https://render.com/docs/websocket).
 
@@ -35,13 +35,13 @@ Nguồn: [Vercel WebSocket](https://vercel.com/kb/guide/do-vercel-serverless-fun
 
    Tham khảo cú pháp trong `deploy/render.env.example`. Giữ `sslmode=require`, giới hạn pool ban đầu 8 kết nối; điều chỉnh theo hạn mức Neon và số đo thực tế. Không bỏ TLS verification để chữa lỗi kết nối.
 
-`DIRECT_DATABASE_URL` bắt buộc cho session advisory lock giữ một backend. PgBouncer transaction pooling không giữ session state qua giao dịch. Migration và backup cũng dùng direct URL. Backend có kết nối/heartbeat database liên tục; không giả định Neon sẽ luôn scale về zero hoặc miễn phí. Theo dõi quota, compute và backup retention theo plan.
+`instance-lock.ts` dùng `DIRECT_DATABASE_URL`, fallback về `DATABASE_URL` khi thiếu. Nếu runtime URL đi qua transaction pooler, phải cung cấp URL direct cho session advisory lock. Các URL phải cùng project/branch/database; code chỉ so sánh pathname, không xác minh toàn bộ danh tính cluster. Migration và backup cũng cần kết nối phù hợp để chạy PostgreSQL CLI/giữ snapshot. Theo dõi quota, compute và backup retention trên môi trường triển khai.
 
 Nguồn: [Neon pooling](https://neon.com/docs/connect/connection-pooling), [Neon roles](https://neon.com/docs/manage/roles).
 
 ## 2. Tạo Render backend
 
-Kết nối GitHub repository và tạo **Blueprint** từ `render.yaml` ở gốc. Blueprint chọn Dockerfile hiện có, một instance, health `/readyz`, auto-deploy tắt và pre-deploy migration. Đây là dịch vụ trả phí; xem báo giá tại Dashboard trước khi tạo.
+Kết nối GitHub repository và tạo **Blueprint** từ `render.yaml` ở gốc. File hiện khai báo Docker, `plan: free`, region Singapore, một instance, health `/readyz`, auto-deploy tắt và `AUTO_MIGRATE=true`. **Không có disk hoặc pre-deploy command trong file.** Khả năng áp dụng plan và cấu hình dịch vụ cần kiểm tra trên Dashboard; repository không xác nhận điều đó.
 
 | Biến Render | Giá trị |
 | --- | --- |
@@ -52,7 +52,8 @@ Kết nối GitHub repository và tạo **Blueprint** từ `render.yaml` ở g�
 | `APP_ORIGINS` | Origin frontend chính xác, ví dụ `https://fishing-world.vercel.app` |
 | `DATABASE_URL` | Neon pooled runtime URL |
 | `DIRECT_DATABASE_URL` | Neon direct runtime URL |
-| `MIGRATION_DATABASE_URL` | Neon direct owner URL dùng pre-deploy |
+| `MIGRATION_DATABASE_URL` | Neon direct owner URL dùng bởi entrypoint khi migrate |
+| `AUTO_MIGRATE` | `true` theo Blueprint: migrate trước khi spawn game server |
 | `METRICS_TOKEN` | Secret ngẫu nhiên ≥32 ký tự; Blueprint tự tạo |
 | `MAX_ROOMS` | `20`; cấu hình trần, chưa chứng nhận 400 người |
 
@@ -60,15 +61,17 @@ Không đặt `DATABASE_PASSWORD_FILE` hoặc `METRICS_TOKEN_FILE` trên Render 
 
 ### Quan trọng: không chạy chồng hai backend
 
-Render mặc định khởi động bản mới trước khi dừng bản cũ. Khóa độc quyền của game sẽ làm bản mới từ chối chạy, dẫn tới deploy thất bại. Blueprint gắn disk nhỏ tại `/var/data` **để Render tắt zero-downtime/overlapping deployment**. Database vẫn ở Neon, game không lưu tài sản vào disk này. Không xóa disk hoặc bật autoscaling khi chưa sửa kiến trúc ownership/recovery. Chấp nhận gián đoạn ngắn và mất phòng khi cập nhật.
+Code chỉ cho một backend/database. Khi tranh advisory lock, startup còn thử `pg_terminate_backend` với kết nối giữ lock cũ; nếu không lấy được lock thì thoát. Vì vậy chạy chồng có thể ngắt backend cũ hoặc làm bản mới không lên. `numInstances: 1` không tự chứng minh quá trình thay phiên bản không chạy chồng; file Blueprint hiện không khai báo cơ chế ngăn điều đó.
 
-Giữ `numInstances: 1`, `autoDeployTrigger: off`. Khi triển khai thủ công, kiểm tra disk đã được gắn và deploy thực sự dừng bản cũ trước bản mới. Không dùng hai Render services/preview cùng Neon branch. Có thể mở preview frontend riêng nhưng không nối một backend preview mới vào production DB.
+Giữ `numInstances: 1`, `autoDeployTrigger: off`. Trước khi phát hành, thiết lập và kiểm tra quy trình bảo trì dừng backend cũ trước khi migrate/khởi động bản mới. Không dùng hai services/preview backend cùng database. Room trong RAM sẽ mất khi cập nhật; tiến trình đã lưu vẫn ở Neon.
 
 Nguồn: [Render deployment lifecycle](https://render.com/docs/deploys), [Render disk limitations](https://render.com/docs/disks), [Blueprint reference](https://render.com/docs/blueprint-spec).
 
 ### Migration và khởi động
 
-Pre-deploy command: `node scripts/container-entry.mjs --migrate`. Chỉ dùng `prisma migrate deploy`, không `db push`/`migrate reset`. Entrypoint chọn MIGRATION_DATABASE_URL cho migration, bỏ biến đó trước khi spawn game child. Secret owner vẫn nằm trong cấu hình dịch vụ Render; nếu yêu cầu cô lập quyền quản trị nghiêm ngặt, chạy migration từ CI/máy quản trị riêng rồi bỏ owner URL/pre-deploy khỏi dịch vụ.
+Theo `render.yaml`, Docker entrypoint chạy `prisma migrate deploy` khi `AUTO_MIGRATE=true`, rồi mới spawn game server. Migration chọn URL theo thứ tự `MIGRATION_DATABASE_URL` → `DIRECT_DATABASE_URL` → `DATABASE_URL`; lỗi migration chặn startup. Không dùng `db push`/`migrate reset` để phát hành.
+
+`node scripts/container-entry.mjs --migrate` là chế độ hỗ trợ sẵn để migrate rồi thoát, **chưa được khai báo thành pre-deploy command**. Entrypoint bỏ `MIGRATION_DATABASE_URL` trước khi spawn game child; secret owner vẫn ở cấu hình dịch vụ. Nếu migrate từ CI/máy quản trị riêng, tắt `AUTO_MIGRATE` và bỏ owner URL khỏi runtime sau khi đã áp dụng migration. Migration diễn ra trước khi game lấy instance lock, nên vẫn phải dừng backend cũ trước bước này.
 
 Với database mới rỗng, lần deploy đầu áp dụng cả baseline và migration nâng cấp. Runtime role đã có default privileges từ bước Neon trước đó. Sau migration, chạy REVOKE quyền bảng `_prisma_migrations` và kiểm tra lại runtime role đọc/ghi game thành công.
 

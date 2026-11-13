@@ -170,13 +170,18 @@ export function NearbyChat({
   onFocusChange: (focused: boolean) => void;
 }) {
   const [open, setOpen] = useState(false);
+  useEffect(() => {
+    const show = () => setOpen(true);
+    window.addEventListener("fishing:nearby-chat", show);
+    return () => window.removeEventListener("fishing:nearby-chat", show);
+  }, []);
   return (
     <div className="nearby-chat">
       <button
         className="nearby-toggle"
         aria-label="Chat gần"
         aria-expanded={open}
-        title="Nói với người trong 20 m"
+        title="Nói với người trong 20 m (Enter)"
         onClick={() => setOpen(!open)}
       >
         <MessageCircle size={20} />
@@ -311,16 +316,9 @@ export function ChatDock({
   const [open, setOpen] = useState(false),
     container = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const focus = () => {
-      setOpen(true);
-      setTimeout(
-        () =>
-          container.current?.querySelector<HTMLInputElement>("input")?.focus(),
-        0,
-      );
-    };
-    window.addEventListener("fishing:chat", focus);
-    return () => window.removeEventListener("fishing:chat", focus);
+    const toggle = () => setOpen((value) => !value);
+    window.addEventListener("fishing:chat", toggle);
+    return () => window.removeEventListener("fishing:chat", toggle);
   }, []);
   return (
     <div ref={container} className={`chat-dock ${open ? "expanded" : ""}`}>
@@ -328,6 +326,8 @@ export function ChatDock({
         <button
           className="chat-toggle"
           aria-label={open ? "Thu gọn chat" : "Mở chat"}
+          aria-expanded={open}
+          title="Chat phòng (C)"
           onClick={() => setOpen(!open)}
         >
           <MessageCircle size={21} />

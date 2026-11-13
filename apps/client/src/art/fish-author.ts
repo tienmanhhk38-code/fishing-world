@@ -5,10 +5,12 @@ import {
 } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { GLTFExporter } from "three/examples/jsm/exporters/GLTFExporter.js";
 import { SPECIES, type Species } from "@fishing/shared";
+import { createFreshwaterFish } from "./freshwater-author";
 export const FISH_ASSET_IDS = SPECIES.map((s) => s.model);
 // X axis faces right; a continuous ring surface, skinned together with every fin.
 export function createFish(id: string) {
   const source = SPECIES.find((s) => s.model === id)!;
+  if (source?.area === "village") return createFreshwaterFish(source.id);
   const originalShapes: Record<string, Species["shape"]> = {
     anchovy: "long",
     herring: "slim",

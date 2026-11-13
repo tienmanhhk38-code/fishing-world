@@ -1,7 +1,7 @@
 {
   "pack": "Fishing World 3D prototype v1",
   "source": "Original procedural meshes, generated with Blender; no third-party models or textures",
-  "asset_count": 44,
+  "asset_count": 51,
   "assets": [
     {
       "id": "island_base",
@@ -397,61 +397,45 @@
       "id": "fish_concept_07",
       "category": "fish",
       "file": "models/fish_concept_07.glb",
-      "triangles": 312,
-      "materials": 4,
-      "status": "concept_species_unassigned",
+      "thumbnail": "thumbnails/fish_concept_07.png",
+      "source": "apps/client/src/art/freshwater-author.ts",
+      "status": "rigged_lod",
       "gltf_up_axis": "Y",
-      "meters": true,
-      "dimensions_blender_xyz": [
-        1.293,
-        0.6,
-        0.609
-      ]
+      "materials": 4,
+      "triangles": 21670
     },
     {
       "id": "fish_concept_08",
       "category": "fish",
       "file": "models/fish_concept_08.glb",
-      "triangles": 312,
-      "materials": 4,
-      "status": "concept_species_unassigned",
+      "thumbnail": "thumbnails/fish_concept_08.png",
+      "source": "apps/client/src/art/freshwater-author.ts",
+      "status": "rigged_lod",
       "gltf_up_axis": "Y",
-      "meters": true,
-      "dimensions_blender_xyz": [
-        1.528,
-        0.6,
-        0.398
-      ]
+      "materials": 4,
+      "triangles": 23158
     },
     {
       "id": "fish_concept_09",
       "category": "fish",
       "file": "models/fish_concept_09.glb",
-      "triangles": 472,
-      "materials": 5,
-      "status": "concept_species_unassigned",
+      "thumbnail": "thumbnails/fish_concept_09.png",
+      "source": "apps/client/src/art/freshwater-author.ts",
+      "status": "rigged_lod",
       "gltf_up_axis": "Y",
-      "meters": true,
-      "dimensions_blender_xyz": [
-        0.893,
-        0.6,
-        0.663
-      ]
+      "materials": 4,
+      "triangles": 18260
     },
     {
       "id": "fish_concept_10",
       "category": "fish",
       "file": "models/fish_concept_10.glb",
-      "triangles": 312,
-      "materials": 4,
-      "status": "concept_species_unassigned",
+      "thumbnail": "thumbnails/fish_concept_10.png",
+      "source": "apps/client/src/art/freshwater-author.ts",
+      "status": "rigged_lod",
       "gltf_up_axis": "Y",
-      "meters": true,
-      "dimensions_blender_xyz": [
-        1.646,
-        0.6,
-        0.557
-      ]
+      "materials": 4,
+      "triangles": 18520
     },
     {
       "id": "fish_concept_11",
@@ -472,31 +456,23 @@
       "id": "fish_concept_12",
       "category": "fish",
       "file": "models/fish_concept_12.glb",
-      "triangles": 312,
-      "materials": 4,
-      "status": "concept_species_unassigned",
+      "thumbnail": "thumbnails/fish_concept_12.png",
+      "source": "apps/client/src/art/freshwater-author.ts",
+      "status": "rigged_lod",
       "gltf_up_axis": "Y",
-      "meters": true,
-      "dimensions_blender_xyz": [
-        1.293,
-        0.6,
-        0.609
-      ]
+      "materials": 4,
+      "triangles": 16718
     },
     {
       "id": "fish_concept_13",
       "category": "fish",
       "file": "models/fish_concept_13.glb",
-      "triangles": 312,
-      "materials": 4,
-      "status": "concept_species_unassigned",
+      "thumbnail": "thumbnails/fish_concept_13.png",
+      "source": "apps/client/src/art/freshwater-author.ts",
+      "status": "rigged_lod",
       "gltf_up_axis": "Y",
-      "meters": true,
-      "dimensions_blender_xyz": [
-        1.528,
-        0.6,
-        0.398
-      ]
+      "materials": 4,
+      "triangles": 17486
     },
     {
       "id": "fish_concept_14",
@@ -593,22 +569,22 @@
       "category": "fish",
       "file": "models/fish_extra_marbled_eel.glb",
       "thumbnail": "thumbnails/fish_extra_marbled_eel.png",
-      "source": "apps/client/src/art/fish-author.ts",
+      "source": "apps/client/src/art/freshwater-author.ts",
       "status": "rigged_lod",
       "gltf_up_axis": "Y",
       "materials": 4,
-      "triangles": 1904
+      "triangles": 14172
     },
     {
       "id": "fish_extra_sturgeon",
       "category": "fish",
       "file": "models/fish_extra_sturgeon.glb",
       "thumbnail": "thumbnails/fish_extra_sturgeon.png",
-      "source": "apps/client/src/art/fish-author.ts",
+      "source": "apps/client/src/art/freshwater-author.ts",
       "status": "rigged_lod",
       "gltf_up_axis": "Y",
       "materials": 4,
-      "triangles": 1904
+      "triangles": 15048
     },
     {
       "id": "fish_extra_amberjack",
@@ -642,6 +618,83 @@
       "gltf_up_axis": "Y",
       "materials": 4,
       "triangles": 1904
+    },
+    {
+      "id": "fish_extra_tilapia",
+      "category": "fish",
+      "file": "models/fish_extra_tilapia.glb",
+      "thumbnail": "thumbnails/fish_extra_tilapia.png",
+      "source": "apps/client/src/art/freshwater-author.ts",
+      "status": "rigged_lod",
+      "gltf_up_axis": "Y",
+      "materials": 4,
+      "triangles": 21862
+    },
+    {
+      "id": "fish_extra_grasscarp",
+      "category": "fish",
+      "file": "models/fish_extra_grasscarp.glb",
+      "thumbnail": "thumbnails/fish_extra_grasscarp.png",
+      "source": "apps/client/src/art/freshwater-author.ts",
+      "status": "rigged_lod",
+      "gltf_up_axis": "Y",
+      "materials": 4,
+      "triangles": 16394
+    },
+    {
+      "id": "fish_extra_bigheadcarp",
+      "category": "fish",
+      "file": "models/fish_extra_bigheadcarp.glb",
+      "thumbnail": "thumbnails/fish_extra_bigheadcarp.png",
+      "source": "apps/client/src/art/freshwater-author.ts",
+      "status": "rigged_lod",
+      "gltf_up_axis": "Y",
+      "materials": 4,
+      "triangles": 17432
+    },
+    {
+      "id": "fish_extra_blackcarp",
+      "category": "fish",
+      "file": "models/fish_extra_blackcarp.glb",
+      "thumbnail": "thumbnails/fish_extra_blackcarp.png",
+      "source": "apps/client/src/art/freshwater-author.ts",
+      "status": "rigged_lod",
+      "gltf_up_axis": "Y",
+      "materials": 4,
+      "triangles": 16478
+    },
+    {
+      "id": "fish_extra_snakehead",
+      "category": "fish",
+      "file": "models/fish_extra_snakehead.glb",
+      "thumbnail": "thumbnails/fish_extra_snakehead.png",
+      "source": "apps/client/src/art/freshwater-author.ts",
+      "status": "rigged_lod",
+      "gltf_up_axis": "Y",
+      "materials": 4,
+      "triangles": 16160
+    },
+    {
+      "id": "fish_extra_giantcatfish",
+      "category": "fish",
+      "file": "models/fish_extra_giantcatfish.glb",
+      "thumbnail": "thumbnails/fish_extra_giantcatfish.png",
+      "source": "apps/client/src/art/freshwater-author.ts",
+      "status": "rigged_lod",
+      "gltf_up_axis": "Y",
+      "materials": 4,
+      "triangles": 17458
+    },
+    {
+      "id": "fish_extra_arapaima",
+      "category": "fish",
+      "file": "models/fish_extra_arapaima.glb",
+      "thumbnail": "thumbnails/fish_extra_arapaima.png",
+      "source": "apps/client/src/art/freshwater-author.ts",
+      "status": "rigged_lod",
+      "gltf_up_axis": "Y",
+      "materials": 4,
+      "triangles": 15168
     }
   ]
 }

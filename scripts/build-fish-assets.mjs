@@ -57,7 +57,9 @@ try {
       category: "fish",
       file: `models/${id}.glb`,
       thumbnail: `thumbnails/${id}.png`,
-      source: "apps/client/src/art/fish-author.ts",
+      source: doc.nodes.some((node) => node.extras?.author === "freshwater-v1")
+        ? "apps/client/src/art/freshwater-author.ts"
+        : "apps/client/src/art/fish-author.ts",
       status: "rigged_lod",
       gltf_up_axis: "Y",
       materials: doc.materials.length,

@@ -15,6 +15,7 @@
 | [PRODUCTION](PRODUCTION.md) | Cấu hình Vercel + Render + Neon theo repository |
 | [DEPLOYMENT](DEPLOYMENT.md) | Docker/VPS, backup/restore và harness beta |
 | [PLAYTEST](PLAYTEST.md) | Hạng mục cần người chơi và thiết bị thật nghiệm thu |
+| [FRESHWATER-MODELS](FRESHWATER-MODELS.md) | Nguồn dựng, ảnh tham chiếu và QA 15 model cá nước ngọt |
 
 ## Công nghệ
 

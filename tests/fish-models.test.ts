@@ -22,7 +22,7 @@ describe("40 rigged fish and mythic encounters", () => {
         b.subarray(20, 20 + b.readUInt32LE(12)).toString(),
       );
       for (const [name, limit] of [
-        ["fish-lod-high", 12000],
+        ["fish-lod-high", s.area === "village" ? 20000 : 12000],
         ["fish-lod-low", 4000],
       ] as const) {
         const group = doc.nodes.find((n: any) => n.name === name);
@@ -59,7 +59,7 @@ describe("40 rigged fish and mythic encounters", () => {
       expect(doc.skins.every((skin: any) => skin.joints.length === 7)).toBe(
         true,
       );
-      expect(b.length).toBeLessThan(400000);
+      expect(b.length).toBeLessThan(s.area === "village" ? 2000000 : 400000);
     }
   });
   it("adds five equal sea-only mythics with exact unbuffed boundaries", () => {

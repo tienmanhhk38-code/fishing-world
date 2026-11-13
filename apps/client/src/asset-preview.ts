@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { SPECIES } from "@fishing/shared";
 
 // Development entry point used by scripts/render-asset-thumbnails.mjs.
 const renderer = new THREE.WebGLRenderer({
@@ -33,7 +34,9 @@ Object.assign(window, {
             : `/assets/starter/models/${id}.glb`,
       )
     ).scene;
-    current.traverse(o => { if(o.name === "fish-lod-low") o.visible = false; });
+    current.traverse((o) => {
+      if (o.name === "fish-lod-low") o.visible = false;
+    });
     const box = new THREE.Box3().setFromObject(current),
       center = box.getCenter(new THREE.Vector3()),
       size = box.getSize(new THREE.Vector3());
@@ -51,6 +54,9 @@ Object.assign(window, {
     camera.top = span / 2;
     camera.bottom = -span / 2;
     camera.position.set(portrait ? 0.5 : 1.5, portrait ? 0.7 : 0.8, 5);
+    const freshwater = SPECIES.find((s) => s.model === id)?.area === "village";
+    if (freshwater) camera.position.set(0, 0, -5);
+    sun.position.z = freshwater ? -6 : 6;
     camera.lookAt(0, portrait ? 0.42 : 0, 0);
     camera.updateProjectionMatrix();
     renderer.render(scene, camera);

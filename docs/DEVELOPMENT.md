@@ -68,6 +68,7 @@ CI trong [checks.yml](../.github/workflows/checks.yml) tạo PostgreSQL riêng, 
 ## Làm việc với asset
 
 - Model nguồn: `apps/client/src/art/harbor-author.ts`, `fish-author.ts`. Đầu ra: `public/assets/harbor-v2/` và `public/assets/starter/models/`, kèm thumbnail/manifest.
+- 15 loài nước ngọt dùng `art/freshwater-author.ts`; nguồn tham chiếu, ngân sách riêng và lệnh QA có tại [FRESHWATER-MODELS](FRESHWATER-MODELS.md). Preview `/freshwater-preview.html` kiểm tra model/rig độc lập, không kết nối database.
 - Khi Vite ở 5173 và đã cài Chromium, dùng `node scripts/build-harbor-assets.mjs` hoặc `node scripts/build-fish-assets.mjs` nếu cần tái tạo. Các script ghi đè asset; kiểm tra diff sau khi chạy.
 - Xem model bằng `/asset-preview.html`, cảnh đảo bằng `/island-preview.html` trên Vite development. Các trang này không được khai báo thành input riêng trong cấu hình production build.
 - Khi chỉ thêm một số loài, truyền model ID vào `node scripts/build-fish-assets.mjs fish_extra_marbled_eel fish_extra_sturgeon` để chỉ tạo GLB/thumbnail cho các ID đó. Không truyền ID sẽ tái tạo toàn bộ cá.

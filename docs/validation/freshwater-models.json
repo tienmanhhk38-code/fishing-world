@@ -1,0 +1,1227 @@
+{
+  "at": "2026-11-13T18:07:59.461Z",
+  "metrics": [
+    {
+      "id": "perch",
+      "length": 1.7999999084472658,
+      "height": 0.8982330461611722,
+      "displayLength": 0.7547184014812105,
+      "calls": 4,
+      "triangles": 17974,
+      "landmarks": {
+        "eye": [
+          151.06198644826185,
+          333.2409869462331
+        ],
+        "mouth": [
+          58.75455318183452,
+          364.010702796976
+        ],
+        "gill": [
+          278.5345643604239,
+          343.4975588964807
+        ],
+        "pectoral": [
+          278.5345643604239,
+          390.3841327098266
+        ]
+      },
+      "headFixed": true,
+      "maxBoneAngle": 0
+    },
+    {
+      "id": "crucian",
+      "length": 1.8011732258796693,
+      "height": 1.0002058740997843,
+      "displayLength": 0.6746454470864848,
+      "calls": 4,
+      "triangles": 19230,
+      "landmarks": {
+        "eye": [
+          151.18711070559965,
+          346.5447354539036
+        ],
+        "mouth": [
+          58.28537761216472,
+          387.48433705702035
+        ],
+        "gill": [
+          270.85711073834494,
+          346.5447354539036
+        ],
+        "pectoral": [
+          270.85711073834494,
+          428.4239386601371
+        ]
+      },
+      "headFixed": true,
+      "maxBoneAngle": 0
+    },
+    {
+      "id": "carp",
+      "length": 1.7999999084472658,
+      "height": 0.7189528764721934,
+      "displayLength": 0.973007106170332,
+      "calls": 4,
+      "triangles": 15270,
+      "landmarks": {
+        "eye": [
+          160.95941552309975,
+          329.67445924147256
+        ],
+        "mouth": [
+          65.43855352180032,
+          365.33503248383454
+        ],
+        "gill": [
+          252.65999161580365,
+          330.94731644907057
+        ],
+        "pectoral": [
+          261.5751349263941,
+          369.1561755353308
+        ]
+      },
+      "headFixed": true,
+      "maxBoneAngle": 0
+    },
+    {
+      "id": "pangasius",
+      "length": 1.7999999084472658,
+      "height": 0.6486439900452157,
+      "displayLength": 1.1536274870528354,
+      "calls": 4,
+      "triangles": 13646,
+      "landmarks": {
+        "eye": [
+          161.06312981408922,
+          343.71724630558384
+        ],
+        "mouth": [
+          78.83741134615863,
+          372.3715334773019
+        ],
+        "gill": [
+          229.58484758499827,
+          347.4543893528076
+        ],
+        "pectoral": [
+          253.2557059318176,
+          399.7803920142457
+        ]
+      },
+      "headFixed": true,
+      "maxBoneAngle": 0
+    },
+    {
+      "id": "catfish",
+      "length": 1.7999999084472658,
+      "height": 0.5220897951392955,
+      "displayLength": 0.973007106170332,
+      "calls": 4,
+      "triangles": 14278,
+      "landmarks": {
+        "eye": [
+          233.96827637937957,
+          323.81091297954686
+        ],
+        "mouth": [
+          114.92055603858506,
+          340.81748527311726
+        ],
+        "gill": [
+          331.4742813387914,
+          321.5429128641904
+        ],
+        "pectoral": [
+          341.6777104291932,
+          365.7612008275345
+        ]
+      },
+      "headFixed": true,
+      "maxBoneAngle": 0
+    },
+    {
+      "id": "koi",
+      "length": 1.7999999084472658,
+      "height": 0.7254310764363727,
+      "displayLength": 1.0709328924106423,
+      "calls": 4,
+      "triangles": 15048,
+      "landmarks": {
+        "eye": [
+          171.37884462448784,
+          356.9314454722131
+        ],
+        "mouth": [
+          77.66741128664934,
+          388.16830420385907
+        ],
+        "gill": [
+          250.0954200567914,
+          353.18315956727974
+        ],
+        "pectoral": [
+          255.09342031100275,
+          395.6648760137258
+        ]
+      },
+      "headFixed": true,
+      "maxBoneAngle": 0
+    },
+    {
+      "id": "tilapia",
+      "length": 1.7999999084472658,
+      "height": 0.8771670720996045,
+      "displayLength": 0.8323764572418713,
+      "calls": 4,
+      "triangles": 18092,
+      "landmarks": {
+        "eye": [
+          166.69970152935147,
+          334.30356099235223
+        ],
+        "mouth": [
+          64.72883919998813,
+          371.24899144292266
+        ],
+        "gill": [
+          277.5368500239632,
+          338.7367040749765
+        ],
+        "pectoral": [
+          292.31485077561126,
+          388.98327805922077
+        ]
+      },
+      "headFixed": true,
+      "maxBoneAngle": 0
+    },
+    {
+      "id": "grasscarp",
+      "length": 1.798232988357544,
+      "height": 0.6802947883108346,
+      "displayLength": 1.998634484562644,
+      "calls": 4,
+      "triangles": 13450,
+      "landmarks": {
+        "eye": [
+          139.5988595505715,
+          339.60087411160987
+        ],
+        "mouth": [
+          65.42175616668415,
+          366.7990023548489
+        ],
+        "gill": [
+          233.55680983186818,
+          343.3090857919657
+        ],
+        "pectoral": [
+          231.08495470667032,
+          384.1071361419423
+        ]
+      },
+      "headFixed": true,
+      "maxBoneAngle": 0
+    },
+    {
+      "id": "bigheadcarp",
+      "length": 1.7993499197959901,
+      "height": 0.6591763689275889,
+      "displayLength": 1.62065505947756,
+      "calls": 4,
+      "triangles": 14312,
+      "landmarks": {
+        "eye": [
+          160.15944603273647,
+          372.40360164665003
+        ],
+        "mouth": [
+          68.46604472676884,
+          278.2321625261352
+        ],
+        "gill": [
+          238.22192445363183,
+          327.7963486272054
+        ],
+        "pectoral": [
+          251.85198988617293,
+          367.4466685650245
+        ]
+      },
+      "headFixed": true,
+      "maxBoneAngle": 0
+    },
+    {
+      "id": "blackcarp",
+      "length": 1.8247676053047182,
+      "height": 0.63808868427083,
+      "displayLength": 2.684452829003961,
+      "calls": 4,
+      "triangles": 13456,
+      "landmarks": {
+        "eye": [
+          150.6547917081342,
+          344.10389019906154
+        ],
+        "mouth": [
+          58.196708938991364,
+          372.0851597795175
+        ],
+        "gill": [
+          224.86510267316154,
+          340.45467404177487
+        ],
+        "pectoral": [
+          230.94769327453338,
+          387.90040264838876
+        ]
+      },
+      "headFixed": true,
+      "maxBoneAngle": 0
+    },
+    {
+      "id": "snakehead",
+      "length": 1.7999999084472658,
+      "height": 0.5009955912239137,
+      "displayLength": 2.4087355269383393,
+      "calls": 4,
+      "triangles": 13162,
+      "landmarks": {
+        "eye": [
+          141.77912883325413,
+          301.76562102139593
+        ],
+        "mouth": [
+          58.56169602916809,
+          335.05276557161045
+        ],
+        "gill": [
+          235.6962764672702,
+          304.14333542804695
+        ],
+        "pectoral": [
+          239.26284807724684,
+          340.99705158823826
+        ]
+      },
+      "headFixed": true,
+      "maxBoneAngle": 0
+    },
+    {
+      "id": "giantcatfish",
+      "length": 1.798232988357544,
+      "height": 0.7048881842070032,
+      "displayLength": 3.700299768748785,
+      "calls": 4,
+      "triangles": 14290,
+      "landmarks": {
+        "eye": [
+          147.42679168301837,
+          363.20103020441735
+        ],
+        "mouth": [
+          65.82811702771085,
+          395.6002642334771
+        ],
+        "gill": [
+          230.2257875185243,
+          363.20103020441735
+        ],
+        "pectoral": [
+          237.42514064436085,
+          412.40047083066514
+        ]
+      },
+      "headFixed": true,
+      "maxBoneAngle": 0
+    },
+    {
+      "id": "arapaima",
+      "length": 1.8028994359970094,
+      "height": 0.4693493949161398,
+      "displayLength": 4,
+      "calls": 4,
+      "triangles": 12200,
+      "landmarks": {
+        "eye": [
+          151.29698382583325,
+          316.7679232501553
+        ],
+        "mouth": [
+          58.278817281641,
+          337.5604307253543
+        ],
+        "gill": [
+          204.91832497447288,
+          321.14601388863406
+        ],
+        "pectoral": [
+          192.88114301183762,
+          353.9757033264684
+        ]
+      },
+      "headFixed": true,
+      "maxBoneAngle": 0
+    },
+    {
+      "id": "marbled_eel",
+      "length": 1.8149597206115724,
+      "height": 0.4798964258340045,
+      "displayLength": 2.586468156492834,
+      "calls": 4,
+      "triangles": 11446,
+      "landmarks": {
+        "eye": [
+          136.08951664853512,
+          328.2860871150979
+        ],
+        "mouth": [
+          71.23282347926678,
+          352.60681575488775
+        ],
+        "gill": [
+          178.94024329217467,
+          322.4953564791577
+        ],
+        "pectoral": [
+          160.41024528832494,
+          351.4490096588586
+        ]
+      },
+      "headFixed": true,
+      "maxBoneAngle": 0
+    },
+    {
+      "id": "sturgeon",
+      "length": 1.7967773237228395,
+      "height": 0.4974582805771681,
+      "displayLength": 4,
+      "calls": 4,
+      "triangles": 11912,
+      "landmarks": {
+        "eye": [
+          187.83595250644788,
+          335.6512906323857
+        ],
+        "mouth": [
+          65.63974681655493,
+          355.46705400808514
+        ],
+        "gill": [
+          235.17413420852935,
+          341.15628950579253
+        ],
+        "pectoral": [
+          240.67827440171874,
+          387.39278448901877
+        ]
+      },
+      "headFixed": true,
+      "maxBoneAngle": 0
+    }
+  ],
+  "performance": [
+    {
+      "id": "perch",
+      "low": false,
+      "before": {
+        "frames": {
+          "median": 16.600000001490116,
+          "p95": 17.899999998509884
+        },
+        "cpu": {
+          "median": 0.8000000007450581,
+          "p95": 1.300000000745058
+        },
+        "calls": 15,
+        "triangles": 12848,
+        "gpu": "WebKit WebGL"
+      },
+      "after": {
+        "frames": {
+          "median": 16.700000002980232,
+          "p95": 17.799999997019768
+        },
+        "cpu": {
+          "median": 0.5999999977648258,
+          "p95": 1.1000000014901161
+        },
+        "calls": 14,
+        "triangles": 70912,
+        "gpu": "WebKit WebGL"
+      },
+      "medianRatio": 1.0060240964747675,
+      "p95Ratio": 0.9944134077375173
+    },
+    {
+      "id": "perch",
+      "low": true,
+      "before": {
+        "frames": {
+          "median": 16.700000002980232,
+          "p95": 17.800000000745058
+        },
+        "cpu": {
+          "median": 0.6999999992549419,
+          "p95": 1.1000000014901161
+        },
+        "calls": 15,
+        "triangles": 3936,
+        "gpu": "WebKit WebGL"
+      },
+      "after": {
+        "frames": {
+          "median": 16.699999999254942,
+          "p95": 17.899999998509884
+        },
+        "cpu": {
+          "median": 0.7999999970197678,
+          "p95": 1.1000000014901161
+        },
+        "calls": 14,
+        "triangles": 14552,
+        "gpu": "WebKit WebGL"
+      },
+      "medianRatio": 0.9999999997769288,
+      "p95Ratio": 1.005617977402283
+    },
+    {
+      "id": "koi",
+      "low": false,
+      "before": {
+        "frames": {
+          "median": 16.699999999254942,
+          "p95": 18
+        },
+        "cpu": {
+          "median": 0.8000000007450581,
+          "p95": 1.1000000014901161
+        },
+        "calls": 15,
+        "triangles": 12848,
+        "gpu": "WebKit WebGL"
+      },
+      "after": {
+        "frames": {
+          "median": 16.699999999254942,
+          "p95": 17.899999998509884
+        },
+        "cpu": {
+          "median": 0.6999999992549419,
+          "p95": 1.199999999254942
+        },
+        "calls": 14,
+        "triangles": 59208,
+        "gpu": "WebKit WebGL"
+      },
+      "medianRatio": 1,
+      "p95Ratio": 0.9944444443616602
+    },
+    {
+      "id": "koi",
+      "low": true,
+      "before": {
+        "frames": {
+          "median": 16.600000001490116,
+          "p95": 17.599999997764826
+        },
+        "cpu": {
+          "median": 0.6000000014901161,
+          "p95": 1.1000000014901161
+        },
+        "calls": 15,
+        "triangles": 3936,
+        "gpu": "WebKit WebGL"
+      },
+      "after": {
+        "frames": {
+          "median": 16.699999999254942,
+          "p95": 17.899999998509884
+        },
+        "cpu": {
+          "median": 0.6999999992549419,
+          "p95": 1.0999999977648258
+        },
+        "calls": 14,
+        "triangles": 12616,
+        "gpu": "WebKit WebGL"
+      },
+      "medianRatio": 1.0060240962503524,
+      "p95Ratio": 1.017045454589952
+    },
+    {
+      "id": "marbled_eel",
+      "low": false,
+      "before": {
+        "frames": {
+          "median": 16.700000002980232,
+          "p95": 17.800000000745058
+        },
+        "cpu": {
+          "median": 0.6999999992549419,
+          "p95": 1.1000000014901161
+        },
+        "calls": 15,
+        "triangles": 4704,
+        "gpu": "WebKit WebGL"
+      },
+      "after": {
+        "frames": {
+          "median": 16.800000000745058,
+          "p95": 17.699999999254942
+        },
+        "cpu": {
+          "median": 0.30000000074505806,
+          "p95": 0.8999999985098839
+        },
+        "calls": 14,
+        "triangles": 44800,
+        "gpu": "WebKit WebGL"
+      },
+      "medianRatio": 1.0059880238171843,
+      "p95Ratio": 0.9943820223884309
+    },
+    {
+      "id": "marbled_eel",
+      "low": true,
+      "before": {
+        "frames": {
+          "median": 16.600000001490116,
+          "p95": 18.099999997764826
+        },
+        "cpu": {
+          "median": 0.3999999985098839,
+          "p95": 1
+        },
+        "calls": 15,
+        "triangles": 2632,
+        "gpu": "WebKit WebGL"
+      },
+      "after": {
+        "frames": {
+          "median": 16.800000000745058,
+          "p95": 17.599999997764826
+        },
+        "cpu": {
+          "median": 0.3999999985098839,
+          "p95": 0.8999999985098839
+        },
+        "calls": 14,
+        "triangles": 10672,
+        "gpu": "WebKit WebGL"
+      },
+      "medianRatio": 1.0120481927251197,
+      "p95Ratio": 0.9723756906043235
+    }
+  ],
+  "sea": [
+    {
+      "path": "apps/client/public/assets/starter/models/fish_concept_01.glb",
+      "unchanged": true,
+      "hash": "3DA83A0079758295DFC86CD746A2FB622B93BF5C86858EE49E2E55B3AAB7F2EE"
+    },
+    {
+      "path": "apps/client/public/assets/starter/thumbnails/fish_concept_01.png",
+      "unchanged": true,
+      "hash": "70FC7AD696C619A501C14005FED853E8CAE7D6F247B5C6BDBD16A401797473C2"
+    },
+    {
+      "path": "apps/client/public/assets/starter/models/fish_concept_03.glb",
+      "unchanged": true,
+      "hash": "042363C0C2974A0465E6CD4980E66EB58660ABAC706BCD6BF7FB1EBACF0B5001"
+    },
+    {
+      "path": "apps/client/public/assets/starter/thumbnails/fish_concept_03.png",
+      "unchanged": true,
+      "hash": "1D99487935131BCC6CF1E1565472E0E49730CD3748AFA59CEE6C3B0F9BC05E43"
+    },
+    {
+      "path": "apps/client/public/assets/starter/models/fish_concept_05.glb",
+      "unchanged": true,
+      "hash": "FFE637221E74B9BB7DD0996AF6A83847233D4C06099D1C3B5275D5A2EA13DE3B"
+    },
+    {
+      "path": "apps/client/public/assets/starter/thumbnails/fish_concept_05.png",
+      "unchanged": true,
+      "hash": "5BF560296BD2E5449AA48E44B30C60F7BFD42D71F6B9B1B3499E5C89DDA3144A"
+    },
+    {
+      "path": "apps/client/public/assets/starter/models/fish_concept_06.glb",
+      "unchanged": true,
+      "hash": "58B922C7FD48CE3DADA3D64E5FA6AB1FAAE0005CA382C46956740D87FA40AAEB"
+    },
+    {
+      "path": "apps/client/public/assets/starter/thumbnails/fish_concept_06.png",
+      "unchanged": true,
+      "hash": "63523DDC2E7C5EB02D08DDDDBB09C299A5477C165135C849635246124F56CA0C"
+    },
+    {
+      "path": "apps/client/public/assets/starter/models/fish_concept_02.glb",
+      "unchanged": true,
+      "hash": "C21C3FCB51701B59A4695E44D3BE2913C88CDA8EC1F3435FBC3A635C0D322CE9"
+    },
+    {
+      "path": "apps/client/public/assets/starter/thumbnails/fish_concept_02.png",
+      "unchanged": true,
+      "hash": "28D8E38D6734BF4F5918444C6313B0C3000516CBB68AE08C466BDBBB4D9E3658"
+    },
+    {
+      "path": "apps/client/public/assets/starter/models/fish_concept_11.glb",
+      "unchanged": true,
+      "hash": "FDD13D73664D0931470870A15517D94504DFC6990CBDA97768763DA3302FDC02"
+    },
+    {
+      "path": "apps/client/public/assets/starter/thumbnails/fish_concept_11.png",
+      "unchanged": true,
+      "hash": "7A5AFC4C74FEC1123C86A40192E98C75D455FADF47DF6580A1A558048AFD770F"
+    },
+    {
+      "path": "apps/client/public/assets/starter/models/fish_concept_15.glb",
+      "unchanged": true,
+      "hash": "A5EF983A15527FD42AEAF5AA2CCE8C78B7B8BCBD764B4A4301E76CD984AC2989"
+    },
+    {
+      "path": "apps/client/public/assets/starter/thumbnails/fish_concept_15.png",
+      "unchanged": true,
+      "hash": "268B99DE17EFE44A4429900FE022A0F7A2C08E9EA6DE48B0120F7FF45560AB50"
+    },
+    {
+      "path": "apps/client/public/assets/starter/models/fish_concept_04.glb",
+      "unchanged": true,
+      "hash": "BF03A86CCF0AB03D75782C6BA68F13E30791943D4677AB2EB3B4DAD1E503AA7D"
+    },
+    {
+      "path": "apps/client/public/assets/starter/thumbnails/fish_concept_04.png",
+      "unchanged": true,
+      "hash": "4FC89BEA7A3A4B59A823CFE5D90C7455D8D9DEC25D10DBD02C296DFA553DDE29"
+    },
+    {
+      "path": "apps/client/public/assets/starter/models/fish_concept_14.glb",
+      "unchanged": true,
+      "hash": "B5FDF49CF5A06B4FE0C76AA503D23EDB06C824A25D788681AA3C6E16878FC90F"
+    },
+    {
+      "path": "apps/client/public/assets/starter/thumbnails/fish_concept_14.png",
+      "unchanged": true,
+      "hash": "C788E256D6FCDBE3CA8FF0144E70D10692D0EEB7E84594FFFF08B21040C94C4E"
+    },
+    {
+      "path": "apps/client/public/assets/starter/models/fish_extra_sardine.glb",
+      "unchanged": true,
+      "hash": "E92E19CBB337550D3EEF0B9524D6844170EFE6CD15C272ED927F5CD7F19D0DD5"
+    },
+    {
+      "path": "apps/client/public/assets/starter/thumbnails/fish_extra_sardine.png",
+      "unchanged": true,
+      "hash": "DE3D6394334EEA41176982F893B349937E7A96D55942E4C1E504F5E9BFE75784"
+    },
+    {
+      "path": "apps/client/public/assets/starter/models/fish_extra_whiting.glb",
+      "unchanged": true,
+      "hash": "A8965B755D23922E3C6ABE56FFFC4E885B17125AFBC7C4237302D69B335131B2"
+    },
+    {
+      "path": "apps/client/public/assets/starter/thumbnails/fish_extra_whiting.png",
+      "unchanged": true,
+      "hash": "4908899910796CD0945C0C35F194648314143831720A58C5269C7C76EB705AA7"
+    },
+    {
+      "path": "apps/client/public/assets/starter/models/fish_extra_snapper.glb",
+      "unchanged": true,
+      "hash": "74494296CE44E37CE0A42D5E8927A90EB2A1F1BDFB3ABABCDE647C39187F5190"
+    },
+    {
+      "path": "apps/client/public/assets/starter/thumbnails/fish_extra_snapper.png",
+      "unchanged": true,
+      "hash": "3FB0A70BB6378832F4365F3DFB2122DAC70B0EAA42F3767D499E2E8C4110C3E3"
+    },
+    {
+      "path": "apps/client/public/assets/starter/models/fish_extra_grouper.glb",
+      "unchanged": true,
+      "hash": "CFFD5D2E6F32730603406ECF386F6E4BD93FE102001B88A2E6DF1C8D14D20AAD"
+    },
+    {
+      "path": "apps/client/public/assets/starter/thumbnails/fish_extra_grouper.png",
+      "unchanged": true,
+      "hash": "4C788CC3D09738C1A4296876916460AAC3AD8C5F476E0F1634C8719A7E030A66"
+    },
+    {
+      "path": "apps/client/public/assets/starter/models/fish_extra_barracuda.glb",
+      "unchanged": true,
+      "hash": "545BAD3F8A683E28B49709F5ACDA3D4BC95C45AF191448809AC2F99AF6CE94B3"
+    },
+    {
+      "path": "apps/client/public/assets/starter/thumbnails/fish_extra_barracuda.png",
+      "unchanged": true,
+      "hash": "D025F51140A43793727704505D6282538B5C63F3ECD26239F79A30AF0EC87B95"
+    },
+    {
+      "path": "apps/client/public/assets/starter/models/fish_extra_wahoo.glb",
+      "unchanged": true,
+      "hash": "EEC0D68FD29E498584EF9BCB635C9F5ADB41A8042FAA1A8D25D6AA6C442A31BD"
+    },
+    {
+      "path": "apps/client/public/assets/starter/thumbnails/fish_extra_wahoo.png",
+      "unchanged": true,
+      "hash": "0E23CF29BBA07949F055A764080960EBC7C9E8F22D768ABF06EAC15A6515ED9C"
+    },
+    {
+      "path": "apps/client/public/assets/starter/models/fish_extra_swordfish.glb",
+      "unchanged": true,
+      "hash": "9C5D8A0E19FDAD44482FF75D3A6887F5854C932BBB6F8220388096E3558F2F47"
+    },
+    {
+      "path": "apps/client/public/assets/starter/thumbnails/fish_extra_swordfish.png",
+      "unchanged": true,
+      "hash": "76369404FFCEDE7F9A4BDF9512334D4D8B9A58C98FF5F759EAA52735CB70AFD6"
+    },
+    {
+      "path": "apps/client/public/assets/starter/models/fish_extra_marlin.glb",
+      "unchanged": true,
+      "hash": "E5FF6FE0407B029F6F1EABEDE5369C21EA4CF1E4A86C026AB194793FAE9CC7CB"
+    },
+    {
+      "path": "apps/client/public/assets/starter/thumbnails/fish_extra_marlin.png",
+      "unchanged": true,
+      "hash": "1814CF2476D94DDA4E593B64C9CA48FBE88BDB828BAC40F417A01AEEC1ADF201"
+    },
+    {
+      "path": "apps/client/public/assets/starter/models/fish_extra_amberjack.glb",
+      "unchanged": true,
+      "hash": "8CDCD50C4F62AC3A61658E6342D13B6B0C01D2C89C3A848111B766569B9ECB87"
+    },
+    {
+      "path": "apps/client/public/assets/starter/thumbnails/fish_extra_amberjack.png",
+      "unchanged": true,
+      "hash": "E5D42BD462C1FFD0B0271C7666743AF67EE6E17E6A3AE3D7BC56314E2ED800E2"
+    },
+    {
+      "path": "apps/client/public/assets/starter/models/fish_extra_bluefin_tuna.glb",
+      "unchanged": true,
+      "hash": "BEA0022FD1A60C09CE18E378FD1BD025D4D9A5ABE3DD6A5BB59B5D59F4518698"
+    },
+    {
+      "path": "apps/client/public/assets/starter/thumbnails/fish_extra_bluefin_tuna.png",
+      "unchanged": true,
+      "hash": "1F7DB6B264B5633A3E1B4DF6DBFF0DD7C56130336B219406DBF06A5BFE105F64"
+    },
+    {
+      "path": "apps/client/public/assets/starter/models/fish_extra_oarfish.glb",
+      "unchanged": true,
+      "hash": "87F058223ACF230F6548B8C4AF72AAD744E3063864BDD64B8B1DBD7C4DCE19A8"
+    },
+    {
+      "path": "apps/client/public/assets/starter/thumbnails/fish_extra_oarfish.png",
+      "unchanged": true,
+      "hash": "F2A03DFDADB5A54B671F4EEC29C102A667CB0387D73E9F54AD84851F4E484AF6"
+    },
+    {
+      "path": "apps/client/public/assets/starter/models/fish_extra_pink_dolphin.glb",
+      "unchanged": true,
+      "hash": "7DC69B176F73CED447AA46CF5821BC955FA96F684209C9DB700AC2EF40EBF31C"
+    },
+    {
+      "path": "apps/client/public/assets/starter/thumbnails/fish_extra_pink_dolphin.png",
+      "unchanged": true,
+      "hash": "C9FEB7D47116C43AC05059B9E2D301774E98DA2E26E858B9E068367A16CB3237"
+    },
+    {
+      "path": "apps/client/public/assets/starter/models/fish_extra_orca.glb",
+      "unchanged": true,
+      "hash": "4B90B48DE4E139240527F61F4C0F151F1D52BC91A395A81E330CC306346B57C3"
+    },
+    {
+      "path": "apps/client/public/assets/starter/thumbnails/fish_extra_orca.png",
+      "unchanged": true,
+      "hash": "DBFF71D102B1D062720DD22B66AA85CBC3F28BAE39681AE262974D2AC8FBE4E8"
+    },
+    {
+      "path": "apps/client/public/assets/starter/models/fish_extra_sperm_whale.glb",
+      "unchanged": true,
+      "hash": "0D3DEF7B0C2C01AAD5845A43E499820DB2E38D37A7E506EC22B77DC00180D033"
+    },
+    {
+      "path": "apps/client/public/assets/starter/thumbnails/fish_extra_sperm_whale.png",
+      "unchanged": true,
+      "hash": "A897CACC1A2A5001BEA305FA6D5268B65FAAF4E8C63D9B728F9F22EEBB2F53C4"
+    },
+    {
+      "path": "apps/client/public/assets/starter/models/fish_extra_great_white_shark.glb",
+      "unchanged": true,
+      "hash": "BB28281B508800161E5B4C9C3DB906D8DAA5770DC11EF7A5304419A8D9A9621B"
+    },
+    {
+      "path": "apps/client/public/assets/starter/thumbnails/fish_extra_great_white_shark.png",
+      "unchanged": true,
+      "hash": "2EDAFC67746CF2EF0D8C77865349BF5479493FD1DE55DA6A1E4160CC4FA23881"
+    },
+    {
+      "path": "apps/client/public/assets/starter/models/fish_extra_megalodon.glb",
+      "unchanged": true,
+      "hash": "C780C38D338A6D30F474CAF4A51E9218BC126C10F176C40A63B52557C349A823"
+    },
+    {
+      "path": "apps/client/public/assets/starter/thumbnails/fish_extra_megalodon.png",
+      "unchanged": true,
+      "hash": "756E9F29B36A3F144BF9D94B7020309225807E6DB95D62C4255944305DD0BC55"
+    }
+  ],
+  "errors": [],
+  "silhouettes": [
+    {
+      "id": "perch",
+      "silhouetteIoU": 0.9923278443113772,
+      "lowSilhouetteIoU": 0.9712410511649916,
+      "meanLandmarkError": 0.0011528437621761323,
+      "passed": true
+    },
+    {
+      "id": "crucian",
+      "silhouetteIoU": 0.9943006890485266,
+      "lowSilhouetteIoU": 0.9913377544020123,
+      "meanLandmarkError": 0.0008211500946503551,
+      "passed": true
+    },
+    {
+      "id": "carp",
+      "silhouetteIoU": 0.9901567154513664,
+      "lowSilhouetteIoU": 0.9830434033758181,
+      "meanLandmarkError": 0.0011691481192361974,
+      "passed": true
+    },
+    {
+      "id": "pangasius",
+      "silhouetteIoU": 0.974306409730764,
+      "lowSilhouetteIoU": 0.9500334689253901,
+      "meanLandmarkError": 0.006468381471974682,
+      "passed": true
+    },
+    {
+      "id": "catfish",
+      "silhouetteIoU": 0.9518206457212574,
+      "lowSilhouetteIoU": 0.9363890883565568,
+      "meanLandmarkError": 0.008399673660426547,
+      "passed": true
+    },
+    {
+      "id": "koi",
+      "silhouetteIoU": 0.9889039127862757,
+      "lowSilhouetteIoU": 0.9884021707890244,
+      "meanLandmarkError": 0.000801183871980244,
+      "passed": true
+    },
+    {
+      "id": "tilapia",
+      "silhouetteIoU": 0.9927293761680164,
+      "lowSilhouetteIoU": 0.9898051694101753,
+      "meanLandmarkError": 0.0005548538854898344,
+      "passed": true
+    },
+    {
+      "id": "grasscarp",
+      "silhouetteIoU": 0.9894025391361523,
+      "lowSilhouetteIoU": 0.9840114314403229,
+      "meanLandmarkError": 0.0014979503422593169,
+      "passed": true
+    },
+    {
+      "id": "bigheadcarp",
+      "silhouetteIoU": 0.9886687811187695,
+      "lowSilhouetteIoU": 0.9748830337355331,
+      "meanLandmarkError": 0.000915741389103261,
+      "passed": true
+    },
+    {
+      "id": "blackcarp",
+      "silhouetteIoU": 0.9646479365819538,
+      "lowSilhouetteIoU": 0.9654586581494462,
+      "meanLandmarkError": 0.011441540034763633,
+      "passed": true
+    },
+    {
+      "id": "snakehead",
+      "silhouetteIoU": 0.9910099261718888,
+      "lowSilhouetteIoU": 0.9890796182276873,
+      "meanLandmarkError": 0.0010495434464266153,
+      "passed": true
+    },
+    {
+      "id": "giantcatfish",
+      "silhouetteIoU": 0.9802862450973646,
+      "lowSilhouetteIoU": 0.9548408965721792,
+      "meanLandmarkError": 0.0003464786601418928,
+      "passed": true
+    },
+    {
+      "id": "arapaima",
+      "silhouetteIoU": 0.988116798797157,
+      "lowSilhouetteIoU": 0.9846384669155883,
+      "meanLandmarkError": 0.001253669471481514,
+      "passed": true
+    },
+    {
+      "id": "marbled_eel",
+      "silhouetteIoU": 0.9658254808312895,
+      "lowSilhouetteIoU": 0.9659174173527003,
+      "meanLandmarkError": 0.007037600271345665,
+      "passed": true
+    },
+    {
+      "id": "sturgeon",
+      "silhouetteIoU": 0.9674386533283716,
+      "lowSilhouetteIoU": 0.9107993591635398,
+      "meanLandmarkError": 0.0011409290275528367,
+      "passed": true
+    }
+  ],
+  "silhouettePassed": true,
+  "assets": [
+    {
+      "model": "fish_concept_07",
+      "bytes": 1948996,
+      "thumbnailBytes": 29397,
+      "sha256": "115d8d861c45c50e883529d791a5f11f63844b2e4f106b0fb90734847f2840e0",
+      "lods": {
+        "high": {
+          "triangles": 17974,
+          "drawCalls": 4
+        },
+        "low": {
+          "triangles": 3696,
+          "drawCalls": 4
+        }
+      }
+    },
+    {
+      "model": "fish_concept_08",
+      "bytes": 1982500,
+      "thumbnailBytes": 31456,
+      "sha256": "e0189f7392c05c115859601a03b29abd33a9665107f5dbafc89d3ba74269f2be",
+      "lods": {
+        "high": {
+          "triangles": 19230,
+          "drawCalls": 4
+        },
+        "low": {
+          "triangles": 3928,
+          "drawCalls": 4
+        }
+      }
+    },
+    {
+      "model": "fish_concept_09",
+      "bytes": 1637744,
+      "thumbnailBytes": 27356,
+      "sha256": "41977ecaa91694ddcf0fe41c65f6212ba06e822bcf059fde0669833d669ef833",
+      "lods": {
+        "high": {
+          "triangles": 15048,
+          "drawCalls": 4
+        },
+        "low": {
+          "triangles": 3212,
+          "drawCalls": 4
+        }
+      }
+    },
+    {
+      "model": "fish_concept_10",
+      "bytes": 1832472,
+      "thumbnailBytes": 24142,
+      "sha256": "1a7db14cd0ba2fd7d21363297d2916adc88e6655c47f3ed9d360f5eee37352e9",
+      "lods": {
+        "high": {
+          "triangles": 15270,
+          "drawCalls": 4
+        },
+        "low": {
+          "triangles": 3250,
+          "drawCalls": 4
+        }
+      }
+    },
+    {
+      "model": "fish_concept_12",
+      "bytes": 1593188,
+      "thumbnailBytes": 19338,
+      "sha256": "9f8f018ff055e7bf05bab50d2f9140ce0c2a409748cad4eba4673b7e7b3e6bb2",
+      "lods": {
+        "high": {
+          "triangles": 13646,
+          "drawCalls": 4
+        },
+        "low": {
+          "triangles": 3072,
+          "drawCalls": 4
+        }
+      }
+    },
+    {
+      "model": "fish_concept_13",
+      "bytes": 1483872,
+      "thumbnailBytes": 20061,
+      "sha256": "29456caf33d82533341dab895379a5e45b6a246d6fe390d5645184a7ecef04e0",
+      "lods": {
+        "high": {
+          "triangles": 14278,
+          "drawCalls": 4
+        },
+        "low": {
+          "triangles": 3208,
+          "drawCalls": 4
+        }
+      }
+    },
+    {
+      "model": "fish_extra_marbled_eel",
+      "bytes": 1319884,
+      "thumbnailBytes": 20221,
+      "sha256": "bf5c0bfaa68a7ae2e5a46e0507121bdcc27e6003b4d1e89471b6603afce29aaa",
+      "lods": {
+        "high": {
+          "triangles": 11446,
+          "drawCalls": 4
+        },
+        "low": {
+          "triangles": 2726,
+          "drawCalls": 4
+        }
+      }
+    },
+    {
+      "model": "fish_extra_sturgeon",
+      "bytes": 1440400,
+      "thumbnailBytes": 17105,
+      "sha256": "c344dcaf90575db237ec4a76f28597869b02cbe461e04ea44abbdbcbd0097eea",
+      "lods": {
+        "high": {
+          "triangles": 11912,
+          "drawCalls": 4
+        },
+        "low": {
+          "triangles": 3136,
+          "drawCalls": 4
+        }
+      }
+    },
+    {
+      "model": "fish_extra_tilapia",
+      "bytes": 1818160,
+      "thumbnailBytes": 29490,
+      "sha256": "8eeb4286883c2c10ec22eab676cca5ea7d523e08c037bb61b7cb75f808f1ce5c",
+      "lods": {
+        "high": {
+          "triangles": 18092,
+          "drawCalls": 4
+        },
+        "low": {
+          "triangles": 3770,
+          "drawCalls": 4
+        }
+      }
+    },
+    {
+      "model": "fish_extra_grasscarp",
+      "bytes": 1715356,
+      "thumbnailBytes": 20988,
+      "sha256": "4cb5074f6e7475a973053de66c4eace102ee0d01617f78b7774366410b535e9c",
+      "lods": {
+        "high": {
+          "triangles": 13450,
+          "drawCalls": 4
+        },
+        "low": {
+          "triangles": 2944,
+          "drawCalls": 4
+        }
+      }
+    },
+    {
+      "model": "fish_extra_bigheadcarp",
+      "bytes": 1434924,
+      "thumbnailBytes": 24097,
+      "sha256": "8620114cae5314771d2e1deda80decff2d508e7e7c5c5e209c03eb399e8d0401",
+      "lods": {
+        "high": {
+          "triangles": 14312,
+          "drawCalls": 4
+        },
+        "low": {
+          "triangles": 3120,
+          "drawCalls": 4
+        }
+      }
+    },
+    {
+      "model": "fish_extra_blackcarp",
+      "bytes": 1643636,
+      "thumbnailBytes": 20674,
+      "sha256": "386278f6f4e0be1c7a654ff5b98b147effa151712217bc9338301e8998c8c3da",
+      "lods": {
+        "high": {
+          "triangles": 13456,
+          "drawCalls": 4
+        },
+        "low": {
+          "triangles": 3022,
+          "drawCalls": 4
+        }
+      }
+    },
+    {
+      "model": "fish_extra_snakehead",
+      "bytes": 1072348,
+      "thumbnailBytes": 20770,
+      "sha256": "2dc94605012c31dd73a6c6ebc035fed3f75d3216d53c187764741edbabcbaa6f",
+      "lods": {
+        "high": {
+          "triangles": 13162,
+          "drawCalls": 4
+        },
+        "low": {
+          "triangles": 2998,
+          "drawCalls": 4
+        }
+      }
+    },
+    {
+      "model": "fish_extra_giantcatfish",
+      "bytes": 1580696,
+      "thumbnailBytes": 20407,
+      "sha256": "863c3b626275e706f7e888587dc2dbddc1f40b6e17367b8903d993f815269ff8",
+      "lods": {
+        "high": {
+          "triangles": 14290,
+          "drawCalls": 4
+        },
+        "low": {
+          "triangles": 3168,
+          "drawCalls": 4
+        }
+      }
+    },
+    {
+      "model": "fish_extra_arapaima",
+      "bytes": 1536764,
+      "thumbnailBytes": 18107,
+      "sha256": "3c4ba58acd12f8956b0220db9a1a19ee4b653cdf14222083a276e6cf35749a88",
+      "lods": {
+        "high": {
+          "triangles": 12200,
+          "drawCalls": 4
+        },
+        "low": {
+          "triangles": 2968,
+          "drawCalls": 4
+        }
+      }
+    }
+  ],
+  "totalFreshwaterBytes": 24384549,
+  "budgetPassed": true,
+  "performancePassed": true,
+  "seaUnchanged": true,
+  "passed": true
+}

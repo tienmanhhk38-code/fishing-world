@@ -12,6 +12,7 @@ import { Html, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import { speciesFor } from "@fishing/shared";
 import { bakeMeshes } from "./merge-models";
+import { fishAssetVersion } from "./fish-asset-version";
 
 export const fishModelId = (species?: string) =>
   speciesFor(species ?? "")?.model ?? "fish_concept_01";
@@ -29,7 +30,7 @@ const upgraded: Record<string, string> = {
 export const assetUrl = (id: string) =>
   upgraded[id]
     ? `/assets/harbor-v2/${upgraded[id]}.glb`
-    : `/assets/starter/models/${id}.glb`;
+    : `/assets/starter/models/${id}.glb${fishAssetVersion(id)}`;
 export { CharacterModel } from "./HarborCharacter";
 const artMaterials = new Map<THREE.Material, THREE.Material>();
 function artMaterial(source: THREE.Material, id: string) {

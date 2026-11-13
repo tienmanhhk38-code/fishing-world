@@ -1,4 +1,4 @@
-import { fishWriggle } from "./fish-animation";
+import { poseFishBones, setFishLod } from "./fish-rig";
 import { formatFishWeight } from "@fishing/shared";
 import {
   createFishShadowGeometry,
@@ -548,34 +548,23 @@ function FishModel({
     return result;
   }, [instance]);
   useFrame(({ camera }) => {
-    const angles = fishWriggle(
+    const mammal = ["dolphin", "orca", "whale"].includes(
+      definition.shape ?? "",
+    );
+    poseFishBones(
+      bones,
       serverNow(),
       startedAt,
       animationSeed,
       useSettings.getState().reducedMotion,
+      mammal,
     );
-    const mammal = ["dolphin", "orca", "whale"].includes(
-      definition.shape ?? "",
-    );
-    for (const b of bones) {
-      const i = Number(b.userData.fishJoint ?? 0);
-      b.rotation.set(0, 0, 0);
-      if (b.userData.fishFin)
-        b.rotation.x =
-          Math.sin((serverNow() - startedAt) * 0.007 + animationSeed) *
-          (useSettings.getState().reducedMotion ? 0.025 : 0.12) *
-          b.userData.fishFin;
-      else if (i > 0) b.rotation[mammal ? "z" : "y"] = angles[i] ?? 0;
-    }
     const low =
       useSettings.getState().quality !== "high" ||
       camera.position.distanceTo(
         instance.copy.getWorldPosition(new THREE.Vector3()),
       ) > 18;
-    instance.copy.traverse((o) => {
-      if (o.name === "fish-lod-low") o.visible = low;
-      if (o.name === "fish-lod-high") o.visible = !low;
-    });
+    setFishLod(instance.copy, low);
   });
 
   return (

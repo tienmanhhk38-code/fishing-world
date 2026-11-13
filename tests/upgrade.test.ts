@@ -164,16 +164,22 @@ describe("island experience upgrade", () => {
     expect(isLargeFish(9990)).toBe(false);
     expect(isLargeFish(10000)).toBe(true);
   });
-  it("ships all new GLBs and album art within a five MB geometry budget", () => {
-    let bytes = 0;
-    for (const s of SPECIES.filter((s) => s.model.startsWith("fish_extra_"))) {
+  it("ships sea extras within five MB and the freshwater set within 32 MB", () => {
+    let bytes = 0,
+      freshwaterBytes = 0;
+    for (const s of SPECIES) {
       const root = new URL(
         "../apps/client/public/assets/starter/",
         import.meta.url,
       );
       const glb = readFileSync(new URL(`models/${s.model}.glb`, root));
       expect(glb.readUInt32LE(0)).toBe(0x46546c67);
-      bytes += glb.length;
+      const thumbnail = readFileSync(
+        new URL(`thumbnails/${s.model}.png`, root),
+      );
+      if (s.area === "village")
+        freshwaterBytes += glb.length + thumbnail.length;
+      else if (s.model.startsWith("fish_extra_")) bytes += glb.length;
       expect(
         readFileSync(new URL(`thumbnails/${s.model}.png`, root))
           .subarray(1, 4)
@@ -181,5 +187,6 @@ describe("island experience upgrade", () => {
       ).toBe("PNG");
     }
     expect(bytes).toBeLessThan(5_000_000);
+    expect(freshwaterBytes).toBeLessThanOrEqual(32_000_000);
   });
 });

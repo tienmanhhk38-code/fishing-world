@@ -24,6 +24,8 @@ Các đường dẫn rút gọn `client`, `server`, `shared` lần lượt thu�
 
 ## Điều kiện gameplay đáng chú ý
 
+15 loài nước ngọt có model, texture và thumbnail theo ba poster tham chiếu, với profile thân/vây, mắt, râu, vảy và hoa văn riêng; koi dùng biến thể Showa. Asset, quy trình dựng lại và giới hạn kiểm chứng nằm tại [FRESHWATER-MODELS](FRESHWATER-MODELS.md). Catalog, cân nặng và kinh tế không thay đổi theo đợt chỉnh model này.
+
 Catalog bổ sung cá chình bông (nước ngọt, hiếm, 1–25 kg), cá tầm (nước ngọt, cực hiếm, 5–100 kg), cá cam (biển, hiếm, 1–40 kg), cá ngừ vây xanh (biển, cực hiếm, 20–300 kg) và cá mái chèo (biển, cực hiếm, 10–200 kg). Đây là khoảng khối lượng cấu hình trong game; các loài dùng quy tắc thưởng và mồi theo bậc hiếm hiện có.
 
 Các popup Bản đồ, Túi đồ, Album cá, Nhiệm vụ, Cách chơi và Nhân vật dùng hệ Glass UI trong client `popup-design.css`. Túi cá và album hiển thị danh sách cuộn trong khung 4 hàng, bằng chiều cao preview bên phải trên bố cục hai cột; tab Cần câu có khung xem trước và chọn cần đã sở hữu. Nút cửa hàng trong túi đồ chỉ mở được khi người chơi đứng gần Cô Sáu và đang rảnh. Hướng dẫn Cách chơi trình bày thành ba bước; dữ liệu cá, phần thưởng và trạng thái khóa vẫn lấy từ server.

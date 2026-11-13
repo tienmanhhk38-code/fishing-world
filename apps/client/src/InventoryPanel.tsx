@@ -30,6 +30,7 @@ import { SaleConfirmation } from "./ProgressPanels";
 import { useEconomy, transact, quoteSale } from "./economy-client";
 import { fishModelId } from "./assets";
 import { DetailStat, RodGlyph } from "./PopupParts";
+import { fishAssetVersion } from "./fish-asset-version";
 
 export function AssetImage({
   id,
@@ -43,7 +44,7 @@ export function AssetImage({
   return (
     <img
       className={`asset-image ${className}`}
-      src={`/assets/starter/thumbnails/${id}.png`}
+      src={`/assets/starter/thumbnails/${id}.png${fishAssetVersion(id)}`}
       alt={alt}
       draggable={false}
     />
